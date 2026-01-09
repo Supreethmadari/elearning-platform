@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure Checkout | CYANOPY</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --kodnest-yellow: #ffc107;
+            --bg-light: #f4f7f6;
+            --text-dark: #2d3436;
+            --success-green: #00c853;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-light);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .checkout-container {
+            background: white;
+            width: 100%;
+            max-width: 900px;
+            display: flex;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            margin: 20px;
+        }
+
+        /* --- Left Side: Order Summary --- */
+        .order-summary {
+            flex: 1;
+            background: #1e1e1e;
+            color: white;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .order-summary h2 { font-size: 22px; margin-bottom: 30px; }
+        
+        .course-preview {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #333;
+        }
+
+        .course-icon-small {
+            width: 50px; height: 50px;
+            background: var(--kodnest-yellow);
+            color: black;
+            border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 700; font-size: 20px;
+        }
+
+        .price-details { margin-top: auto; }
+        .price-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 14px;
+            color: #bbb;
+        }
+        .total-row {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+            font-size: 20px;
+            font-weight: 700;
+            color: white;
+            border-top: 1px solid #333;
+            padding-top: 20px;
+        }
+
+        /* --- Right Side: Payment Form --- */
+        .payment-form {
+            flex: 1.2;
+            padding: 40px;
+        }
+
+        .payment-form h2 { font-size: 22px; margin-bottom: 10px; }
+        .secure-tag {
+            font-size: 12px;
+            color: var(--success-green);
+            margin-bottom: 30px;
+            display: flex; align-items: center; gap: 5px;
+        }
+
+        .input-group { margin-bottom: 20px; }
+        label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 8px; color: #666; }
+        
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-sizing: border-box;
+            font-family: 'Poppins';
+            font-size: 14px;
+        }
+
+        .row { display: flex; gap: 15px; }
+
+        .pay-btn {
+            width: 100%;
+            background: var(--kodnest-yellow);
+            color: black;
+            border: none;
+            padding: 15px;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: 0.3s;
+        }
+
+        .pay-btn:hover { background: #eab106; transform: translateY(-2px); }
+
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            color: #888;
+            text-decoration: none;
+            font-size: 13px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="checkout-container">
+        <div class="order-summary">
+            <h2>Order Summary</h2>
+            <div class="course-preview">
+                <div class="course-icon-small">{{ course.title|slice:":1" }}</div>
+                <div>
+                    <div style="font-weight: 600;">{{ course.title }}</div>
+                    <div style="font-size: 12px; color: #888;">Professional Certification</div>
+                </div>
+            </div>
+
+            <div class="price-details">
+                <div class="price-row">
+                    <span>Course Price</span>
+                    <span>₹ {{ course.price }}</span>
+                </div>
+                <div class="price-row">
+                    <span>Platform Fee</span>
+                    <span>FREE</span>
+                </div>
+                <div class="total-row">
+                    <span>Total</span>
+                    <span>₹ {{ course.price }}</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="payment-form">
+            <h2>Payment Details</h2>
+            <div class="secure-tag">
+                <i class="fa-solid fa-shield-halved"></i> 256-bit SSL Secure Checkout
+            </div>
+
+            <form action="{% url 'payment_success' course.id %}" method="POST">
+                {% csrf_token %}
+                
+                <div class="input-group">
+                    <label>Cardholder Name</label>
+                    <input type="text" placeholder="Full Name as on card" required>
+                </div>
+
+                <div class="input-group">
+                    <label>Card Number</label>
+                    <div style="position: relative;">
+                        <input type="text" placeholder="0000 0000 0000 0000" required>
+                        <i class="fa-brands fa-cc-visa" style="position: absolute; right: 15px; top: 13px; color: #666;"></i>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="input-group" style="flex: 1;">
+                        <label>Expiry Date</label>
+                        <input type="text" placeholder="MM / YY" required>
+                    </div>
+                    <div class="input-group" style="flex: 1;">
+                        <label>CVV</label>
+                        <input type="password" placeholder="***" required>
+                    </div>
+                </div>
+
+                <button type="submit" class="pay-btn">
+                    Complete Purchase <i class="fa-solid fa-arrow-right" style="margin-left: 10px;"></i>
+                </button>
+
+                <a href="{% url 'purchase' %}" class="back-link">Cancel and return to courses</a>
+            </form>
+        </div>
+    </div>
+
+</body>
+</html>

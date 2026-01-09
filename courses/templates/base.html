@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}CYANOPY{% endblock %}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root { 
+            --primary-yellow: #fbc02d; 
+            --nav-height: 70px; /* Define height for consistency */
+        }
+        
+        body { margin: 0; font-family: 'Poppins', sans-serif; background: #fdfdfd; }
+
+        /* --- FIXED HEADER STYLING --- */
+        /* --- FIXED HEADER REFINEMENT --- */
+nav.main-header {
+    position: fixed; 
+    top: 0; 
+    left: 0;
+    right: 0;
+    height: 70px;
+    background: rgba(255, 255, 255, 0.95); /* Slight transparency */
+    backdrop-filter: blur(10px); /* Modern blur effect */
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 5%;
+    z-index: 1000;
+    border-bottom: 1px solid #f0f0f0;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+}
+
+/* Ensure content starts below the header */
+main {
+    margin-top: 70px; /* Must match the header height */
+    padding: 20px;
+}
+
+        .logo { font-weight: 800; font-size: 22px; color: #000; text-decoration: none; }
+        .logo span { color: var(--primary-yellow); }
+
+        .nav-links { display: flex; align-items: center; gap: 25px; }
+        .nav-links a { text-decoration: none; color: #666; font-size: 14px; font-weight: 500; transition: 0.3s; }
+        .nav-links a:hover { color: var(--primary-yellow); }
+        .nav-links a.active { color: #8e44ad; font-weight: 600; }
+
+        /* --- CONTENT PADDING --- */
+        /* This prevents the fixed nav from covering the page content */
+        main {
+            padding-top: calc(var(--nav-height) + 20px);
+            min-height: 100vh;
+        }
+
+        /* Profile Dropdown (Dashboard style) */
+        .user-profile { display: flex; align-items: center; gap: 10px; cursor: pointer; }
+        .avatar-circle { 
+            width: 35px; height: 35px; background: var(--primary-yellow); 
+            border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; 
+        }
+    </style>
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <nav class="main-header">
+        <a href="/" class="logo">CYANO<span>PY</span></a>
+        
+        <div class="nav-links">
+            <a href="{% url 'student_dashboard' %}" class="{% if request.resolver_match.url_name == 'student_dashboard' %}active{% endif %}">Home</a>
+            <a href="{% url 'purchase' %}" class="{% if request.resolver_match.url_name == 'purchase' %}active{% endif %}">Courses</a>
+            <a href="#">Practice</a>
+            <a href="/logout/" style="color: #e74c3c;">Logout</a>
+            
+            <div class="user-profile">
+                <div class="avatar-circle">{{ user.username|slice:":1"|upper }}</div>
+                <span>{{ user.username }}</span>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

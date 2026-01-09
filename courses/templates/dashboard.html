@@ -1,0 +1,98 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+<style>
+html,body{
+  height:100%;
+  margin:0;
+  font-family:'Poppins',sans-serif;
+  background:linear-gradient(135deg,#6a7cff,#7b5cff);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.dashboard-card{
+  width:420px;
+  background:#f8f9ff;
+  padding:45px;
+  border-radius:25px;
+  box-shadow:0 30px 80px rgba(0,0,0,.3);
+  text-align:center;
+}
+
+.dashboard-card h1{
+  color:#6a5cff;
+  margin-bottom:8px;
+}
+
+.dashboard-card p{
+  color:#777;
+  margin-bottom:30px;
+}
+
+.btn-main{
+  width:100%;
+  padding:14px;
+  border-radius:14px;
+  border:none;
+  margin-bottom:15px;
+  color:white;
+  font-weight:600;
+  cursor:pointer;
+}
+
+.purchase{background:linear-gradient(90deg,#ff8a00,#ff5f7e);}
+.courses{background:linear-gradient(90deg,#1ec9ff,#00e5ff);}
+
+.course-list{
+  margin-top:25px;
+  text-align:left;
+}
+
+.course-item{
+  background:white;
+  padding:12px 18px;
+  border-radius:12px;
+  margin-bottom:10px;
+  box-shadow:0 5px 15px rgba(0,0,0,.1);
+}
+.logout{
+  display:block;
+  margin-top:25px;
+  color:#6a5cff;
+  text-decoration:none;
+}
+</style>
+</head>
+
+<body>
+
+<div class="dashboard-card">
+  <h1>Welcome {{ request.user.username }} 👋</h1>
+  <p>Embark on your learning journey with us</p>
+
+  
+  <a href="/purchase/" class="btn-main purchase">🛒 Purchase Course</a>
+  
+  <a href="/my-courses/" class="btn-main courses">📚 My Courses</a>
+
+  <div class="course-list">
+    {% for c in courses %}
+      <div class="course-item">{{ c.title }} — ₹{{ c.price }}</div>
+    {% empty %}
+      <div class="course-item"> Let's start.</div>
+    {% endfor %}
+  </div>
+
+  <a href="/logout/" class="logout">Logout</a>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create New Course | Trainer Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --sidebar-color: #1e293b;
+            --accent-color: #38bdf8;
+            --input-bg: #1e293b;
+            --card-bg: rgba(255, 255, 255, 0.03);
+            --text-main: #f8fafc;
+            --text-dim: #94a3b8;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Reusable Sidebar from Main Dashboard */
+        nav {
+            width: 260px;
+            background-color: var(--sidebar-color);
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        nav h2 { font-size: 1.2rem; margin-bottom: 2rem; color: var(--accent-color); letter-spacing: 1px; }
+        .nav-link { color: var(--text-dim); text-decoration: none; padding: 0.8rem 0; display: block; }
+
+        /* Main Workspace */
+        main {
+            flex-grow: 1;
+            padding: 3rem;
+            display: flex;
+            justify-content: center;
+        }
+
+        .form-container {
+            width: 100%;
+            max-width: 900px;
+            display: grid;
+            grid-template-columns: 2fr 1.2fr;
+            gap: 3rem;
+        }
+
+        .header-section { grid-column: 1 / -1; margin-bottom: 1rem; }
+        .header-section h1 { margin: 0; font-size: 1.8rem; }
+        .header-section p { color: var(--text-dim); margin-top: 5px; }
+
+        /* Form Styling */
+        .form-card {
+            background: var(--card-bg);
+            padding: 2.5rem;
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .form-group { margin-bottom: 1.5rem; }
+        label { display: block; font-size: 0.85rem; color: var(--text-dim); margin-bottom: 8px; font-weight: 500; }
+
+        input, textarea {
+            width: 100%;
+            padding: 12px 16px;
+            background: var(--input-bg);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: white;
+            font-family: inherit;
+            box-sizing: border-box;
+            transition: border-color 0.3s;
+        }
+
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: var(--accent-color);
+        }
+
+        textarea { height: 150px; resize: none; }
+
+        .submit-btn {
+            width: 100%;
+            padding: 14px;
+            background: var(--accent-color);
+            color: #0f172a;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 1rem;
+            transition: transform 0.2s;
+        }
+
+        .submit-btn:hover { transform: translateY(-2px); opacity: 0.9; }
+
+        /* Sidebar Tips */
+        .tips-panel {
+            background: rgba(56, 189, 248, 0.05);
+            padding: 2rem;
+            border-radius: 16px;
+            border: 1px dashed rgba(56, 189, 248, 0.3);
+            height: fit-content;
+        }
+
+        .tips-panel h4 { color: var(--accent-color); margin-top: 0; }
+        .tips-panel ul { padding-left: 1.2rem; color: var(--text-dim); font-size: 0.85rem; }
+        .tips-panel li { margin-bottom: 1rem; line-height: 1.5; }
+
+    </style>
+</head>
+<body>
+
+    <nav>
+        <h2>CYANOPY</h2>
+        <a href="/trainer-dashboard/" class="nav-link">← Back to Dashboard</a>
+        <a href="#" class="nav-link" style="color: var(--accent-color);">Course Creator</a>
+        <a href="#" class="nav-link">My Library</a>
+    </nav>
+
+    <main>
+        <div class="form-container">
+            <div class="header-section">
+                <h1>Create New Course</h1>
+                <p>Fill in the details below to start building your curriculum.</p>
+            </div>
+
+            <div class="form-card">
+                <form method="POST" action="">
+                    {% csrf_token %}
+                    
+                    <div class="form-group">
+                        <label>COURSE TITLE</label>
+                        <input type="text" name="title" placeholder="e.g. Advanced Web Development 2024" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>DESCRIPTION</label>
+                        <textarea name="description" placeholder="Describe what students will learn in this course..." required></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>PRICING (USD)</label>
+                        <input type="number" name="price" placeholder="0.00" step="0.01" required>
+                    </div>
+
+                    <button type="submit" class="submit-btn">Publish Course</button>
+                </form>
+            </div>
+
+            <aside class="tips-panel">
+                <h4>Pro Tips</h4>
+                <ul>
+                    <li><strong>Catchy Titles:</strong> Keep titles under 60 characters for better visibility.</li>
+                    <li><strong>Clear Value:</strong> Mention exactly what tools or skills students will master.</li>
+                    <li><strong>Pricing:</strong> Research similar courses to ensure your price point is competitive.</li>
+                </ul>
+            </aside>
+        </div>
+    </main>
+
+</body>
+</html>

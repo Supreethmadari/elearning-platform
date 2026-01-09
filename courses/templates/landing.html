@@ -1,0 +1,174 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cyanopy - Learn & Read</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #6236ff;
+            --secondary: #25d3df;
+            --orange: #ff9f43;
+            --text-dark: #2d1b5a;
+            --text-light: #64748b;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        
+        body { 
+            background-color: #fff; 
+            overflow: hidden; /* Keeps it to a single page */
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* --- NAVIGATION --- */
+        .navbar {
+            background: #fff;
+            padding: 10px 0;
+            z-index: 1000;
+        }
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+        .logo { font-weight: 800; font-size: 24px; color: var(--text-dark); text-decoration: none; }
+        .logo span { color: var(--secondary); }
+        
+        .nav-links { list-style: none; display: flex; gap: 30px; }
+        .nav-links li a { 
+            text-decoration: none; color: #6b6b84; font-size: 14px; font-weight: 500; 
+            position: relative; transition: 0.3s;
+        }
+        .nav-links li a.active { color: var(--secondary); }
+        .nav-links li a.active::after {
+            content: ''; position: absolute; bottom: -5px; left: 50%;
+            transform: translateX(-50%); width: 4px; height: 4px;
+            background-color: var(--secondary); border-radius: 50%;
+        }
+
+        .auth-links { display: flex; align-items: center; gap: 15px; }
+        .btn-signin { text-decoration: none; color: var(--primary); font-weight: 600; font-size: 14px; }
+
+        /* --- HERO SECTION (Single Page Fit) --- */
+        .hero {
+            background: linear-gradient(185deg, var(--primary) 0%, #8a3ffc 100%);
+            color: white;
+            padding: 40px 0 60px 0;
+            border-bottom-left-radius: 200px; /* Matching image curve */
+            position: relative;
+            flex: 0 0 auto;
+        }
+        .hero-container {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+        }
+        .hero-text { flex: 1; }
+        .hero-text h1 { font-size: 46px; line-height: 1.1; margin-bottom: 15px; font-weight: 700; }
+        .hero-text p { font-size: 15px; margin-bottom: 25px; color: rgba(255,255,255,0.8); max-width: 400px; line-height: 1.5; }
+        
+        .btn-orange {
+            background-color: var(--orange);
+            color: white;
+            padding: 12px 35px;
+            border-radius: 50px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-block;
+            box-shadow: 0 8px 20px rgba(255, 159, 67, 0.3);
+            transition: 0.3s;
+        }
+        .btn-orange:hover { transform: translateY(-2px); box-shadow: 0 12px 25px rgba(255, 159, 67, 0.4); }
+        
+        .hero-image { flex: 1; display: flex; justify-content: flex-end; }
+        .hero-image img { width: 100%; max-width: 450px; height: auto; }
+
+        /* --- FEATURES SECTION (Aligned to Bottom) --- */
+        .features {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            padding: 30px 20px;
+            gap: 20px;
+            max-width: 1100px;
+            margin: 0 auto;
+            flex: 1;
+            align-items: center;
+        }
+        .feature-item { text-align: center; }
+        .feature-icon { width: 45px; height: 45px; margin-bottom: 12px; }
+        .feature-item h3 { font-size: 16px; margin-bottom: 5px; color: var(--text-dark); }
+        .feature-item p { font-size: 12.5px; color: var(--text-light); line-height: 1.4; max-width: 240px; margin: 0 auto; }
+
+        /* Responsive */
+        @media (max-width: 992px) {
+            body { overflow-y: auto; height: auto; }
+            .hero-container { flex-direction: column; text-align: center; }
+            .hero-image { justify-content: center; margin-top: 30px; }
+            .features { grid-template-columns: 1fr; padding-bottom: 50px; }
+            .hero { border-bottom-left-radius: 80px; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="{% url 'landing' %}" class="logo">CYAN<span>O</span>PY</a>
+            <ul class="nav-links">
+                <li><a href="{% url 'landing' %}" class="active">Home</a></li>
+                <li><a href="/explore/">Explore</a></li>
+                <li><a href="{% url 'about' %}">About</a></li>
+                <li><a href="/contact/">Contact</a></li>
+            </ul>
+            <div class="auth-links">
+                <a href="/login/" class="btn-signin">Sign In</a>
+                <a href="/register/" class="btn-orange" style="padding: 8px 20px; font-size: 13px;">Sign Up</a>
+            </div>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="hero-container">
+            <div class="hero-text">
+                <h1>Learn & Read</h1>
+                <p>Complete your education record collection. Discover Cyanopy's full discography and master the AI-first world.</p>
+                <a href="/explore/" class="btn-orange">Read More</a>
+            </div>
+            <div class="hero-image">
+                <img src="{% static 'image/edukin-main.png' %}" alt="Learning Illustration">
+            </div>
+        </div>
+    </section>
+
+    <section class="features">
+        <div class="feature-item">
+            <img class="feature-icon" src="https://cdn-icons-png.flaticon.com/512/3429/3429433.png" alt="Instructors">
+            <h3>Expert Instructors</h3>
+            <p>We rigorously screen and train our instructors to ensure top-tier quality.</p>
+        </div>
+        <div class="feature-item">
+            <img class="feature-icon" src="https://cdn-icons-png.flaticon.com/512/565/565547.png" alt="Access">
+            <h3>Lifetime Access</h3>
+            <p>Enroll once and learn at your own pace with permanent course access.</p>
+        </div>
+        <div class="feature-item">
+            <img class="feature-icon" src="https://cdn-icons-png.flaticon.com/512/201/201818.png" alt="Learn">
+            <h3>Learn Anywhere</h3>
+            <p>Our platform is fully optimized for all devices, mobile to desktop.</p>
+        </div>
+    </section>
+
+</body>
+</html>

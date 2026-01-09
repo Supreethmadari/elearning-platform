@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trainer Analytics | Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --sidebar-color: #1e293b;
+            --accent-color: #38bdf8;
+            --card-bg: rgba(255, 255, 255, 0.03);
+            --text-main: #f8fafc;
+            --text-dim: #94a3b8;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --success: #10b981;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Navigation */
+        nav {
+            width: 260px;
+            background-color: var(--sidebar-color);
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+            position: sticky;
+            top: 0;
+            height: 100vh;
+        }
+
+        nav h2 { font-size: 1.2rem; margin-bottom: 2rem; color: var(--accent-color); letter-spacing: 1px; }
+        .nav-link { color: var(--text-dim); text-decoration: none; padding: 0.8rem 0; display: block; font-size: 0.9rem; transition: 0.3s; }
+        .nav-link:hover { color: var(--accent-color); }
+
+        /* Main Workspace */
+        main {
+            flex-grow: 1;
+            padding: 3rem;
+        }
+
+        header { margin-bottom: 3rem; }
+        header h1 { margin: 0; font-size: 2rem; }
+        header p { color: var(--text-dim); margin-top: 5px; }
+
+        /* Stat Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            padding: 1.5rem;
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            text-align: center;
+        }
+
+        .stat-card h2 { font-size: 2.2rem; margin: 0; color: var(--accent-color); }
+        .stat-card p { color: var(--text-dim); margin: 5px 0 0; text-transform: uppercase; font-size: 0.75rem; font-weight: 600; letter-spacing: 1px; }
+
+        /* Table Styling */
+        .section-header { margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: center; }
+        .section-header h2 { font-size: 1.3rem; margin: 0; }
+
+        .table-container {
+            background: var(--card-bg);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            overflow: hidden;
+            margin-bottom: 3rem;
+        }
+
+        table { width: 100%; border-collapse: collapse; }
+        th { background: rgba(255, 255, 255, 0.03); text-align: left; padding: 1.2rem; font-size: 0.8rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.5px; }
+        td { padding: 1.2rem; border-top: 1px solid rgba(255, 255, 255, 0.05); font-size: 0.9rem; }
+
+        /* Progress Bar */
+        .progress-bar-bg { background: rgba(255,255,255,0.1); border-radius: 10px; height: 8px; width: 100px; display: inline-block; margin-right: 10px; }
+        .progress-fill { background: var(--success); height: 100%; border-radius: 10px; }
+
+        /* Buttons */
+        .btn { padding: 6px 12px; border-radius: 6px; text-decoration: none; font-size: 0.75rem; font-weight: 600; transition: 0.3s; display: inline-block; }
+        .btn-view { background: rgba(56, 189, 248, 0.1); color: var(--accent-color); }
+        .btn-edit { background: rgba(245, 158, 11, 0.1); color: var(--warning); margin-left: 5px; }
+        .btn-delete { background: rgba(239, 68, 68, 0.1); color: var(--danger); margin-left: 5px; }
+        .btn:hover { opacity: 0.8; transform: translateY(-1px); }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <h2>CYANOPY</h2>
+        <a href="/trainer-dashboard/" class="nav-link" style="color: var(--accent-color);">Dashboard Overview</a>
+        <a href="/trainer-courses/" class="nav-link">Manage Courses</a>
+        <a href="/create-course/" class="nav-link">Create Course</a>
+        <a href="/add-lesson/" class="nav-link">Add Lesson</a>
+    </nav>
+
+    <main>
+        <header>
+            <h1>Analytics Overview</h1>
+            <p>Monitor your performance, student growth, and revenue statistics.</p>
+        </header>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h2>{{ total_courses }}</h2>
+                <p>Total Courses</p>
+            </div>
+            <div class="stat-card">
+                <h2>{{ total_students }}</h2>
+                <p>Active Students</p>
+            </div>
+            <div class="stat-card">
+                <h2>₹{{ total_earnings }}</h2>
+                <p>Total Earnings</p>
+            </div>
+        </div>
+
+        <div class="section-header">
+            <h2>Your Courses Performance</h2>
+            <a href="/create-course/" class="btn btn-view">+ New Course</a>
+        </div>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Course Title</th>
+                        <th>Enrolled Students</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for c in course_stats %}
+                    <tr>
+                        <td style="font-weight: 500;">{{ c.title }}</td>
+                        <td>{{ c.students }} Students</td>
+                        <td>
+                            <a href="{% url 'course_detail' c.id %}" class="btn btn-view">View</a>
+                            <a href="{% url 'edit_course' c.id %}" class="btn btn-edit">Edit</a>
+                            <a href="{% url 'delete_course' c.id %}" class="btn btn-delete" onclick="return confirm('Delete course?')">Delete</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="section-header">
+            <h2>Student Learning Progress</h2>
+        </div>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Student Name</th>
+                        <th>Enrolled In</th>
+                        <th>Completion Progress</th>
+                        <th>Modules Done</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for s in student_progress %}
+                    <tr>
+                        <td style="font-weight: 500;">{{ s.name }}</td>
+                        <td color="var(--text-dim)">{{ s.course }}</td>
+                        <td>
+                            <div class="progress-bar-bg">
+                                <div class=""></div>
+                            </div>
+                            <span style="font-size: 0.8rem; color: var(--success);">{{ s.percent }}%</span>
+                        </td>
+                        <td style="color: var(--text-dim);">{{ s.completed }} / {{ s.total }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+</body>
+</html>

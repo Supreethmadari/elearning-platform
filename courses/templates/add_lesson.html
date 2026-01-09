@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Lesson | Trainer Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --sidebar-color: #1e293b;
+            --accent-color: #38bdf8;
+            --input-bg: #1e293b;
+            --card-bg: rgba(255, 255, 255, 0.03);
+            --text-main: #f8fafc;
+            --text-dim: #94a3b8;
+            --success: #10b981;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Navigation */
+        nav {
+            width: 260px;
+            background-color: var(--sidebar-color);
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+            position: sticky;
+            top: 0;
+            height: 100vh;
+        }
+
+        nav h2 { font-size: 1.2rem; margin-bottom: 2rem; color: var(--accent-color); letter-spacing: 1px; }
+        .nav-link { color: var(--text-dim); text-decoration: none; padding: 0.8rem 0; display: block; font-size: 0.9rem; transition: 0.3s; }
+        .nav-link:hover { color: var(--accent-color); }
+
+        /* Main Workspace */
+        main {
+            flex-grow: 1;
+            padding: 3rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .header-area { width: 100%; max-width: 700px; margin-bottom: 2.5rem; }
+        .header-area h1 { margin: 0; font-size: 2rem; }
+        .header-area p { color: var(--text-dim); margin: 8px 0 0; font-size: 0.95rem; }
+
+        .content-card {
+            width: 100%;
+            max-width: 700px;
+            background: var(--card-bg);
+            padding: 2.5rem;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 1.5rem;
+        }
+
+        .form-group { margin-bottom: 1.8rem; }
+        label { display: block; font-size: 0.75rem; color: var(--accent-color); margin-bottom: 10px; font-weight: 600; letter-spacing: 0.8px; text-transform: uppercase; }
+
+        input, select {
+            width: 100%;
+            padding: 14px 16px;
+            background: var(--input-bg);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            color: white;
+            font-family: inherit;
+            box-sizing: border-box;
+            font-size: 0.9rem;
+            transition: 0.3s;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            background: rgba(56, 189, 248, 0.05);
+        }
+
+        /* File Upload Area */
+        .file-upload-wrapper {
+            position: relative;
+            background: rgba(255, 255, 255, 0.01);
+            border: 2px dashed rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 20px;
+            transition: 0.3s ease;
+            text-align: center;
+        }
+
+        .file-upload-wrapper:hover { 
+            border-color: var(--accent-color); 
+            background: rgba(56, 189, 248, 0.02);
+        }
+        
+        input[type="file"] {
+            background: transparent;
+            border: none;
+            padding: 0;
+            font-size: 0.85rem;
+            color: var(--text-dim);
+            cursor: pointer;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 16px;
+            background: var(--success);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            margin-top: 1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.2);
+        }
+
+        .submit-btn:hover { 
+            background: #059669; 
+            transform: translateY(-2px); 
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.3);
+        }
+
+        .hint { font-size: 0.75rem; color: var(--text-dim); margin-top: 8px; display: block; font-style: italic; }
+        
+        option { background: var(--sidebar-color); color: white; }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <h2>TRAIN.IO</h2>
+        <a href="/trainer-dashboard/" class="nav-link">Dashboard Overview</a>
+        <a href="/trainer-courses/" class="nav-link">Manage Courses</a>
+        <a href="/create-course/" class="nav-link">Create Course</a>
+        <a href="#" class="nav-link" style="color: var(--accent-color); font-weight: 600;">+ Add Lesson</a>
+    </nav>
+
+    <main>
+        <div class="header-area">
+            <h1>New Curriculum Module</h1>
+            <p>Upload your video content and supplementary materials for your students.</p>
+        </div>
+
+        <div class="content-card">
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                <div class="form-group">
+                    <label>Assign to Course</label>
+                    <select name="course" required>
+                        <option value="" disabled selected>-- Select target course --</option>
+                        {% for c in courses %}
+                            <option value="{{ c.id }}">{{ c.title }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Lesson Title</label>
+                        <input type="text" name="title" placeholder="e.g. Master the Pen Tool" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Order</label>
+                        <input type="number" name="order" value="1" min="1" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Video Lesson (Required)</label>
+                    <div class="file-upload-wrapper">
+                        <input type="file" name="video" accept="video/*" required>
+                    </div>
+                    <span class="hint">Recommended: MP4 or MOV. High definition 1080p.</span>
+                </div>
+
+                <div class="form-group">
+                    <label>Resources & Notes (Optional)</label>
+                    <div class="file-upload-wrapper">
+                        <input type="file" name="notes" accept=".pdf,.zip,.png,.jpg">
+                    </div>
+                    <span class="hint">Upload PDF guides, source files, or cheatsheets.</span>
+                </div>
+
+                <button type="submit" class="submit-btn">Publish Lesson to Course</button>
+            </form>
+        </div>
+    </main>
+
+</body>
+</html>

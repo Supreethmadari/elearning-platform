@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ course.title }} | Course Details</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --sidebar-color: #1e293b;
+            --accent-color: #38bdf8;
+            --card-bg: rgba(255, 255, 255, 0.03);
+            --text-main: #f8fafc;
+            --text-dim: #94a3b8;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Navigation */
+        nav {
+            width: 260px;
+            background-color: var(--sidebar-color);
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+            position: sticky;
+            top: 0;
+            height: 100vh;
+        }
+
+        nav h2 { font-size: 1.2rem; margin-bottom: 2rem; color: var(--accent-color); letter-spacing: 1px; }
+        .nav-link { color: var(--text-dim); text-decoration: none; padding: 0.8rem 0; display: block; font-size: 0.9rem; }
+        .nav-link:hover { color: var(--accent-color); }
+
+        /* Main Workspace */
+        main {
+            flex-grow: 1;
+            padding: 3rem;
+        }
+
+        .course-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 3rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 2rem;
+        }
+
+        .course-header h1 { margin: 0; font-size: 2.2rem; color: var(--accent-color); }
+        .course-header p { color: var(--text-dim); margin-top: 10px; max-width: 600px; line-height: 1.6; }
+
+        .header-actions { display: flex; gap: 12px; }
+
+        /* Lesson Grid/List */
+        .section-title { font-size: 1.4rem; margin-bottom: 1.5rem; display: flex; align-items: center; justify-content: space-between; }
+        
+        .lesson-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .lesson-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
+        .lesson-header h3 { margin: 0; font-size: 1.2rem; }
+        .lesson-header .order-badge { background: var(--accent-color); color: #0f172a; padding: 2px 10px; border-radius: 20px; font-weight: 600; font-size: 0.8rem; }
+
+        video { width: 100%; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.1); }
+
+        .lesson-footer { margin-top: 1.5rem; display: flex; justify-content: space-between; align-items: center; }
+
+        /* Buttons */
+        .btn {
+            padding: 8px 16px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 600;
+            transition: 0.3s;
+            display: inline-block;
+            border: 1px solid transparent;
+        }
+
+        .btn-view { background: rgba(56, 189, 248, 0.1); color: var(--accent-color); border-color: var(--accent-color); }
+        .btn-edit { background: rgba(245, 158, 11, 0.1); color: var(--warning); border-color: var(--warning); }
+        .btn-delete { background: rgba(239, 68, 68, 0.1); color: var(--danger); border-color: var(--danger); }
+        .btn-download { color: var(--text-main); border: 1px dashed var(--text-dim); }
+
+        .btn:hover { transform: translateY(-2px); opacity: 0.9; }
+
+        .empty-state { text-align: center; padding: 4rem; color: var(--text-dim); }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <h2>CYANOPY</h2>
+        <a href="/trainer-courses/" class="nav-link">← Back to Dashboard</a>
+        <a href="/trainer-dashboard/" class="nav-link">Dashboard Overview</a>
+        <a href="/trainer-courses/" class="nav-link">Manage Courses</a>
+        <a href="/create-course/" class="nav-link">Create Course</a>
+        <a href="/add-lesson/" class="nav-link">Add Lesson</a>
+    </nav>
+
+    <main>
+        <div class="course-header">
+            <div>
+                <h1>{{ course.title }}</h1>
+                <p>{{ course.description }}</p>
+            </div>
+            <div class="header-actions">
+                <a href="{% url 'edit_course' course.id %}" class="btn btn-edit">Edit Course</a>
+                <a href="{% url 'delete_course' course.id %}" class="btn btn-delete" onclick="return confirm('Delete entire course?')">Delete Course</a>
+            </div>
+        </div>
+
+        <div class="section-title">
+            <span>Course Curriculum</span>
+            <a href="/add-lesson/" class="btn btn-view">+ Add New Lesson</a>
+        </div>
+
+        {% for l in lessons %}
+        <div class="lesson-card">
+            <div class="lesson-header">
+                <h3>{{ l.title }}</h3>
+                <span class="order-badge">Lesson {{ l.order }}</span>
+            </div>
+
+            {% if l.video %}
+            <video controls>
+                <source src="{{ l.video.url }}">
+            </video>
+            {% endif %}
+
+            <div class="lesson-footer">
+                <div>
+                    {% if l.notes %}
+                    <a class="btn btn-download" href="{{ l.notes.url }}" download>📄 Download Notes</a>
+                    {% endif %}
+                </div>
+                <div class="header-actions">
+                    <button class="btn btn-view" onclick="openPreview('{{ l.video.url }}', '{{ l.title }}')">Preview</button>
+                    
+                    <a href="{% url 'edit_lesson' l.id %}" class="btn btn-edit">Edit Lesson</a>
+                    <a href="{% url 'delete_lesson' l.id %}" class="btn btn-delete" onclick="return confirm('Delete this lesson?')">Delete</a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="empty-state">
+            <p>No lessons have been added to this course yet.</p>
+            <a href="/add-lesson/" class="btn btn-view">Create First Lesson</a>
+        </div>
+        {% endfor %}
+    </main>
+
+    <div id="previewModal" class="modal-overlay">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 id="modalTitle">Lesson Preview</h3>
+            <span class="close-btn" onclick="closePreview()">&times;</span>
+        </div>
+        
+        <div id="videoWrapper" style="display:none;">
+            <video id="modalVideo" controls style="width:100%; border-radius:8px;">
+                <source src="" type="video/mp4">
+            </video>
+        </div>
+
+        <div id="notesWrapper" style="display:none;">
+            <iframe id="modalIframe" src="" width="100%" height="500px" style="border-radius:8px; border:none;"></iframe>
+        </div>
+        
+        <div id="noContentMsg" style="display:none; text-align:center; padding:20px; color:var(--text-dim);">
+            No preview available for this lesson.
+        </div>
+    </div>
+</div>
+
+<style>
+    .modal-overlay {
+        display: none; position: fixed; top: 0; left: 0;
+        width: 100%; height: 100%; background: rgba(0, 0, 0, 0.9);
+        z-index: 1000; justify-content: center; align-items: center;
+    }
+    .modal-content {
+        background: var(--sidebar-color); width: 95%; max-width: 900px;
+        padding: 25px; border-radius: 15px; border: 1px solid var(--accent-color);
+    }
+    .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+    .close-btn { font-size: 2rem; cursor: pointer; color: var(--text-dim); }
+    .close-btn:hover { color: var(--danger); }
+</style>
+
+<script>
+    function openPreview(videoUrl, notesUrl, title) {
+        const modal = document.getElementById('previewModal');
+        const videoWrapper = document.getElementById('videoWrapper');
+        const notesWrapper = document.getElementById('notesWrapper');
+        const noContent = document.getElementById('noContentMsg');
+        const titleElem = document.getElementById('modalTitle');
+
+        titleElem.innerText = "Preview: " + title;
+        
+        // Reset Displays
+        videoWrapper.style.display = 'none';
+        notesWrapper.style.display = 'none';
+        noContent.style.display = 'none';
+
+        if (videoUrl && videoUrl !== '') {
+            videoWrapper.style.display = 'block';
+            document.getElementById('modalVideo').src = videoUrl;
+            document.getElementById('modalVideo').play();
+        } 
+        else if (notesUrl && notesUrl !== '') {
+            notesWrapper.style.display = 'block';
+            document.getElementById('modalIframe').src = notesUrl;
+        } 
+        else {
+            noContent.style.display = 'block';
+        }
+
+        modal.style.display = 'flex';
+    }
+
+    function closePreview() {
+        const modal = document.getElementById('previewModal');
+        const video = document.getElementById('modalVideo');
+        const iframe = document.getElementById('modalIframe');
+        
+        modal.style.display = 'none';
+        video.pause();
+        video.src = ""; 
+        iframe.src = "";
+    }
+
+    window.onclick = function(event) {
+        if (event.target == document.getElementById('previewModal')) { closePreview(); }
+    }
+</script>
+
+</body>
+</html>

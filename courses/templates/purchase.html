@@ -1,0 +1,278 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Explore Courses | CYANOPY</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+    :root {
+        --primary: #fbc02d;
+        --primary-light: #fff9c4;
+        --dark: #0f172a;
+        --slate: #64748b;
+        --bg: #f8fafc;
+        --white: #ffffff;
+        --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    }
+
+    body {
+        margin: 0;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        background-color: var(--bg);
+        color: var(--dark);
+    }
+
+    /* --- Enhanced Navbar --- */
+    .main-header {
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(10px);
+        height: 75px;
+        padding: 0 6%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid #e2e8f0;
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+    }
+
+    .logo { font-weight: 800; font-size: 24px; color: var(--dark); text-decoration: none; letter-spacing: -1px; }
+    .logo span { color: var(--primary); }
+
+    .nav-menu { display: flex; gap: 30px; }
+    .nav-menu a {
+        text-decoration: none;
+        color: var(--slate);
+        font-weight: 600;
+        font-size: 14px;
+        transition: 0.3s;
+    }
+
+    .nav-menu a:hover, .nav-menu a.active { color: var(--dark); }
+    .nav-menu a.active { color: var(--primary); }
+
+    /* --- Hero Section --- */
+    .hero-banner {
+        background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+        padding: 60px 6%;
+        color: white;
+        margin-bottom: 40px;
+        border-radius: 0 0 40px 40px;
+    }
+
+    .hero-banner h1 { font-size: 32px; font-weight: 800; margin: 0; }
+    .hero-banner p { color: #94a3b8; margin-top: 10px; font-size: 16px; }
+
+    /* --- Container & Grid --- */
+    .container { max-width: 1300px; margin: 0 auto; padding: 0 6% 60px 6%; }
+
+    .course-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 30px;
+    }
+
+    /* --- Professional Course Card --- */
+    .course-card {
+        background: var(--white);
+        border-radius: 24px;
+        overflow: hidden;
+        border: 1px solid #f1f5f9;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        display: flex;
+        flex-direction: column;
+        position: relative;
+    }
+
+    .course-card:hover {
+        transform: translateY(-10px);
+        box-shadow: var(--shadow);
+        border-color: var(--primary-light);
+    }
+
+    .card-image-area {
+        height: 180px;
+        background: var(--dark);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+    }
+
+    .category-badge {
+        position: absolute;
+        top: 15px;
+        left: 15px;
+        background: rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(5px);
+        color: white;
+        padding: 5px 12px;
+        border-radius: 100px;
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+    }
+
+    .course-initial {
+        font-size: 60px;
+        font-weight: 800;
+        color: var(--primary);
+        opacity: 0.8;
+    }
+
+    .card-content {
+        padding: 24px;
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .course-meta {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 12px;
+    }
+
+    .rating { color: #fbbf24; font-size: 12px; font-weight: 700; }
+
+    .course-title {
+        font-size: 20px;
+        font-weight: 700;
+        margin: 0 0 10px 0;
+        line-height: 1.4;
+    }
+
+    .instructor-info {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 20px;
+    }
+
+    .inst-avatar {
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        background: var(--primary);
+    }
+
+    .inst-name { font-size: 13px; color: var(--slate); font-weight: 500; }
+
+    .card-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-top: 20px;
+        border-top: 1px solid #f1f5f9;
+        margin-top: auto;
+    }
+
+    .price-container { display: flex; flex-direction: column; }
+    .price-label { font-size: 11px; color: var(--slate); font-weight: 600; }
+    .price-value { font-size: 20px; font-weight: 800; color: var(--dark); }
+
+    .btn-enroll {
+        background: var(--dark);
+        color: white;
+        padding: 12px 24px;
+        border-radius: 14px;
+        text-decoration: none;
+        font-weight: 700;
+        font-size: 14px;
+        transition: 0.3s;
+    }
+
+    .btn-enroll:hover {
+        background: var(--primary);
+        color: var(--dark);
+    }
+
+    /* --- Profile Trigger --- */
+    .avatar-circle {
+        width: 40px;
+        height: 40px;
+        background: var(--primary);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 800;
+    }
+</style>
+</head>
+
+<body>
+
+    <nav class="main-header">
+        <a href="{% url 'student_dashboard' %}" class="logo">CYANO<span>PY</span></a>
+        
+        <div class="nav-menu">
+            <a href="{% url 'student_dashboard' %}">Home</a>
+            <a href="{% url 'purchase' %}" class="active">Explore</a>
+            <a href="{% url 'my_courses' %}">My Learning</a>
+            <a href="">Support</a>
+        </div>
+
+        <div class="header-right" style="display: flex; align-items: center; gap: 15px; cursor: pointer;" id="profileTrigger">
+            <div style="text-align: right;">
+                <div style="font-size: 13px; font-weight: 800;">{{ request.user.username }}</div>
+                <div style="font-size: 11px; color: var(--slate);">Student Account</div>
+            </div>
+            <div class="avatar-circle">{{ request.user.username|slice:":1"|upper }}</div>
+        </div>
+    </nav>
+
+    <header class="hero-banner">
+        <div style="max-width: 1300px; margin: 0 auto;">
+            <h1>Knowledge at your fingertips</h1>
+            <p>Elevate your skills with industry-leading courses from Cyanopy Experts.</p>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="course-grid">
+            {% for c in courses %}
+            <div class="course-card">
+                <div class="card-image-area">
+                    <span class="category-badge">Premium Course</span>
+                    <div class="course-initial">{{ c.title|slice:":1"|upper }}</div>
+                </div>
+
+                <div class="card-content">
+                    <div class="course-meta">
+                        <span class="rating"><i class="fa-solid fa-star"></i> 4.9 (2k+ Reviews)</span>
+                    </div>
+                    
+                    <h3 class="course-title">{{ c.title }}</h3>
+                    
+                    <div class="instructor-info">
+                        <div class="inst-avatar"></div>
+                        <span class="inst-name">Cyanopy Expert</span>
+                    </div>
+
+                    <div class="card-footer">
+                        <div class="price-container">
+                            <span class="price-label">INVESTMENT</span>
+                            <span class="price-value">₹ {{ c.price }}</span>
+                        </div>
+                        <a href="{% url 'checkout' c.id %}" class="btn-enroll">Buy Now</a>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div style="grid-column: 1/-1; text-align: center; padding: 100px 0;">
+                <img src="https://cdn-icons-png.flaticon.com/512/7486/7486744.png" width="80" style="opacity: 0.2;">
+                <p style="color: var(--slate); margin-top: 20px;">No courses are available right now. Check back later!</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    </body>
+</html>

@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard | CYANOPY</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* --- CSS VARIABLES & RESET --- */
+        :root {
+            --primary: #FBC02D; /* Cyanopy Yellow */
+            --primary-hover: #F9A825;
+            --secondary: #0F172A; /* Dark Slate */
+            --bg-body: #F1F5F9;
+            --bg-card: #FFFFFF;
+            --text-main: #1E293B;
+            --text-muted: #64748B;
+            --border: #E2E8F0;
+            --success: #10B981;
+            --danger: #EF4444;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --radius: 16px;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; outline: none; }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        a { text-decoration: none; color: inherit; transition: 0.2s; }
+        ul { list-style: none; }
+
+        /* --- NAVIGATION --- */
+        .navbar {
+            background: var(--bg-card);
+            height: 72px;
+            padding: 0 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid var(--border);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .logo {
+            font-family: 'Poppins', sans-serif;
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--secondary);
+            letter-spacing: -0.5px;
+        }
+        .logo span { color: var(--primary); }
+
+        .nav-menu {
+            display: flex;
+            align-items: center;
+            gap: 32px;
+        }
+
+        .nav-link {
+            font-weight: 500;
+            font-size: 14px;
+            color: var(--text-muted);
+            position: relative;
+        }
+
+        .nav-link:hover, .nav-link.active { color: var(--secondary); }
+        .nav-link.active::after {
+            content: ''; position: absolute; bottom: -26px; left: 0; width: 100%; height: 3px;
+            background: var(--primary); border-radius: 3px 3px 0 0;
+        }
+
+        /* Profile Dropdown */
+        .profile-trigger {
+            display: flex; align-items: center; gap: 10px; cursor: pointer;
+            padding: 6px 12px; border-radius: 50px; border: 1px solid var(--border);
+            background: var(--bg-card); transition: 0.2s;
+        }
+        .profile-trigger:hover { background: #F8FAFC; border-color: #CBD5E1; }
+        
+        .avatar {
+            width: 32px; height: 32px; background: var(--primary); color: var(--secondary);
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            font-weight: 700; font-size: 14px;
+        }
+
+        .dropdown-menu {
+            display: none; position: absolute; top: 80px; right: 2rem; width: 240px;
+            background: var(--bg-card); border-radius: 12px; box-shadow: var(--shadow-lg);
+            border: 1px solid var(--border); overflow: hidden; animation: slideDown 0.2s ease;
+        }
+        .dropdown-menu.show { display: block; }
+        .dropdown-item {
+            padding: 12px 20px; font-size: 14px; color: var(--text-main); display: flex; align-items: center; gap: 10px;
+        }
+        .dropdown-item:hover { background: #F8FAFC; color: var(--primary-hover); }
+
+        /* --- LAYOUT --- */
+        .main-container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 30px 20px;
+            width: 100%;
+        }
+
+        /* --- HERO SECTION --- */
+        .hero {
+            background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
+            border-radius: 24px;
+            padding: 40px;
+            position: relative;
+            overflow: hidden;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: var(--shadow-md);
+            margin-bottom: 40px;
+        }
+
+        .hero::before {
+            content: ''; position: absolute; top: -50%; right: -10%; width: 400px; height: 400px;
+            background: radial-gradient(circle, rgba(251,192,45,0.15) 0%, rgba(251,192,45,0) 70%);
+            border-radius: 50%;
+        }
+
+        .hero-content h1 { font-family: 'Poppins', sans-serif; font-size: 28px; margin-bottom: 12px; }
+        .hero-content p { color: #94A3B8; font-size: 15px; max-width: 500px; margin-bottom: 24px; line-height: 1.5; }
+
+        .btn {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 12px 24px; border-radius: 10px; font-weight: 600; font-size: 14px;
+            cursor: pointer; border: none; transition: 0.2s;
+        }
+        .btn-primary { background: var(--primary); color: var(--secondary); }
+        .btn-primary:hover { background: var(--primary-hover); transform: translateY(-2px); }
+        
+        /* --- STATS GRID --- */
+        .stats-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 24px;
+            margin-bottom: 40px;
+        }
+        
+        .stat-card {
+            background: var(--bg-card); padding: 24px; border-radius: var(--radius);
+            border: 1px solid var(--border); box-shadow: var(--shadow-sm);
+            display: flex; flex-direction: column; gap: 10px;
+        }
+        
+        .stat-icon {
+            width: 40px; height: 40px; border-radius: 10px; background: #FFF9C4;
+            color: #F57F17; display: flex; align-items: center; justify-content: center; font-size: 18px;
+        }
+        
+        .stat-value { font-size: 28px; font-weight: 700; color: var(--secondary); font-family: 'Poppins', sans-serif; }
+        .stat-label { font-size: 13px; color: var(--text-muted); font-weight: 500; }
+
+        /* --- SECTIONS HEADERS --- */
+        .section-head {
+            display: flex; justify-content: space-between; align-items: end; margin-bottom: 24px;
+        }
+        .section-title { font-family: 'Poppins', sans-serif; font-size: 20px; font-weight: 700; color: var(--secondary); }
+        .view-all { font-size: 14px; font-weight: 600; color: #8B5CF6; }
+
+        /* --- COURSE CARDS --- */
+        .course-grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 24px;
+        }
+
+        .card {
+            background: var(--bg-card); border-radius: var(--radius);
+            border: 1px solid var(--border); box-shadow: var(--shadow-sm);
+            padding: 24px; transition: 0.3s ease; position: relative; overflow: hidden;
+        }
+        .card:hover { transform: translateY(-5px); box-shadow: var(--shadow-lg); border-color: #CBD5E1; }
+
+        .card-header { display: flex; justify-content: space-between; margin-bottom: 16px; }
+        .badge {
+            font-size: 11px; font-weight: 700; text-transform: uppercase; padding: 4px 10px;
+            border-radius: 20px; letter-spacing: 0.5px;
+        }
+        .badge-yellow { background: #FFF9C4; color: #854D0E; }
+        .badge-red { background: #FEE2E2; color: #991B1B; display: flex; align-items: center; gap: 6px; }
+        .badge-green { background: #D1FAE5; color: #065F46; }
+
+        .card-title { font-size: 18px; font-weight: 700; margin-bottom: 6px; color: var(--secondary); }
+        .card-sub { font-size: 13px; color: var(--text-muted); margin-bottom: 20px; }
+
+        /* Styling for a normal card */
+        .card { transition: all 0.3s ease;}
+
+        .card-live-border {
+            border: 1px solid #FECACA !important;
+            background-color: #FEF2F2 !important;
+        }
+
+        /* Progress Bar */
+        .progress-wrap { margin-bottom: 20px; }
+        .progress-info { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 8px; font-weight: 600; }
+        .progress-bg { height: 8px; background: #F1F5F9; border-radius: 10px; overflow: hidden; }
+        .progress-bar { height: 100%; background: var(--secondary); border-radius: 10px; }
+
+        .btn-block { width: 100%; text-align: center; background: #F8FAFC; color: var(--secondary); }
+        .btn-block:hover { background: var(--secondary); color: white; }
+
+        /* --- LIVE CLASS ANIMATION --- */
+        .live-dot {
+            width: 8px; height: 8px; background: #EF4444; border-radius: 50%;
+            animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+            70% { box-shadow: 0 0 0 6px rgba(239, 68, 68, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+        }
+
+        /* --- MODAL --- */
+        .modal-overlay {
+            display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(4px); z-index: 2000; align-items: center; justify-content: center;
+        }
+        .modal-box {
+            background: white; width: 90%; max-width: 500px; padding: 30px;
+            border-radius: 20px; box-shadow: var(--shadow-lg);
+        }
+        textarea.form-control {
+            width: 100%; padding: 15px; border: 1px solid var(--border); border-radius: 12px;
+            font-family: inherit; margin: 15px 0; resize: none; background: #F8FAFC; font-size: 14px;
+        }
+        textarea.form-control:focus { border-color: var(--primary); background: white; }
+
+        /* --- AI CHATBOT --- */
+        .ai-fab {
+            position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px;
+            background: var(--secondary); color: var(--primary); border-radius: 50%;
+            display: flex; align-items: center; justify-content: center; font-size: 24px;
+            cursor: pointer; box-shadow: 0 10px 25px rgba(15, 23, 42, 0.3); z-index: 3000;
+            transition: 0.3s;
+        }
+        .ai-fab:hover { transform: scale(1.1); }
+
+        .ai-window {
+            position: fixed; bottom: 100px; right: 30px; width: 350px; height: 500px;
+            background: white; border-radius: 20px; box-shadow: var(--shadow-lg);
+            display: none; flex-direction: column; overflow: hidden; z-index: 3000;
+            border: 1px solid var(--border);
+        }
+        .ai-header {
+            background: var(--secondary); padding: 16px; color: white; font-weight: 600;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .ai-body { flex: 1; padding: 15px; overflow-y: auto; background: #F8FAFC; }
+        .ai-input-area {
+            padding: 10px; background: white; border-top: 1px solid var(--border); display: flex; gap: 10px;
+        }
+        .ai-input { flex: 1; padding: 10px; border: 1px solid var(--border); border-radius: 8px; font-size: 13px; }
+        .msg-bubble { padding: 8px 12px; border-radius: 10px; margin-bottom: 8px; max-width: 80%; font-size: 13px; }
+        .msg-user { background: var(--secondary); color: white; margin-left: auto; border-bottom-right-radius: 0; }
+        .msg-bot { background: white; border: 1px solid var(--border); color: var(--text-main); border-bottom-left-radius: 0; }
+
+        @keyframes slideDown { from {opacity:0; transform: translateY(-10px);} to {opacity:1; transform: translateY(0);} }
+
+        /* Mobile */
+        @media (max-width: 768px) {
+            .hero { flex-direction: column; text-align: center; padding: 30px 20px; }
+            .hero::before { display: none; }
+            .nav-menu { display: none; } /* Simplified for example */
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="logo">CYANO<span>PY</span></div>
+        
+        <div class="nav-menu">
+            <a href="{% url 'student_dashboard' %}" class="nav-link active">Home</a>
+            <a href="{% url 'purchase' %}" class="nav-link">Explore</a>
+            <a href="{% url 'my_courses' %}" class="nav-link">My Learning</a>
+            <a href="{% url 'student_doubts' %}" class="nav-link">Doubts</a>
+            <a href="javascript:void(0)" onclick="openSupportModal()">Support</a>
+            
+            <div class="profile-container" style="position: relative;">
+                <div class="profile-trigger" onclick="toggleDropdown()">
+                    <div class="avatar">
+                        {{ request.user.first_name|slice:":1"|upper|default:request.user.username|slice:":1"|upper }}
+                    </div>
+                    <span style="font-size: 13px; font-weight: 600; display: none; @media(min-width: 768px){display:block;}">
+                        {{ request.user.first_name|default:request.user.username }}
+                    </span>
+                    <i class="fa-solid fa-chevron-down" style="font-size: 10px; color: var(--text-muted);"></i>
+                </div>
+
+                <div id="userDropdown" class="dropdown-menu">
+                    <div style="padding: 15px 20px; background: #F8FAFC; border-bottom: 1px solid var(--border);">
+                        <div style="font-weight: 700; color: var(--secondary);">{{ request.user.first_name }} {{ request.user.last_name }}</div>
+                        <div style="font-size: 12px; color: var(--text-muted);">{{ request.user.email }}</div>
+                    </div>
+                    <a href="{% url 'profile' %}" class="dropdown-item"><i class="fa-regular fa-user"></i> Account Settings</a>
+                    <a href="{% url 'my_courses' %}" class="dropdown-item"><i class="fa-solid fa-graduation-cap"></i> My Dashboard</a>
+                    <a href="{% url 'logout' %}" class="dropdown-item" style="color: var(--danger);"><i class="fa-solid fa-arrow-right-from-bracket"></i> Sign Out</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-container">
+        
+        <div class="hero">
+            <div class="hero-content">
+                <h1>Welcome Back, {{ request.user.first_name|default:request.user.username }}! 👋</h1>
+                <p>You have 3 lessons to complete today. Keep up the momentum and reach your weekly goal!</p>
+                <button class="btn btn-primary" onclick="openSupportModal()">
+                    <i class="fa-solid fa-comment-dots"></i> Connect with Mentor
+                </button>
+            </div>
+            <div style="font-size: 100px; opacity: 0.9; transform: rotate(10deg);">🚀</div>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fa-solid fa-book-open"></i></div>
+                <div>
+                    <div class="stat-value">{{ enrolled_courses_count }}</div>
+                    <div class="stat-label">Enrolled Courses</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon" style="background: #E0E7FF; color: #4338CA;"><i class="fa-solid fa-clock"></i></div>
+                <div>
+                    <div class="stat-value">{{ learning_hours }}h</div>
+                    <div class="stat-label">Learning Hours</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon" style="background: #D1FAE5; color: #059669;"><i class="fa-solid fa-certificate"></i></div>
+                <div>
+                    <div class="stat-value">{{ certificates }}</div>
+                    <div class="stat-label">Certificates Earned</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon" style="background: #FEE2E2; color: #DC2626;"><i class="fa-solid fa-fire"></i></div>
+                <div>
+                    <div class="stat-value">05</div>
+                    <div class="stat-label">Day Streak</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section-head">
+            <div class="section-title">Current Learning</div>
+            <a href="{% url 'my_courses' %}" class="view-all">View All</a>
+        </div>
+
+        <div class="course-grid" style="margin-bottom: 50px;">
+            <div class="card">
+                <div class="card-header">
+                    <span class="badge badge-yellow">Programming</span>
+                    <i class="fa-solid fa-ellipsis" style="color: var(--text-muted);"></i>
+                </div>
+                <h3 class="card-title">Advanced Java Masterclass</h3>
+                <p class="card-sub">Mentor: Expert Mentor</p>
+
+                <div class="progress-wrap">
+                    <div class="progress-info">
+                        <span>Progress</span>
+                        <span>75%</span>
+                    </div>
+                    <div class="progress-bg">
+                        <div class="progress-bar" style="width: 75%;"></div>
+                    </div>
+                </div>
+
+                <div style="font-size: 13px; color: var(--text-muted); margin-bottom: 15px; display: flex; align-items: center; gap: 8px;">
+                    <i class="fa-solid fa-circle-play" style="color: var(--primary);"></i> Next: Exception Handling
+                </div>
+
+                <a href="#" class="btn btn-block">Continue Learning</a>
+            </div>
+        </div>
+
+        <div class="section-head">
+            <div class="section-title">Live Sessions</div>
+        </div>
+
+        <div class="course-grid">
+            {% for item in enrolled_courses %}
+            
+                <div class="card {% if item.live %}card-live-border{% endif %}">
+                    <div class="card-header">
+                        {% if item.live %}
+                            <span class="badge badge-red">
+                                <div class="live-dot"></div> LIVE NOW
+                            </span>
+                        {% else %}
+                            <span class="badge badge-green">Upcoming</span>
+                        {% endif %}
+                    </div>
+
+                    <h3 class="card-title">{{ item.course.title }}</h3>
+                    <p class="card-sub">Mentor: {{ item.course.trainer.first_name }}</p>
+
+                    {% if item.live %}
+                        <a href="{% url 'join_live' item.live.id %}" class="btn btn-block" style="background: #EF4444; color: white;">
+                            Join Class <i class="fa-solid fa-video" style="margin-left: 5px;"></i>
+                        </a>
+                    {% else %}
+                        <button class="btn btn-block" disabled style="opacity: 0.6; cursor: not-allowed;">
+                            Waiting for Host
+                        </button>
+                    {% endif %}
+                </div>
+            
+            {% endfor %}
+        </div>
+
+    </main>
+
+    <div id="supportModal" class="modal-overlay">
+        <div class="modal-box">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2 style="font-size: 20px; font-weight: 700; color: var(--secondary);">Ask Your Mentor</h2>
+                <i class="fa-solid fa-xmark" onclick="closeSupportModal()" style="cursor: pointer; font-size: 20px;"></i>
+            </div>
+            
+            <form action="/send-support-query/" method="POST">
+                {% csrf_token %}
+                <p style="color: var(--text-muted); font-size: 14px;">Describe your issue below. Your mentor will reply within 24 hours.</p>
+                <textarea name="message" rows="5" class="form-control" placeholder="Type your question here..." required></textarea>
+                
+                <div style="display: flex; gap: 10px; margin-top: 20px;">
+                    <button type="submit" class="btn btn-primary" style="flex: 1;">Send Query</button>
+                    <button type="button" onclick="closeSupportModal()" class="btn" style="flex: 1; background: #F1F5F9;">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="ai-fab" onclick="toggleAI()">
+        <i class="fa-solid fa-robot"></i>
+    </div>
+
+    <div id="aiChatBox" class="ai-window">
+        <div class="ai-header">
+            <span><i class="fa-solid fa-brain"></i> CYANOPY Tutor</span>
+            <i class="fa-solid fa-chevron-down" style="cursor: pointer;" onclick="toggleAI()"></i>
+        </div>
+        
+        <div id="aiMessages" class="ai-body">
+            <div class="msg-bubble msg-bot">Hello {{ request.user.first_name }}! I am your AI assistant. Ask me anything about your course.</div>
+        </div>
+
+        <div class="ai-input-area">
+            <input id="aiInput" class="ai-input" placeholder="Type your doubt..." onkeypress="handleEnter(event)">
+            <button onclick="sendAI()" class="btn btn-primary" style="padding: 8px 12px;"><i class="fa-solid fa-paper-plane"></i></button>
+        </div>
+    </div>
+
+    <script>
+        function toggleDropdown() {
+            document.getElementById('userDropdown').classList.toggle('show');
+        }
+
+        function openSupportModal() {
+            document.getElementById('supportModal').style.display = 'flex';
+        }
+
+        function closeSupportModal() {
+            document.getElementById('supportModal').style.display = 'none';
+        }
+
+        window.onclick = function(event) {
+            if (!event.target.closest('.profile-trigger')) {
+                document.getElementById('userDropdown').classList.remove('show');
+            }
+            if (event.target == document.getElementById('supportModal')) {
+                closeSupportModal();
+            }
+        }
+
+        // AI Chat Logic
+        function toggleAI(){
+            const box = document.getElementById("aiChatBox");
+            box.style.display = box.style.display === "flex" ? "none" : "flex";
+        }
+
+        function handleEnter(e) {
+            if(e.key === 'Enter') sendAI();
+        }
+
+        function sendAI(){
+            let input = document.getElementById("aiInput");
+            let msg = input.value;
+            if(!msg.trim()) return;
+
+            let box = document.getElementById("aiMessages");
+            box.innerHTML += `<div class="msg-bubble msg-user">${msg}</div>`;
+            input.value = "";
+            box.scrollTop = box.scrollHeight;
+
+            // Simulate loading or fetch from backend
+            fetch("/ai/chat/?msg=" + encodeURIComponent(msg))
+            .then(res => res.json())
+            .then(data => {
+                box.innerHTML += `<div class="msg-bubble msg-bot">${data.reply}</div>`;
+                box.scrollTop = box.scrollHeight;
+            })
+            .catch(err => {
+                box.innerHTML += `<div class="msg-bubble msg-bot" style="color:red">Error connecting to AI.</div>`;
+            });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Doubts | CYANOPY</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #fbc02d;
+            --bg-body: #f8fafc;
+            --text-dark: #1e293b;
+            --text-muted: #64748b;
+            --white: #ffffff;
+            --border: #e2e8f0;
+            --success-bg: #d1fae5;
+            --success-text: #065f46;
+            --warning-bg: #fef3c7;
+            --warning-text: #92400e;
+        }
+
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background: var(--bg-body); 
+            margin: 0; 
+            padding: 0;
+            color: var(--text-dark);
+        }
+
+        /* ----- Navbar / Top Action ----- */
+        .top-nav {
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--white);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .btn-back {
+            text-decoration: none;
+            color: var(--text-dark);
+            font-weight: 700;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: 0.2s;
+        }
+        .btn-back:hover { color: var(--primary); }
+
+        /* ----- Main Container ----- */
+        .container { 
+            max-width: 900px; 
+            margin: 40px auto; 
+            padding: 0 20px;
+        }
+
+        .header { margin-bottom: 40px; }
+        .header h1 { font-size: 2.2rem; font-weight: 800; margin: 0; letter-spacing: -0.5px; }
+        .header p { color: var(--text-muted); margin-top: 8px; font-size: 1rem; }
+
+        /* ----- Doubt Cards ----- */
+        .doubt-card { 
+            background: var(--white); 
+            border-radius: 20px; 
+            padding: 30px; 
+            margin-bottom: 25px; 
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.04);
+            border: 1px solid var(--border);
+            position: relative;
+            transition: transform 0.2s;
+        }
+        .doubt-card:hover { transform: translateY(-2px); }
+
+        .card-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .date-badge {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .status-badge {
+            padding: 6px 14px;
+            border-radius: 10px;
+            font-size: 0.7rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .status-waiting { background: var(--warning-bg); color: var(--warning-text); }
+        .status-resolved { background: var(--success-bg); color: var(--success-text); }
+
+        .question-text { 
+            font-size: 1.1rem;
+            font-weight: 600; 
+            color: var(--text-dark); 
+            line-height: 1.5;
+            margin: 0 0 20px 0;
+            padding-left: 12px;
+            border-left: 3px solid #cbd5e1;
+        }
+        
+        /* ----- Instructor Reply Box ----- */
+        .answer-box {
+            background: #f8fafc;
+            padding: 25px;
+            border-radius: 16px;
+            border: 1px solid #edf2f7;
+            margin-top: 10px;
+        }
+
+        .reply-header { 
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.75rem; 
+            font-weight: 800; 
+            color: var(--primary); 
+            margin-bottom: 12px; 
+            text-transform: uppercase;
+        }
+
+        .answer-content { 
+            margin: 0; 
+            color: #334155; 
+            line-height: 1.7;
+            font-size: 0.95rem;
+        }
+
+        .pending-msg {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 0;
+        }
+
+        /* ----- Empty State ----- */
+        .empty-state {
+            text-align: center;
+            padding: 80px 20px;
+            background: var(--white);
+            border-radius: 24px;
+            border: 2px dashed var(--border);
+        }
+        .empty-state i { font-size: 3.5rem; color: #cbd5e1; margin-bottom: 20px; }
+        .empty-state p { color: var(--text-muted); font-size: 1.1rem; margin: 0; }
+    </style>
+</head>
+<body>
+
+    <nav class="top-nav">
+        <a href="{% url 'student_dashboard' %}" class="btn-back">
+            <i class="fa-solid fa-arrow-left"></i> Back to Dashboard
+        </a>
+        <img src="https://ui-avatars.com/api/?name=CY&background=fbc02d&color=000&bold=true" alt="Logo" style="height: 30px; border-radius: 8px;">
+    </nav>
+
+    <div class="container">
+        <div class="header">
+            <h1>My Support Doubts</h1>
+            <p>Direct communication with your expert instructors</p>
+        </div>
+
+        {% for q in my_queries %}
+        <div class="doubt-card">
+            <div class="card-top">
+                <div class="date-badge">
+                    <i class="fa-regular fa-calendar"></i>
+                    Asked on {{ q.created_at|date:"M d, Y" }}
+                </div>
+                {% if q.is_resolved %}
+                    <span class="status-badge status-resolved"><i class="fa-solid fa-check-double"></i> Answered</span>
+                {% else %}
+                    <span class="status-badge status-waiting"><i class="fa-solid fa-clock"></i> Under Review</span>
+                {% endif %}
+            </div>
+
+            <p class="question-text">{{ q.message }}</p>
+
+            {% if q.is_resolved %}
+                <div class="answer-box">
+                    <div class="reply-header">
+                        <i class="fa-solid fa-graduation-cap"></i> 
+                        Instructor Solution
+                    </div>
+                    <p class="answer-content">{{ q.answer }}</p>
+                </div>
+            {% else %}
+                <div class="pending-msg">
+                    <i class="fa-solid fa-spinner fa-spin"></i>
+                    <span>Your instructor is reviewing this. You'll see the reply here shortly.</span>
+                </div>
+            {% endif %}
+        </div>
+        {% empty %}
+        <div class="empty-state">
+            <i class="fa-solid fa-comments-question"></i>
+            <p>You haven't submitted any doubts yet.</p>
+            <a href="{% url 'student_dashboard' %}" style="display: inline-block; margin-top: 20px; color: var(--primary); font-weight: 700; text-decoration: none;">Go Ask a Question →</a>
+        </div>
+        {% endfor %}
+    </div>
+
+</body>
+</html>

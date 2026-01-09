@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Learning | CYANOPY</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* ... (Keep your existing :root and basic styles) ... */
+        :root {
+            --primary: #fbc02d;
+            --dark: #0f172a;
+            --slate: #475569;
+            --bg: #f8fafc;
+            --white: #ffffff;
+            --border: #e2e8f0;
+            --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+        }
+
+        body { margin: 0; font-family: 'Plus Jakarta Sans', sans-serif; background-color: var(--bg); color: var(--dark); }
+
+        /* Navbar & Header Styles from your previous code */
+        .navbar { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(12px); height: 75px; padding: 0 5%; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 1000; }
+        .logo { font-weight: 800; font-size: 22px; color: var(--dark); text-decoration: none; }
+        .logo span { color: var(--primary); }
+        .nav-links { display: flex; gap: 30px; align-items: center; }
+        .nav-links a { text-decoration: none; color: var(--slate); font-weight: 600; font-size: 14px; }
+        .nav-links a.active { color: var(--dark); position: relative; }
+        .nav-links a.active::after { content: ''; position: absolute; bottom: -26px; left: 0; width: 100%; height: 3px; background: var(--primary); }
+
+        .dashboard-container { max-width: 1250px; margin: 40px auto; padding: 0 25px; }
+        
+        /* Filter Row */
+        .filter-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; gap: 20px; flex-wrap: wrap; }
+        .tabs { display: flex; background: #fff; padding: 6px; border-radius: 14px; border: 1px solid var(--border); }
+        .tab { text-decoration: none; color: var(--slate); font-weight: 700; font-size: 13px; padding: 10px 20px; border-radius: 10px; transition: 0.3s; cursor: pointer; border: none; background: none; }
+        .tab.active { background: var(--dark); color: #fff; }
+
+        /* Course Grid */
+        .course-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 30px; }
+        .lms-card { background: var(--white); border-radius: 24px; overflow: hidden; box-shadow: var(--shadow); border: 1px solid var(--border); transition: 0.3s; }
+        
+        /* Hidden class for filtering */
+        .card-hidden { display: none; }
+
+        .card-banner { height: 180px; display: flex; align-items: center; justify-content: center; color: var(--primary); font-size: 64px; font-weight: 800; background: linear-gradient(45deg, #0f172a, #1e293b); }
+        .card-body { padding: 25px; }
+        .course-title { font-size: 20px; font-weight: 800; color: var(--dark); text-decoration: none; display: block; margin-bottom: 20px; }
+        
+        .progress-track { height: 8px; background: #f1f5f9; border-radius: 20px; overflow: hidden; margin-top: 10px; }
+        .progress-bar { height: 100%; background: var(--primary); border-radius: 20px; }
+        
+        .btn-continue { width: 100%; background: var(--dark); color: #fff; border: none; padding: 14px; border-radius: 14px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 10px; text-decoration: none; margin-top: 20px; }
+
+        /* Modal Styles */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.7); z-index: 3000; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
+        .modal-content { background: white; width: 90%; max-width: 450px; padding: 30px; border-radius: 24px; }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar">
+        <a href="/" class="logo">CYANO<span>PY</span></a>
+        <div class="nav-links">
+            <a href="{% url 'student_dashboard' %}">Home</a>
+            <a href="{% url 'purchase' %}">Explore</a>
+            <a href="{% url 'my_courses' %}" class="active">My Learning</a>
+            <a href="{% url 'student_doubts' %}">Doubts</a>
+            <a href="javascript:void(0)" onclick="openSupportModal()">Support</a>
+            </div>
+    </nav>
+
+    <div class="dashboard-container">
+        <div class="page-header">
+            <h1>My Learning Journey</h1>
+            <p>Track your progress and achieve your goals.</p>
+        </div>
+
+        <div class="filter-row">
+            <div class="tabs">
+                <button class="tab active" onclick="filterCourses('all', this)">All Courses</button>
+                <button class="tab" onclick="filterCourses('progress', this)">In Progress</button>
+                <button class="tab" onclick="filterCourses('completed', this)">Completed</button>
+            </div>
+            <input type="text" id="courseSearch" class="search-input" placeholder="Search my courses..." onkeyup="searchCourses()">
+        </div>
+
+        <div class="course-grid" id="courseGrid">
+            {% for p in purchases %}
+            <div class="lms-card" data-progress="12"> <div class="card-banner">
+                    {{ p.course.title|slice:":1"|upper }}
+                </div>
+                
+                <div class="card-body">
+                    <div style="font-size: 12px; font-weight: 700; color: var(--slate); margin-bottom: 10px;">
+                        Mentor: {{ p.course.trainer.username }}
+                    </div>
+                    
+                    <a href="{% url 'course_learning' p.course.id %}" class="course-title">{{ p.course.title }}</a>
+                    
+                    <div class="progress-section">
+                        <div style="display: flex; justify-content: space-between; font-size: 11px; font-weight: 800;">
+                            <span>PROGRESS</span>
+                            <span>12%</span> </div>
+                        <div class="progress-track">
+                            <div class="progress-bar" style="width: 12%;"></div>
+                        </div>
+                    </div>
+
+                    <a href="{% url 'course_learning' p.course.id %}" class="btn-continue">
+                        <i class="fa-solid fa-play-circle"></i> Continue Learning
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div id="supportModal" class="modal-overlay">
+        <div class="modal-content">
+            <h2>Ask Your Mentor</h2>
+            <form action="/send-support-query/" method="POST">
+                {% csrf_token %}
+                <textarea name="message" rows="5" style="width:100%; padding:15px; border-radius:12px; border:1px solid var(--border); margin:15px 0;" placeholder="Describe your doubt..." required></textarea>
+                <div style="display: flex; gap: 10px;">
+                    <button type="submit" style="flex:1; background:var(--primary); border:none; padding:12px; border-radius:10px; font-weight:700;">Send</button>
+                    <button type="button" onclick="closeSupportModal()" style="flex:1; background:#f1f5f9; border:none; padding:12px; border-radius:10px; font-weight:700;">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // --- Tab Filtering Logic ---
+        function filterCourses(status, element) {
+            // Update Active Tab Class
+            const tabs = document.querySelectorAll('.tab');
+            tabs.forEach(t => t.classList.remove('active'));
+            element.classList.add('active');
+
+            const cards = document.querySelectorAll('.lms-card');
+            
+            cards.forEach(card => {
+                const progress = parseInt(card.getAttribute('data-progress'));
+                
+                if (status === 'all') {
+                    card.classList.remove('card-hidden');
+                } else if (status === 'progress') {
+                    // Show if progress is between 1 and 99
+                    if (progress > 0 && progress < 100) {
+                        card.classList.remove('card-hidden');
+                    } else {
+                        card.classList.add('card-hidden');
+                    }
+                } else if (status === 'completed') {
+                    // Show if progress is 100
+                    if (progress >= 100) {
+                        card.classList.remove('card-hidden');
+                    } else {
+                        card.classList.add('card-hidden');
+                    }
+                }
+            });
+        }
+
+        // --- Search Functionality ---
+        function searchCourses() {
+            const input = document.getElementById('courseSearch').value.toLowerCase();
+            const cards = document.querySelectorAll('.lms-card');
+            
+            cards.forEach(card => {
+                const title = card.querySelector('.course-title').innerText.toLowerCase();
+                if (title.includes(input)) {
+                    card.style.display = "";
+                } else {
+                    card.style.display = "none";
+                }
+            });
+        }
+
+        // Support Modal functions
+        function openSupportModal() { document.getElementById('supportModal').style.display = 'flex'; }
+        function closeSupportModal() { document.getElementById('supportModal').style.display = 'none'; }
+    </script>
+</body>
+</html>
