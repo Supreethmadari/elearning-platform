@@ -516,17 +516,17 @@
                     <div class="tier-grid">
                         <div class="tier-card active" id="tierLive" onclick="setTier('Live Virtual')">
                             <div class="tier-name">Live Virtual</div>
-                            <div class="tier-price-val" id="priceLiveDisplay">₹ {{ selected_course.live_virtual_new_price|default:selected_course.price }}</div>
+                            <div class="tier-price-val" id="priceLiveDisplay">₹ {% if selected_course %}{{ selected_course.live_virtual_new_price|default:selected_course.price }}{% else %}0{% endif %}</div>
                         </div>
 
                         <div class="tier-card" id="tierBlended" onclick="setTier('Blended')">
                             <div class="tier-name">Blended</div>
-                            <div class="tier-price-val" id="priceBlendedDisplay">₹ {{ selected_course.blended_new_price|default:selected_course.price }}</div>
+                            <div class="tier-price-val" id="priceBlendedDisplay">₹ {% if selected_course %}{{ selected_course.blended_new_price|default:selected_course.price }}{% else %}0{% endif %}</div>
                         </div>
 
                         <div class="tier-card" id="tierClassroom" onclick="setTier('Classroom')">
                             <div class="tier-name">Classroom</div>
-                            <div class="tier-price-val" id="priceClassDisplay">₹ {{ selected_course.classroom_new_price|default:selected_course.price }}</div>
+                            <div class="tier-price-val" id="priceClassDisplay">₹ {% if selected_course %}{{ selected_course.classroom_new_price|default:selected_course.price }}{% else %}0{% endif %}</div>
                         </div>
                     </div>
                 </div>
@@ -561,7 +561,7 @@
                     </div>
                     <div class="summary-row total">
                         <span>Course Fee</span>
-                        <span style="color: var(--brand-purple);" id="summaryTotalFee">₹ {{ selected_course.live_virtual_new_price|default:selected_course.price }}</span>
+                        <span style="color: var(--brand-purple);" id="summaryTotalFee">₹ {% if selected_course %}{{ selected_course.live_virtual_new_price|default:selected_course.price }}{% else %}0{% endif %}</span>
                     </div>
                 </div>
 
@@ -651,9 +651,9 @@
         document.getElementById('manualPayDate').valueAsDate = new Date();
 
         let currentPrices = {
-            'Live Virtual': '{{ selected_course.live_virtual_new_price|default:selected_course.price }}',
-            'Blended': '{{ selected_course.blended_new_price|default:selected_course.price }}',
-            'Classroom': '{{ selected_course.classroom_new_price|default:selected_course.price }}'
+            'Live Virtual': '{% if selected_course %}{{ selected_course.live_virtual_new_price|default:selected_course.price }}{% else %}0{% endif %}',
+            'Blended': '{% if selected_course %}{{ selected_course.blended_new_price|default:selected_course.price }}{% else %}0{% endif %}',
+            'Classroom': '{% if selected_course %}{{ selected_course.classroom_new_price|default:selected_course.price }}{% else %}0{% endif %}'
         };
         let currentTier = 'Live Virtual';
 

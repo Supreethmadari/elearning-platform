@@ -315,6 +315,35 @@ def course_enrollment(request):
         request.session['pending_otp_user_id'] = request.user.id
         return redirect('verify_otp')
 
+    # Auto-seed default courses on fresh production database
+    if not Course.objects.exists():
+        Course.objects.create(
+            title="Full Stack Python & AI Masterclass",
+            description="Comprehensive career program covering Python, Django, REST APIs, PostgreSQL, and LLM AI development.",
+            price=15000,
+            live_virtual_old_price=20000,
+            live_virtual_new_price=14999,
+            blended_old_price=16000,
+            blended_new_price=11999,
+            classroom_old_price=25000,
+            classroom_new_price=19999,
+            trainer=request.user,
+            rating=4.9
+        )
+        Course.objects.create(
+            title="Data Science & Machine Learning Bootcamp",
+            description="Master Pandas, NumPy, Deep Learning, Computer Vision, and real-time model deployment.",
+            price=18000,
+            live_virtual_old_price=24000,
+            live_virtual_new_price=17999,
+            blended_old_price=18000,
+            blended_new_price=13999,
+            classroom_old_price=30000,
+            classroom_new_price=24999,
+            trainer=request.user,
+            rating=5.0
+        )
+
     courses = Course.objects.all()
     selected_course_id = request.GET.get('course_id') or request.POST.get('course_id')
     selected_course = None
