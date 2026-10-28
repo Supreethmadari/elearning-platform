@@ -3,273 +3,2028 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ course.title }} | Cyanopy Learning</title>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <title>{{ current_lesson.title|default:course.title }} | Cyanopy Learning</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --primary: #fbc02d;
-            --dark-bg: #0f172a;
-            --sidebar-bg: #1e293b;
-            --text-main: #f8fafc;
+            /* Cyanopy Brand Identity (Cyan & Purple on Deep Navy Theater) */
+            --brand-cyan: #00D2C4;
+            --brand-cyan-light: #26E5D7;
+            --brand-cyan-glow: rgba(0, 210, 196, 0.35);
+            --brand-cyan-bg: rgba(0, 210, 196, 0.12);
+            --brand-cyan-border: rgba(0, 210, 196, 0.3);
+
+            --brand-purple: #7C3AED;
+            --brand-purple-light: #8B5CF6;
+            --brand-purple-glow: rgba(124, 58, 237, 0.35);
+            --brand-purple-bg: rgba(124, 58, 237, 0.12);
+
+            --brand-gradient: linear-gradient(135deg, #00D2C4 0%, #7C3AED 100%);
+            --brand-gradient-hover: linear-gradient(135deg, #26E5D7 0%, #8B5CF6 100%);
+
+            /* Dark LMS Theater Colors */
+            --theater-bg: #0B1120;
+            --sidebar-bg: #0F172A;
+            --sidebar-card: #1E293B;
+            --card-border: rgba(255, 255, 255, 0.08);
+            --text-main: #F8FAFC;
+            --text-dim: #94A3B8;
+            --text-darker: #64748B;
         }
 
-        body {
+        * {
+            box-sizing: border-box;
             margin: 0;
+            padding: 0;
+        }
+
+        html, body {
+            height: 100%;
+            overflow: hidden;
             font-family: 'Plus Jakarta Sans', sans-serif;
-            background-color: var(--dark-bg);
+            background-color: var(--theater-bg);
             color: var(--text-main);
+        }
+
+        .learning-layout {
             display: flex;
             height: 100vh;
+            width: 100vw;
             overflow: hidden;
         }
 
-        /* ----- Sidebar ----- */
+        /* ========================================================
+           CONSTANT SIDEBAR (Locked, Fixed 100vh, Never Shifts)
+        ======================================================== */
         .sidebar {
-            width: 350px;
+            width: 360px;
+            min-width: 360px;
+            max-width: 360px;
+            flex-shrink: 0;
+            height: 100vh;
             background: var(--sidebar-bg);
-            border-right: 1px solid rgba(255,255,255,0.1);
+            border-right: 1px solid var(--card-border);
             display: flex;
             flex-direction: column;
+            position: sticky;
+            top: 0;
+            left: 0;
+            z-index: 100;
+            box-shadow: 4px 0 24px rgba(0, 0, 0, 0.35);
         }
 
+        /* Sidebar Header (Fixed at top) */
         .sidebar-header {
-            padding: 25px;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding: 24px 22px 18px;
+            border-bottom: 1px solid var(--card-border);
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(10px);
+            flex-shrink: 0;
         }
 
-        .sidebar-header a {
-            color: var(--primary);
+        .back-link {
+            color: var(--brand-cyan);
             text-decoration: none;
-            font-size: 14px;
+            font-size: 0.85rem;
             font-weight: 700;
-            display: flex;
+            display: inline-flex;
             align-items: center;
             gap: 8px;
-            margin-bottom: 15px;
+            margin-bottom: 14px;
+            transition: all 0.2s ease;
+            padding: 6px 10px;
+            background: var(--brand-cyan-bg);
+            border: 1px solid var(--brand-cyan-border);
+            border-radius: 8px;
+        }
+
+        .back-link:hover {
+            color: #FFFFFF;
+            background: var(--brand-gradient);
+            border-color: transparent;
+            transform: translateX(-3px);
+            box-shadow: 0 4px 12px var(--brand-cyan-glow);
         }
 
         .course-title {
-            font-size: 18px;
+            font-size: 1.12rem;
             font-weight: 800;
-            line-height: 1.4;
+            line-height: 1.35;
+            color: var(--text-main);
+            letter-spacing: -0.3px;
+            margin-bottom: 10px;
         }
 
+        .course-meta-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 0.78rem;
+            color: var(--text-dim);
+            font-weight: 600;
+        }
+
+        .lessons-count-pill {
+            background: rgba(255, 255, 255, 0.06);
+            padding: 4px 10px;
+            border-radius: 6px;
+            color: var(--brand-cyan-light);
+            border: 1px solid rgba(0, 210, 196, 0.2);
+        }
+
+        /* Scrollable Lesson Playlist */
         .lesson-list {
-            flex-grow: 1;
+            flex: 1;
             overflow-y: auto;
-            padding: 10px 0;
+            overflow-x: hidden;
+            padding: 10px 0 30px;
+        }
+
+        .lesson-list::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .lesson-list::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .lesson-list::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.12);
+            border-radius: 4px;
+        }
+
+        .lesson-list::-webkit-scrollbar-thumb:hover {
+            background: var(--brand-cyan);
         }
 
         .lesson-item {
-            padding: 15px 25px;
+            padding: 14px 20px;
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 14px;
             cursor: pointer;
-            transition: 0.2s;
+            transition: all 0.2s ease;
             border-left: 4px solid transparent;
             text-decoration: none;
-            color: #94a3b8;
+            color: var(--text-dim);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+            position: relative;
         }
 
         .lesson-item:hover {
-            background: rgba(255,255,255,0.05);
-            color: #fff;
+            background: rgba(255, 255, 255, 0.04);
+            color: var(--text-main);
+            transform: translateX(2px);
         }
 
         .lesson-item.active {
-            background: rgba(251, 192, 45, 0.1);
-            border-left-color: var(--primary);
-            color: var(--primary);
+            background: var(--brand-cyan-bg);
+            border-left-color: var(--brand-cyan);
+            color: #FFFFFF;
+            box-shadow: inset 0 0 20px rgba(0, 210, 196, 0.06);
         }
 
-        /* ----- Main Content ----- */
+        .lesson-number {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            font-weight: 800;
+            flex-shrink: 0;
+            color: var(--text-dim);
+            transition: all 0.2s;
+        }
+
+        .lesson-item.active .lesson-number {
+            background: var(--brand-gradient);
+            color: #07111E;
+            font-weight: 800;
+            box-shadow: 0 2px 10px var(--brand-cyan-glow);
+        }
+
+        .lesson-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .lesson-title-text {
+            font-weight: 700;
+            font-size: 0.9rem;
+            line-height: 1.35;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin-bottom: 4px;
+        }
+
+        .lesson-item.active .lesson-title-text {
+            color: var(--brand-cyan-light);
+        }
+
+        .lesson-badges {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.72rem;
+            color: var(--text-darker);
+        }
+
+        .lesson-item.active .lesson-badges {
+            color: var(--text-dim);
+        }
+
+        .badge-has-notes {
+            background: rgba(124, 58, 237, 0.2);
+            color: #C4B5FD;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 700;
+            font-size: 0.68rem;
+        }
+
+        /* ========================================================
+           MAIN CONTENT AREA (Scrolls independently while sidebar is constant)
+        ======================================================== */
         .main-content {
-            flex-grow: 1;
+            flex: 1;
+            min-width: 0;
+            height: 100vh;
+            overflow-y: auto;
             display: flex;
             flex-direction: column;
-            background: #000;
-            overflow-y: auto;
+            background: var(--theater-bg);
+            scroll-behavior: smooth;
+        }
+
+        .main-content::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .main-content::-webkit-scrollbar-track {
+            background: #070D18;
+        }
+
+        .main-content::-webkit-scrollbar-thumb {
+            background: #1E293B;
+            border-radius: 4px;
+        }
+
+        .main-content::-webkit-scrollbar-thumb:hover {
+            background: #334155;
+        }
+
+        /* Video Theater Box */
+        .video-wrapper {
+            width: 100%;
+            background: #000000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
         }
 
         .video-container {
             width: 100%;
+            max-width: 1280px;
             aspect-ratio: 16 / 9;
-            background: #000;
+            background: #000000;
             display: flex;
             align-items: center;
             justify-content: center;
+            position: relative;
         }
 
-        .content-footer {
-            background: var(--dark-bg);
+        .video-container video {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            outline: none;
+        }
+
+        /* Navigation Bar below video */
+        .video-nav-bar {
+            background: #0F172A;
+            border-bottom: 1px solid var(--card-border);
+            padding: 14px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .nav-lesson-btn {
+            background: rgba(255, 255, 255, 0.06);
+            color: var(--text-main);
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .nav-lesson-btn:hover {
+            background: var(--brand-cyan);
+            color: #07111E;
+            border-color: transparent;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px var(--brand-cyan-glow);
+        }
+
+        .nav-lesson-btn.disabled {
+            opacity: 0.35;
+            pointer-events: none;
+            cursor: not-allowed;
+        }
+
+        /* Details & Study Materials Section */
+        .content-body {
             padding: 40px;
-            border-top: 1px solid rgba(255,255,255,0.1);
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
         }
 
         .lesson-heading {
-            font-size: 28px;
+            font-size: 1.85rem;
             font-weight: 800;
-            margin: 0 0 10px 0;
+            margin-bottom: 10px;
+            color: #FFFFFF;
+            letter-spacing: -0.5px;
         }
 
         .lesson-description {
-            color: #94a3b8;
-            font-size: 16px;
-            line-height: 1.6;
-            margin-bottom: 30px;
+            color: var(--text-dim);
+            font-size: 1rem;
+            line-height: 1.65;
+            margin-bottom: 35px;
         }
 
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 800;
+            margin-bottom: 18px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #FFFFFF;
+        }
+
+        .section-title i {
+            color: var(--brand-cyan);
+        }
+
+        /* Study Materials Card */
         .resource-card {
-            background: rgba(255,255,255,0.03);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 12px;
+            background: #0F172A;
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
             overflow: hidden;
-            margin-top: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+            transition: border-color 0.2s;
+        }
+
+        .resource-card:hover {
+            border-color: rgba(0, 210, 196, 0.35);
         }
 
         .resource-header {
-            padding: 15px 20px;
+            padding: 18px 24px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            background: rgba(255,255,255,0.05);
+            background: rgba(255, 255, 255, 0.02);
+            flex-wrap: wrap;
+            gap: 16px;
         }
 
-        .pdf-viewer {
-            display: none;
-            width: 100%;
-            height: 600px;
+        .resource-left {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .file-icon-box {
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            flex-shrink: 0;
+        }
+
+        .icon-pdf {
+            background: rgba(239, 68, 68, 0.15);
+            color: #EF4444;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .icon-image {
+            background: rgba(2, 132, 199, 0.15);
+            color: #0284C7;
+            border: 1px solid rgba(2, 132, 199, 0.3);
+        }
+
+        .icon-doc {
+            background: rgba(124, 58, 237, 0.15);
+            color: #8B5CF6;
+            border: 1px solid rgba(124, 58, 237, 0.3);
+        }
+
+        .resource-info h4 {
+            font-size: 0.98rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 3px;
+        }
+
+        .resource-info span {
+            font-size: 0.76rem;
+            color: var(--text-dim);
+            font-weight: 500;
+        }
+
+        .resource-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Buttons */
+        .btn-view-notes {
+            background: var(--brand-gradient);
+            color: #07111E;
             border: none;
+            padding: 10px 18px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 800;
+            font-size: 0.85rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 14px var(--brand-cyan-glow);
         }
 
-        .btn-view {
+        .btn-view-notes:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 210, 196, 0.45);
+            color: #07111E;
+        }
+
+        .btn-view-notes.active {
+            background: #EF4444;
+            color: #FFFFFF;
+            box-shadow: 0 4px 14px rgba(239, 68, 68, 0.35);
+        }
+
+        .btn-open-tab {
+            background: rgba(255, 255, 255, 0.08);
+            color: #FFFFFF;
+            text-decoration: none;
+            padding: 10px 16px;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            transition: all 0.2s;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+        }
+
+        .btn-open-tab:hover {
+            background: rgba(255, 255, 255, 0.15);
+            color: #FFFFFF;
+            transform: translateY(-1px);
+        }
+
+        .btn-download-notes {
+            background: #1E293B;
+            color: #F8FAFC;
+            text-decoration: none;
+            padding: 10px 16px;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            transition: all 0.2s;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+        }
+
+        .btn-download-notes:hover {
             background: #334155;
-            color: white;
+            color: #FFFFFF;
+            transform: translateY(-1px);
+        }
+
+        /* In-page Notes Viewer Box */
+        .viewer-container {
+            display: none;
+            background: #0B1120;
+            border-top: 1px solid var(--card-border);
+            padding: 0;
+            position: relative;
+        }
+
+        .viewer-top-bar {
+            background: #0F172A;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--card-border);
+            font-size: 0.82rem;
+            color: var(--text-dim);
+        }
+
+        .viewer-top-bar a {
+            color: var(--brand-cyan);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .viewer-top-bar a:hover {
+            text-decoration: underline;
+        }
+
+        .viewer-content {
+            min-height: 650px;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #111827;
+            padding: 12px;
+        }
+
+        .viewer-content iframe,
+        .viewer-content object {
+            width: 100%;
+            height: 750px;
             border: none;
-            padding: 8px 16px;
+            border-radius: 8px;
+            background: #FFFFFF;
+        }
+
+        .viewer-content img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .empty-notes-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px dashed rgba(255, 255, 255, 0.1);
+            border-radius: 14px;
+            padding: 30px;
+            text-align: center;
+            color: var(--text-dim);
+            font-size: 0.95rem;
+        }
+
+        @media (max-width: 900px) {
+            .learning-layout {
+                flex-direction: column;
+                height: auto;
+                overflow: auto;
+            }
+            .sidebar {
+                width: 100%;
+                min-width: 100%;
+                max-width: 100%;
+                height: auto;
+                position: relative;
+            }
+            .main-content {
+                height: auto;
+            }
+            .video-nav-bar {
+                padding: 12px 20px;
+            }
+            .content-body {
+                padding: 24px 20px;
+            }
+        }
+
+        /* ========================================================
+           AI LESSON ASSISTANT THEATER STYLES & INTERACTIVE QUIZ
+        ======================================================== */
+        .btn-ai-trigger {
+            background: rgba(0, 210, 196, 0.12) !important;
+            border-color: rgba(0, 210, 196, 0.4) !important;
+            color: #FFFFFF !important;
+            font-weight: 700 !important;
+            cursor: pointer;
+        }
+
+        .btn-ai-trigger:hover {
+            background: var(--brand-gradient) !important;
+            color: #07111E !important;
+            box-shadow: 0 4px 14px var(--brand-cyan-glow) !important;
+        }
+
+        /* Theater Floating Action Button */
+        .ai-theater-fab {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: var(--brand-gradient);
+            color: #07111E;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            box-shadow: 0 8px 24px var(--brand-cyan-glow), 0 0 0 1px rgba(255, 255, 255, 0.2);
+            z-index: 999;
+            transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .ai-theater-fab:hover {
+            transform: scale(1.1) rotate(5deg);
+            box-shadow: 0 12px 32px var(--brand-cyan-glow), 0 0 20px rgba(0, 210, 196, 0.6);
+        }
+
+        .ai-theater-fab .fab-badge {
+            position: absolute;
+            top: -2px;
+            right: -2px;
+            width: 14px;
+            height: 14px;
+            background: #10B981;
+            border: 2px solid #0F172A;
+            border-radius: 50%;
+        }
+
+        /* Theater AI Drawer / Window */
+        .ai-theater-panel {
+            position: fixed;
+            bottom: 92px;
+            right: 24px;
+            width: 440px;
+            max-width: calc(100vw - 36px);
+            height: 640px;
+            max-height: calc(100vh - 120px);
+            background: #0F172A;
+            border: 1px solid var(--brand-cyan-border);
+            border-radius: 20px;
+            box-shadow: 0 24px 64px rgba(0, 0, 0, 0.75), 0 0 35px rgba(0, 210, 196, 0.15);
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+            z-index: 1000;
+            backdrop-filter: blur(16px);
+            animation: slideUpPanel 0.25s ease-out;
+        }
+
+        @keyframes slideUpPanel {
+            from { opacity: 0; transform: translateY(20px) scale(0.96); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .ai-panel-header {
+            background: rgba(15, 23, 42, 0.96);
+            border-bottom: 1px solid var(--card-border);
+            padding: 14px 18px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-shrink: 0;
+        }
+
+        .ai-header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-width: 0;
+        }
+
+        .ai-avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            background: var(--brand-gradient);
+            color: #07111E;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            flex-shrink: 0;
+            box-shadow: 0 4px 12px var(--brand-cyan-glow);
+            position: relative;
+        }
+
+        .ai-avatar-dot {
+            position: absolute;
+            bottom: -2px;
+            right: -2px;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #10B981;
+            border: 2px solid #0F172A;
+        }
+
+        .ai-header-text h3 {
+            font-size: 0.95rem;
+            font-weight: 800;
+            color: #FFFFFF;
+            letter-spacing: -0.2px;
+            margin: 0;
+        }
+
+        .ai-header-text p {
+            font-size: 0.72rem;
+            color: var(--brand-cyan-light);
+            margin: 2px 0 0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 220px;
+        }
+
+        .ai-header-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .ai-head-btn {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: var(--text-dim);
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 13px;
+        }
+
+        .ai-head-btn:hover {
+            background: rgba(255, 255, 255, 0.12);
+            color: #FFFFFF;
+        }
+
+        /* Quick Prompt Chips */
+        .ai-chips-bar {
+            padding: 10px 14px;
+            background: rgba(11, 17, 32, 0.6);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            flex-shrink: 0;
+        }
+
+        .ai-chips-bar::-webkit-scrollbar {
+            height: 4px;
+        }
+
+        .ai-chips-bar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+        }
+
+        .ai-chip {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: var(--text-dim);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.74rem;
+            font-weight: 700;
+            cursor: pointer;
+            white-space: nowrap;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+        }
+
+        .ai-chip:hover {
+            background: var(--brand-cyan-bg);
+            border-color: var(--brand-cyan);
+            color: var(--brand-cyan-light);
+            transform: translateY(-1px);
+        }
+
+        .ai-chip-quiz {
+            background: var(--brand-purple-bg);
+            border-color: rgba(124, 58, 237, 0.35);
+            color: #DDD6FE;
+        }
+
+        .ai-chip-quiz:hover {
+            background: rgba(124, 58, 237, 0.3);
+            border-color: var(--brand-purple-light);
+            color: #FFFFFF;
+        }
+
+        /* Message Box */
+        .ai-messages-box {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            background: #0B1120;
+        }
+
+        .ai-messages-box::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .ai-messages-box::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+        }
+
+        .ai-msg {
+            max-width: 88%;
+            padding: 12px 16px;
+            border-radius: 14px;
+            font-size: 0.86rem;
+            line-height: 1.55;
+            position: relative;
+            word-wrap: break-word;
+        }
+
+        .ai-msg-user {
+            align-self: flex-end;
+            background: var(--brand-gradient);
+            color: #07111E;
+            font-weight: 600;
+            border-bottom-right-radius: 4px;
+            box-shadow: 0 4px 14px var(--brand-cyan-glow);
+        }
+
+        .ai-msg-bot {
+            align-self: flex-start;
+            background: #1E293B;
+            color: var(--text-main);
+            border: 1px solid var(--card-border);
+            border-bottom-left-radius: 4px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .ai-msg-bot strong {
+            color: var(--brand-cyan-light);
+        }
+
+        /* Code Blocks */
+        .ai-code-block {
+            margin: 10px 0;
+            background: #050B14;
+            border: 1px solid rgba(0, 210, 196, 0.25);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .ai-code-header {
+            background: #0A1324;
+            padding: 6px 12px;
+            font-size: 11px;
+            color: #94A3B8;
+            font-weight: 700;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .ai-code-copy-btn {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: #CBD5E1;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .ai-code-copy-btn:hover {
+            background: var(--brand-cyan);
+            color: #07111E;
+            border-color: transparent;
+        }
+
+        .ai-code-content {
+            padding: 10px 12px;
+            font-family: 'Consolas', 'Fira Code', monospace;
+            font-size: 12px;
+            line-height: 1.45;
+            color: #E2E8F0;
+            overflow-x: auto;
+            margin: 0;
+        }
+
+        /* Action Buttons bar below AI answer */
+        .ai-action-bar {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+            padding-top: 8px;
+            border-top: 1px dashed rgba(255, 255, 255, 0.1);
+            align-items: center;
+        }
+
+        .ai-action-btn {
+            background: var(--brand-purple-bg);
+            border: 1px solid var(--brand-purple-glow);
+            color: #C4B5FD;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 5px 10px;
             border-radius: 6px;
             cursor: pointer;
-            font-weight: 600;
-            font-size: 13px;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.2s;
         }
 
-        .btn-download {
-            background: var(--primary);
-            color: #000;
-            text-decoration: none;
-            padding: 8px 16px;
-            border-radius: 6px;
+        .ai-action-btn:hover {
+            background: var(--brand-purple);
+            color: #FFFFFF;
+            transform: translateY(-1px);
+        }
+
+        /* Interactive Quiz Card */
+        .ai-quiz-card {
+            background: #111C33;
+            border: 1px solid rgba(124, 58, 237, 0.35);
+            border-radius: 12px;
+            padding: 14px;
+            margin: 6px 0;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .ai-quiz-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.78rem;
+            color: #C4B5FD;
+            font-weight: 800;
+            margin-bottom: 8px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            padding-bottom: 6px;
+        }
+
+        .ai-quiz-q {
+            font-size: 0.88rem;
             font-weight: 700;
-            font-size: 13px;
+            color: #FFFFFF;
+            margin-bottom: 12px;
+            line-height: 1.4;
+        }
+
+        .ai-quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+        }
+
+        .ai-quiz-opt {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #E2E8F0;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 0.82rem;
+            cursor: pointer;
+            text-align: left;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .ai-quiz-opt:hover:not(:disabled) {
+            background: rgba(0, 210, 196, 0.15);
+            border-color: var(--brand-cyan);
+            color: #FFFFFF;
+            transform: translateX(3px);
+        }
+
+        .ai-quiz-opt.correct {
+            background: rgba(16, 185, 129, 0.25) !important;
+            border-color: #10B981 !important;
+            color: #A7F3D0 !important;
+            font-weight: 700;
+        }
+
+        .ai-quiz-opt.wrong {
+            background: rgba(239, 68, 68, 0.25) !important;
+            border-color: #EF4444 !important;
+            color: #FECACA !important;
+        }
+
+        .ai-quiz-expl {
+            margin-top: 10px;
+            padding: 8px 12px;
+            background: rgba(0, 210, 196, 0.08);
+            border-left: 3px solid var(--brand-cyan);
+            border-radius: 4px;
+            font-size: 0.8rem;
+            color: #CBD5E1;
+            line-height: 1.4;
+            display: none;
+        }
+
+        /* Typing Dots */
+        .typing-dots {
+            display: inline-flex;
+            gap: 4px;
+        }
+
+        .typing-dot {
+            width: 6px;
+            height: 6px;
+            background: var(--brand-cyan);
+            border-radius: 50%;
+            animation: dotBounce 1.4s infinite ease-in-out both;
+        }
+
+        .typing-dot:nth-child(1) { animation-delay: -0.32s; }
+        .typing-dot:nth-child(2) { animation-delay: -0.16s; }
+
+        @keyframes dotBounce {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1); }
+        }
+
+        /* Footer & Voice Input */
+        .ai-footer {
+            padding: 12px 14px;
+            background: rgba(15, 23, 42, 0.98);
+            border-top: 1px solid var(--card-border);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+
+        .ai-input-wrapper {
+            flex: 1;
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .ai-theater-input {
+            width: 100%;
+            background: #0B1120;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 12px;
+            padding: 10px 42px 10px 14px;
+            color: #FFFFFF;
+            font-size: 0.86rem;
+            outline: none;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+
+        .ai-theater-input:focus {
+            border-color: var(--brand-cyan);
+            box-shadow: 0 0 12px var(--brand-cyan-glow);
+        }
+
+        .ai-mic-btn {
+            position: absolute;
+            right: 8px;
+            background: transparent;
+            border: none;
+            color: #94A3B8;
+            font-size: 15px;
+            cursor: pointer;
+            padding: 6px;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+
+        .ai-mic-btn:hover {
+            color: var(--brand-cyan);
+        }
+
+        .ai-mic-btn.listening {
+            color: #EF4444;
+            animation: pulseMic 1.2s infinite;
+        }
+
+        @keyframes pulseMic {
+            0% { transform: scale(1); text-shadow: 0 0 4px #EF4444; }
+            50% { transform: scale(1.2); text-shadow: 0 0 12px #EF4444; }
+            100% { transform: scale(1); text-shadow: 0 0 4px #EF4444; }
+        }
+
+        .ai-theater-send {
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            background: var(--brand-gradient);
+            border: none;
+            color: #07111E;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            transition: all 0.2s;
+            flex-shrink: 0;
+        }
+
+        .ai-theater-send:hover:not(:disabled) {
+            transform: scale(1.05);
+            box-shadow: 0 4px 14px var(--brand-cyan-glow);
+        }
+
+        .ai-theater-send:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
         }
     </style>
 </head>
 <body>
 
-    <aside class="sidebar">
-        <div class="sidebar-header">
-            <a href="{% url 'my_courses' %}"><i class="fa-solid fa-arrow-left"></i> Back to Dashboard</a>
-            <div class="course-title">{{ course.title }}</div>
-        </div>
+    <div class="learning-layout">
 
-        <div class="lesson-list">
-            {% for lesson in lessons %}
-            <a href="?lesson={{ lesson.id }}" class="lesson-item {% if current_lesson.id == lesson.id %}active{% endif %}">
-                <span class="lesson-number">{{ forloop.counter }}</span>
-                <div class="lesson-info">
-                    <div style="font-weight: 600; font-size: 14px;">{{ lesson.title }}</div>
-                    <div style="font-size: 12px; opacity: 0.6;"><i class="fa-regular fa-circle-play"></i> Video Lesson</div>
+        <!-- ==========================================
+             CONSTANT SIDEBAR (Locked, Never Moves)
+        ========================================== -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <a href="{% url 'my_courses' %}" class="back-link">
+                    <i class="fa-solid fa-arrow-left"></i> Back to Dashboard
+                </a>
+                <div class="course-title">{{ course.title }}</div>
+                <div class="course-meta-row">
+                    <span>Curriculum</span>
+                    <span class="lessons-count-pill">
+                        <i class="fa-solid fa-layer-group"></i> {{ lessons|length }} Lesson{{ lessons|length|pluralize }}
+                    </span>
                 </div>
-            </a>
-            {% empty %}
-            <div style="padding: 25px; color: #64748b; font-size: 14px;">No lessons added yet.</div>
-            {% endfor %}
-        </div>
-    </aside>
-
-    <main class="main-content">
-        <div class="video-container">
-            {% if current_lesson.video %}
-                <video width="100%" height="100%" controls controlsList="nodownload" poster="{{ course.thumbnail.url }}">
-                    <source src="{{ current_lesson.video.url }}" type="video/mp4">
-                    Your browser does not support the video tag.
-                </video>
-            {% else %}
-                <div style="text-align: center; color: #64748b;">
-                    <i class="fa-solid fa-video-slash" style="font-size: 50px; margin-bottom: 15px;"></i>
-                    <p>No video available for this lesson.</p>
-                </div>
-            {% endif %}
-        </div>
-
-        <div class="content-footer">
-            <h2 class="lesson-heading">{{ current_lesson.title }}</h2>
-            <p class="lesson-description">{{ current_lesson.description|default:"No description provided for this lesson." }}</p>
-            
-            <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.1); margin-bottom: 30px;">
-
-            <h3 style="font-size: 18px; margin-bottom: 15px;">
-                <i class="fa-solid fa-book-open" style="color: var(--primary);"></i> Study Materials
-            </h3>
-
-{% if current_lesson.notes %}
-<div class="resource-card">
-    <div class="resource-header">
-        <div style="display: flex; align-items: center; gap: 10px;">
-            {% if ".png" in current_lesson.notes.url|lower or ".jpg" in current_lesson.notes.url|lower or ".jpeg" in current_lesson.notes.url|lower %}
-                <i class="fa-solid fa-image" style="color: #3b82f6; font-size: 20px;"></i>
-            {% else %}
-                <i class="fa-solid fa-file-pdf" style="color: #ef4444; font-size: 20px;"></i>
-            {% endif %}
-            <span style="font-weight: 600;">{{ current_lesson.title }}_Resources</span>
-        </div>
-        <div style="display: flex; gap: 10px;">
-            <button class="btn-view" id="viewBtn" onclick="toggleResource('{{ current_lesson.notes.url }}')">
-                <i class="fa-solid fa-eye"></i> VIEW ONLINE
-            </button>
-            <a href="{{ current_lesson.notes.url }}" download class="btn-download">
-                <i class="fa-solid fa-download"></i> DOWNLOAD
-            </a>
-        </div>
-    </div>
-
-    <div id="resourceContainer" style="display: none; background: #1e293b; border-top: 1px solid rgba(255,255,255,0.1); text-align: center; padding: 20px;">
-        <div id="resourceWrapper" style="min-height: 500px; width: 100%; display: flex; justify-content: center; align-items: center;">
             </div>
+
+            <div class="lesson-list" id="sidebarLessonList">
+                {% for lesson in lessons %}
+                <a href="?lesson={{ lesson.id }}" class="lesson-item {% if current_lesson.id == lesson.id %}active{% endif %}" id="lesson-item-{{ lesson.id }}">
+                    <span class="lesson-number">
+                        {% if lesson.id in completed_lesson_ids %}
+                            <i class="fa-solid fa-check" style="color: #10B981;"></i>
+                        {% else %}
+                            {{ forloop.counter }}
+                        {% endif %}
+                    </span>
+                    <div class="lesson-info">
+                        <div class="lesson-title-text" title="{{ lesson.title }}">{{ lesson.title }}</div>
+                        <div class="lesson-badges">
+                            <span><i class="fa-solid fa-play" style="font-size: 9px;"></i> Video Lesson</span>
+                            {% if lesson.notes %}
+                                <span class="badge-has-notes"><i class="fa-solid fa-file-lines"></i> Notes</span>
+                            {% endif %}
+                            {% if lesson.id in completed_lesson_ids %}
+                                <span style="color: #10B981; font-weight: 700; font-size: 0.72rem;"><i class="fa-solid fa-circle-check"></i> Done</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </a>
+                {% empty %}
+                <div style="padding: 30px 20px; color: var(--text-dim); font-size: 0.9rem; text-align: center;">
+                    No lessons available yet.
+                </div>
+                {% endfor %}
+            </div>
+        </aside>
+
+        <!-- ==========================================
+             MAIN CONTENT (Scrolls while sidebar is constant)
+        ========================================== -->
+        <main class="main-content" id="mainLearningContent">
+
+            <!-- Video Player Theater Area -->
+            <div class="video-wrapper">
+                <div class="video-container">
+                    {% if current_lesson.video %}
+                        <video id="playerVideo" width="100%" height="100%" controls controlsList="nodownload" poster="{{ course.thumbnail.url|default:'' }}">
+                            <source src="{{ current_lesson.video.url }}" type="video/mp4">
+                            Your browser does not support HTML5 video playback.
+                        </video>
+                    {% else %}
+                        <div style="text-align: center; color: var(--text-dim); padding: 40px;">
+                            <i class="fa-solid fa-video-slash" style="font-size: 48px; margin-bottom: 14px; color: var(--brand-cyan);"></i>
+                            <p style="font-weight: 600; font-size: 1.1rem;">No video uploaded for this lesson yet.</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Fast Prev / Next Navigation Bar -->
+            <div class="video-nav-bar">
+                <div>
+                    {% if prev_lesson %}
+                    <a href="?lesson={{ prev_lesson.id }}" class="nav-lesson-btn">
+                        <i class="fa-solid fa-arrow-left"></i> Previous Lesson
+                    </a>
+                    {% else %}
+                    <span class="nav-lesson-btn disabled">
+                        <i class="fa-solid fa-arrow-left"></i> Previous Lesson
+                    </span>
+                    {% endif %}
+                </div>
+
+                <div style="display: flex; align-items: center; gap: 14px;">
+                    <span style="font-size: 0.82rem; color: var(--text-dim); font-weight: 700;">
+                        Lesson {{ forloop.counter|default:"1" }} of {{ lessons|length }}
+                    </span>
+
+                    {% if current_lesson %}
+                    <form method="POST" action="{% url 'complete_lesson' current_lesson.id %}" style="display: inline-block; margin: 0;">
+                        {% csrf_token %}
+                        <input type="hidden" name="action" value="toggle">
+                        {% if is_current_completed %}
+                        <button type="submit" class="nav-lesson-btn" style="background: rgba(16, 185, 129, 0.15); color: #10B981; border-color: rgba(16, 185, 129, 0.4);">
+                            <i class="fa-solid fa-circle-check"></i> Completed
+                        </button>
+                        {% else %}
+                        <button type="submit" class="nav-lesson-btn" style="background: rgba(255, 255, 255, 0.08); color: var(--text-main);">
+                            <i class="fa-regular fa-circle-check"></i> Mark as Complete
+                        </button>
+                        {% endif %}
+                    </form>
+                    {% endif %}
+
+                    <!-- AI Assistant Trigger Button -->
+                    <button type="button" class="nav-lesson-btn btn-ai-trigger" onclick="toggleTheaterAI()" title="Open CYANOPY AI Lesson Assistant">
+                        <i class="fa-solid fa-wand-magic-sparkles" style="color: var(--brand-cyan);"></i> Ask AI Tutor
+                    </button>
+                </div>
+
+                <div>
+                    {% if next_lesson %}
+                    <a href="?lesson={{ next_lesson.id }}" class="nav-lesson-btn" style="background: var(--brand-gradient); color: #07111E;">
+                        Next Lesson <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                    {% else %}
+                    <span class="nav-lesson-btn disabled">
+                        Next Lesson <i class="fa-solid fa-arrow-right"></i>
+                    </span>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Lesson Details & Study Materials -->
+            <div class="content-body">
+                <h1 class="lesson-heading">{{ current_lesson.title }}</h1>
+                <p class="lesson-description">{{ current_lesson.description|default:"No description provided for this lesson." }}</p>
+
+                <div class="section-title">
+                    <i class="fa-solid fa-book-open-reader"></i>
+                    <span>Study Materials & Online Notes</span>
+                </div>
+
+                {% if current_lesson.notes %}
+                <div class="resource-card" id="studyMaterialsCard">
+                    <div class="resource-header">
+                        <div class="resource-left">
+                            {% if ".png" in current_lesson.notes.url|lower or ".jpg" in current_lesson.notes.url|lower or ".jpeg" in current_lesson.notes.url|lower or ".webp" in current_lesson.notes.url|lower %}
+                                <div class="file-icon-box icon-image">
+                                    <i class="fa-solid fa-file-image"></i>
+                                </div>
+                            {% elif ".pdf" in current_lesson.notes.url|lower %}
+                                <div class="file-icon-box icon-pdf">
+                                    <i class="fa-solid fa-file-pdf"></i>
+                                </div>
+                            {% else %}
+                                <div class="file-icon-box icon-doc">
+                                    <i class="fa-solid fa-file-lines"></i>
+                                </div>
+                            {% endif %}
+                            
+                            <div class="resource-info">
+                                <h4>{{ current_lesson.title }} _Resources</h4>
+                                <span>Attached Lesson Notes & Documentation</span>
+                            </div>
+                        </div>
+
+                        <div class="resource-actions">
+                            <!-- View Online In-Page Button -->
+                            <button class="btn-view-notes" id="viewBtn" onclick="toggleResource('{{ current_lesson.notes.url }}')">
+                                <i class="fa-solid fa-eye"></i> VIEW ONLINE
+                            </button>
+
+                            <!-- Open in Fullscreen / New Tab Button -->
+                            <a href="{{ current_lesson.notes.url }}" target="_blank" rel="noopener noreferrer" class="btn-open-tab" title="Open in new window">
+                                <i class="fa-solid fa-arrow-up-right-from-square"></i> OPEN IN TAB
+                            </a>
+
+                            <!-- Download Button -->
+                            <a href="{{ current_lesson.notes.url }}" download class="btn-download-notes" title="Download to device">
+                                <i class="fa-solid fa-download"></i> DOWNLOAD
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- In-Page Embedded Viewer (PDF / Image / Text) -->
+                    <div id="resourceContainer" class="viewer-container">
+                        <div class="viewer-top-bar">
+                            <span><i class="fa-solid fa-file-circle-check" style="color: var(--brand-cyan);"></i> {{ current_lesson.title }} Notes Viewer</span>
+                            <div style="display: flex; gap: 14px; align-items: center;">
+                                <a href="{{ current_lesson.notes.url }}" target="_blank">
+                                    <i class="fa-solid fa-expand"></i> Full Screen Tab
+                                </a>
+                                <button onclick="toggleResource('{{ current_lesson.notes.url }}')" style="background: none; border: none; color: #EF4444; font-weight: 700; cursor: pointer; font-size: 0.85rem;">
+                                    <i class="fa-solid fa-xmark"></i> Close Viewer
+                                </button>
+                            </div>
+                        </div>
+
+                        <div id="resourceWrapper" class="viewer-content">
+                            <!-- Injected dynamically via toggleResource() -->
+                        </div>
+                    </div>
+                </div>
+                {% else %}
+                <div class="empty-notes-card">
+                    <i class="fa-solid fa-file-circle-xmark" style="font-size: 32px; color: var(--text-darker); margin-bottom: 10px; display: block;"></i>
+                    No study notes uploaded for this lesson yet.
+                </div>
+                {% endif %}
+            </div>
+        </main>
     </div>
-</div>
-{% else %}
-<p style="color: #64748b; font-style: italic;">No study materials attached to this lesson.</p>
-{% endif %}
 
-<script>
-    function toggleResource(fileUrl) {
-        var container = document.getElementById("resourceContainer");
-        var wrapper = document.getElementById("resourceWrapper");
-        var btn = document.getElementById("viewBtn");
-        
-        // Check file extension
-        var isImage = fileUrl.match(/\.(jpeg|jpg|gif|png)$/) != null;
+    <script>
+        // Online Notes Viewer Logic
+        function toggleResource(fileUrl) {
+            const container = document.getElementById("resourceContainer");
+            const wrapper = document.getElementById("resourceWrapper");
+            const btn = document.getElementById("viewBtn");
 
-        if (container.style.display === "none") {
-            container.style.display = "block";
-            btn.innerHTML = '<i class="fa-solid fa-eye-slash"></i> CLOSE VIEWER';
-            btn.style.background = "#ef4444";
+            if (!container || !wrapper || !btn) return;
 
-            if (isImage) {
-                // If it's an image (like your Screenshot_...png)
-                wrapper.innerHTML = '<img src="' + fileUrl + '" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">';
+            const isImage = fileUrl.match(/\.(jpeg|jpg|gif|png|webp|svg)$/i) !== null;
+            const isPdf = fileUrl.match(/\.pdf$/i) !== null;
+
+            if (container.style.display === "none" || container.style.display === "") {
+                container.style.display = "block";
+                btn.classList.add("active");
+                btn.innerHTML = '<i class="fa-solid fa-eye-slash"></i> CLOSE VIEWER';
+
+                if (isImage) {
+                    wrapper.innerHTML = `
+                        <div style="text-align: center; padding: 20px;">
+                            <img src="${fileUrl}" alt="Lesson Notes" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+                        </div>
+                    `;
+                } else if (isPdf) {
+                    // Embed PDF via iframe + object fallback
+                    wrapper.innerHTML = `
+                        <iframe src="${fileUrl}" width="100%" height="750px" style="border: none; border-radius: 8px; background: #FFFFFF;" allowfullscreen>
+                            <object data="${fileUrl}" type="application/pdf" width="100%" height="750px">
+                                <p style="color: #94A3B8; text-align: center; padding: 40px;">
+                                    Your browser doesn't support embedded PDFs.
+                                    <a href="${fileUrl}" target="_blank" style="color: #00D2C4; font-weight: 700; margin-left: 6px;">
+                                        Click here to open the PDF directly &rarr;
+                                    </a>
+                                </p>
+                            </object>
+                        </iframe>
+                    `;
+                } else {
+                    // Other document types
+                    wrapper.innerHTML = `
+                        <iframe src="${fileUrl}" width="100%" height="650px" style="border: none; border-radius: 8px; background: #FFFFFF;">
+                            <p style="color: #94A3B8; text-align: center; padding: 40px;">
+                                Document Preview:
+                                <a href="${fileUrl}" target="_blank" style="color: #00D2C4; font-weight: 700; margin-left: 6px;">
+                                    Open document &rarr;
+                                </a>
+                            </p>
+                        </iframe>
+                    `;
+                }
+
+                // Smoothly scroll down so the viewer is clearly visible
+                setTimeout(() => {
+                    container.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                }, 100);
+
             } else {
-                // If it's a PDF
-                wrapper.innerHTML = '<iframe src="' + fileUrl + '#toolbar=0" width="100%" height="700px" style="border: none;"></iframe>';
+                container.style.display = "none";
+                wrapper.innerHTML = "";
+                btn.classList.remove("active");
+                btn.innerHTML = '<i class="fa-solid fa-eye"></i> VIEW ONLINE';
             }
-        } else {
-            container.style.display = "none";
-            wrapper.innerHTML = ''; 
-            btn.innerHTML = '<i class="fa-solid fa-eye"></i> VIEW ONLINE';
-            btn.style.background = "#334155";
         }
-    }
-</script>
+
+        // Auto-scroll the active lesson item into view in the sidebar on page load
+        document.addEventListener("DOMContentLoaded", function () {
+            const activeLesson = document.querySelector(".lesson-item.active");
+            const sidebarList = document.getElementById("sidebarLessonList");
+            if (activeLesson && sidebarList) {
+                activeLesson.scrollIntoView({ behavior: "smooth", block: "nearest" });
+            }
+        });
+    </script>
+
+    <!-- ========================================================
+         AI LESSON ASSISTANT THEATER WIDGET & FLOATING FAB
+    ======================================================== -->
+    <button class="ai-theater-fab" id="aiTheaterFab" onclick="toggleTheaterAI()" title="Ask CYANOPY AI Lesson Assistant">
+        <i class="fa-solid fa-robot"></i>
+        <span class="fab-badge"></span>
+    </button>
+
+    <div class="ai-theater-panel" id="theaterAiPanel">
+        <!-- Header -->
+        <div class="ai-panel-header">
+            <div class="ai-header-left">
+                <div class="ai-avatar">
+                    <i class="fa-solid fa-graduation-cap"></i>
+                    <span class="ai-avatar-dot"></span>
+                </div>
+                <div class="ai-header-text">
+                    <h3>CYANOPY Tutor</h3>
+                    <p title="{{ current_lesson.title }}"><i class="fa-solid fa-book-bookmark"></i> {{ current_lesson.title|default:course.title }}</p>
+                </div>
+            </div>
+            <div class="ai-header-actions">
+                <button class="ai-head-btn" onclick="clearTheaterChat()" title="Start New Topic / Clear History">
+                    <i class="fa-solid fa-rotate-right"></i>
+                </button>
+                <button class="ai-head-btn" onclick="toggleTheaterAI()" title="Close Assistant">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Quick Prompt Chips -->
+        <div class="ai-chips-bar">
+            <button class="ai-chip" onclick="sendQuickPrompt('Explain this lesson in 3 simple points')">
+                <i class="fa-regular fa-lightbulb"></i> Explain Lesson
+            </button>
+            <button class="ai-chip" onclick="sendQuickPrompt('Summarize the study notes for this lesson')">
+                <i class="fa-regular fa-file-lines"></i> Summarize Notes
+            </button>
+            <button class="ai-chip ai-chip-quiz" onclick="startLessonQuiz()">
+                <i class="fa-solid fa-brain"></i> Quiz Me!
+            </button>
+            <button class="ai-chip" onclick="escalateToMentorDirect()" style="color: #F87171; border-color: rgba(239, 68, 68, 0.3);">
+                <i class="fa-solid fa-chalkboard-user"></i> Ask Human Mentor
+            </button>
+        </div>
+
+        <!-- Messages Area -->
+        <div class="ai-messages-box" id="theaterAiMessages">
+            <div class="ai-msg ai-msg-bot">
+                👋 Hi {{ request.user.first_name|default:request.user.username }}! I am your <strong>CYANOPY Lesson Tutor</strong>.<br><br>
+                I am actively grounded on <strong>{{ current_lesson.title|default:course.title }}</strong> and your attached study notes. Ask me any question, request code examples, or tap <strong>Quiz Me!</strong> to test yourself.
+            </div>
+        </div>
+
+        <!-- Footer / Input Area -->
+        <div class="ai-footer">
+            <div class="ai-input-wrapper">
+                <input type="text" id="theaterAiInput" class="ai-theater-input" placeholder="Ask about this video or code..." onkeydown="if(event.key === 'Enter') sendTheaterAI();">
+                <button type="button" class="ai-mic-btn" id="theaterMicBtn" onclick="toggleTheaterVoice()" title="Speak your question (Web Speech)">
+                    <i class="fa-solid fa-microphone"></i>
+                </button>
+            </div>
+            <button type="button" class="ai-theater-send" id="theaterSendBtn" onclick="sendTheaterAI()" title="Send">
+                <i class="fa-solid fa-paper-plane"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- AI Theater Script Logic -->
+    <script>
+        const CURRENT_COURSE_ID = "{{ course.id }}";
+        const CURRENT_LESSON_ID = "{{ current_lesson.id|default:'' }}";
+        let isPanelOpen = false;
+        let speechRecognition = null;
+        let isListening = false;
+        let hasLoadedHistory = false;
+
+        // Toggle Panel open/close
+        function toggleTheaterAI() {
+            const panel = document.getElementById("theaterAiPanel");
+            isPanelOpen = !isPanelOpen;
+            panel.style.display = isPanelOpen ? "flex" : "none";
+
+            if (isPanelOpen) {
+                document.getElementById("theaterAiInput").focus();
+                if (!hasLoadedHistory) {
+                    loadChatHistory();
+                    hasLoadedHistory = true;
+                }
+            }
+        }
+
+        // Load Persistent Chat History from Database
+        function loadChatHistory() {
+            let url = `/ai/history/?course_id=${CURRENT_COURSE_ID}`;
+            if (CURRENT_LESSON_ID) url += `&lesson_id=${CURRENT_LESSON_ID}`;
+
+            fetch(url)
+                .then(r => r.json())
+                .then(data => {
+                    if (data && data.messages && data.messages.length > 0) {
+                        const box = document.getElementById("theaterAiMessages");
+                        box.innerHTML = ""; // Clear welcome if history exists
+                        data.messages.forEach(msg => {
+                            if (msg.role === "user") {
+                                box.innerHTML += `<div class="ai-msg ai-msg-user">${escapeHtml(msg.content)}</div>`;
+                            } else if (msg.role === "assistant") {
+                                const botDiv = document.createElement("div");
+                                botDiv.className = "ai-msg ai-msg-bot";
+                                botDiv.innerHTML = formatAiReply(msg.content);
+                                box.appendChild(botDiv);
+                            }
+                        });
+                        box.scrollTop = box.scrollHeight;
+                    }
+                })
+                .catch(err => console.debug("Could not load previous history:", err));
+        }
+
+        // Quick Prompt sender
+        function sendQuickPrompt(promptText) {
+            const input = document.getElementById("theaterAiInput");
+            input.value = promptText;
+            sendTheaterAI();
+        }
+
+        // Markdown + Code syntax formatter
+        function formatAiReply(raw) {
+            let str = raw;
+            // 1. Extract and store code blocks
+            const codeBlocks = [];
+            str = str.replace(/```([a-zA-Z0-9_-]*)\n([\s\S]*?)```/g, function(match, lang, code) {
+                const id = `__CODE_${codeBlocks.length}__`;
+                codeBlocks.push({ lang: lang || 'code', code: code.trim() });
+                return id;
+            });
+
+            // 2. Headings & Bold
+            str = str.replace(/^### (.*$)/gim, '<div style="font-weight: 800; font-size: 13px; margin: 6px 0 2px; color: #FFFFFF;">$1</div>');
+            str = str.replace(/^## (.*$)/gim, '<div style="font-weight: 800; font-size: 14px; margin: 8px 0 4px; color: #00D2C4;">$1</div>');
+            str = str.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+            str = str.replace(/`([^`]+)`/g, '<code style="background: rgba(0,210,196,0.1); color: #26E5D7; padding: 2px 5px; border-radius: 4px; font-family: monospace; font-size: 11px;">$1</code>');
+
+            // 3. Bullets
+            str = str.replace(/^\s*[\*\-]\s+(.*)$/gm, '&bull; $1<br>');
+            str = str.replace(/\n\n/g, '<br><br>').replace(/\n/g, '<br>');
+
+            // 4. Restore code blocks
+            codeBlocks.forEach((block, idx) => {
+                const id = `__CODE_${idx}__`;
+                const escaped = escapeHtml(block.code);
+                const encoded = encodeURIComponent(block.code);
+                const html = `
+                    <div class="ai-code-block">
+                        <div class="ai-code-header">
+                            <span><i class="fa-solid fa-code"></i> ${block.lang.toUpperCase()}</span>
+                            <button class="ai-code-copy-btn" onclick="copySnippet(this, '${encoded}')">
+                                <i class="fa-regular fa-copy"></i> Copy
+                            </button>
+                        </div>
+                        <pre class="ai-code-content"><code>${escaped}</code></pre>
+                    </div>
+                `;
+                str = str.replace(id, html);
+            });
+
+            return str;
+        }
+
+        function escapeHtml(text) {
+            return String(text).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        }
+
+        function copySnippet(btn, encodedCode) {
+            const code = decodeURIComponent(encodedCode);
+            navigator.clipboard.writeText(code).then(() => {
+                btn.innerHTML = `<i class="fa-solid fa-check"></i> Copied!`;
+                btn.style.color = "#10B981";
+                setTimeout(() => {
+                    btn.innerHTML = `<i class="fa-regular fa-copy"></i> Copy`;
+                    btn.style.color = "";
+                }, 2000);
+            });
+        }
+
+        // Send message to AI
+        function sendTheaterAI() {
+            const input = document.getElementById("theaterAiInput");
+            const btn = document.getElementById("theaterSendBtn");
+            const box = document.getElementById("theaterAiMessages");
+            const msg = input.value.trim();
+            if (!msg) return;
+
+            // Render user bubble
+            box.innerHTML += `<div class="ai-msg ai-msg-user">${escapeHtml(msg)}</div>`;
+            input.value = "";
+            box.scrollTop = box.scrollHeight;
+
+            // Typing indicator
+            const typingId = "typing-" + Date.now();
+            box.innerHTML += `
+                <div id="${typingId}" class="ai-msg ai-msg-bot" style="display: flex; align-items: center; gap: 8px;">
+                    <span style="font-size: 11px; color: #94A3B8;">Thinking</span>
+                    <div class="typing-dots">
+                        <span class="typing-dot"></span>
+                        <span class="typing-dot"></span>
+                        <span class="typing-dot"></span>
+                    </div>
+                </div>
+            `;
+            box.scrollTop = box.scrollHeight;
+
+            input.disabled = true;
+            btn.disabled = true;
+            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i>`;
+
+            // Try SSE streaming endpoint, with fallback to standard /ai/chat/
+            const streamUrl = `/ai/stream/?msg=${encodeURIComponent(msg)}&course_id=${CURRENT_COURSE_ID}&lesson_id=${CURRENT_LESSON_ID}`;
+
+            if (window.EventSource) {
+                let accumulatedText = "";
+                let botBubble = null;
+                const source = new EventSource(streamUrl);
+
+                source.onmessage = function (event) {
+                    const typingEl = document.getElementById(typingId);
+                    if (typingEl) typingEl.remove();
+
+                    if (event.data === "[DONE]") {
+                        source.close();
+                        finishSend(botBubble, accumulatedText, msg);
+                        return;
+                    }
+
+                    try {
+                        const parsed = JSON.parse(event.data);
+                        if (parsed.token) {
+                            accumulatedText += parsed.token;
+                            if (!botBubble) {
+                                botBubble = document.createElement("div");
+                                botBubble.className = "ai-msg ai-msg-bot";
+                                box.appendChild(botBubble);
+                            }
+                            botBubble.innerHTML = formatAiReply(accumulatedText);
+                            box.scrollTop = box.scrollHeight;
+                        } else if (parsed.error) {
+                            source.close();
+                            handleFetchFallback(msg, typingId);
+                        }
+                    } catch (e) {
+                        console.debug("SSE Parse error:", e);
+                    }
+                };
+
+                source.onerror = function () {
+                    source.close();
+                    // Fallback to fetch if SSE fails
+                    if (!accumulatedText) {
+                        handleFetchFallback(msg, typingId);
+                    } else {
+                        finishSend(botBubble, accumulatedText, msg);
+                    }
+                };
+            } else {
+                handleFetchFallback(msg, typingId);
+            }
+        }
+
+        function handleFetchFallback(msg, typingId) {
+            const url = `/ai/chat/?msg=${encodeURIComponent(msg)}&course_id=${CURRENT_COURSE_ID}&lesson_id=${CURRENT_LESSON_ID}`;
+            const box = document.getElementById("theaterAiMessages");
+
+            fetch(url)
+                .then(r => r.json())
+                .then(data => {
+                    const typingEl = document.getElementById(typingId);
+                    if (typingEl) typingEl.remove();
+
+                    const botBubble = document.createElement("div");
+                    botBubble.className = "ai-msg ai-msg-bot";
+                    box.appendChild(botBubble);
+
+                    // Typewriter streaming effect
+                    streamTypewriter(botBubble, data.reply || "No reply generated.", msg, () => {
+                        finishSend(botBubble, data.reply, msg);
+                    });
+                })
+                .catch(err => {
+                    const typingEl = document.getElementById(typingId);
+                    if (typingEl) typingEl.remove();
+                    box.innerHTML += `<div class="ai-msg ai-msg-bot" style="color: #EF4444;"><i class="fa-solid fa-triangle-exclamation"></i> Error connecting to AI tutor.</div>`;
+                    finishSend(null, null, null);
+                });
+        }
+
+        function streamTypewriter(containerEl, fullReply, questionText, onDone) {
+            const words = fullReply.split(" ");
+            let current = "";
+            let i = 0;
+            const step = words.length > 100 ? 3 : (words.length > 50 ? 2 : 1);
+            const box = document.getElementById("theaterAiMessages");
+
+            const timer = setInterval(() => {
+                if (i < words.length) {
+                    const chunk = words.slice(i, i + step).join(" ");
+                    current += (i === 0 ? "" : " ") + chunk;
+                    i += step;
+                    containerEl.innerHTML = formatAiReply(current);
+                    box.scrollTop = box.scrollHeight;
+                } else {
+                    clearInterval(timer);
+                    containerEl.innerHTML = formatAiReply(fullReply);
+                    box.scrollTop = box.scrollHeight;
+                    if (onDone) onDone();
+                }
+            }, 30);
+        }
+
+        function finishSend(botBubble, fullReply, msg) {
+            const input = document.getElementById("theaterAiInput");
+            const btn = document.getElementById("theaterSendBtn");
+            const box = document.getElementById("theaterAiMessages");
+
+            input.disabled = false;
+            btn.disabled = false;
+            btn.innerHTML = `<i class="fa-solid fa-paper-plane"></i>`;
+            input.focus();
+
+            if (botBubble && msg) {
+                // Add action bar with Ask Human Mentor button
+                const encodedQ = encodeURIComponent(msg);
+                const actionBar = document.createElement("div");
+                actionBar.className = "ai-action-bar";
+                actionBar.innerHTML = `
+                    <button class="ai-action-btn" onclick="escalateDoubtDirect('${encodedQ}')" title="Forward doubt to your course trainer">
+                        <i class="fa-solid fa-chalkboard-user"></i> Ask Human Mentor
+                    </button>
+                    <button class="ai-action-btn" onclick="startLessonQuiz()" title="Test concepts with an instant quiz" style="background: var(--brand-cyan-bg); border-color: var(--brand-cyan-border); color: var(--brand-cyan-light);">
+                        <i class="fa-solid fa-brain"></i> Quiz Me On This
+                    </button>
+                `;
+                botBubble.appendChild(actionBar);
+                box.scrollTop = box.scrollHeight;
+            }
+        }
+
+        // ========================================================
+        // INTERACTIVE QUIZ GENERATOR ("Quiz Me On This Lesson")
+        // ========================================================
+        function startLessonQuiz() {
+            const box = document.getElementById("theaterAiMessages");
+            const quizLoadingId = "quiz-loading-" + Date.now();
+
+            box.innerHTML += `
+                <div id="${quizLoadingId}" class="ai-msg ai-msg-bot">
+                    <i class="fa-solid fa-brain fa-bounce" style="color: #A78BFA; margin-right: 6px;"></i>
+                    Crafting an interactive quiz from your lesson notes...
+                </div>
+            `;
+            box.scrollTop = box.scrollHeight;
+
+            let url = `/ai/quiz/?course_id=${CURRENT_COURSE_ID}`;
+            if (CURRENT_LESSON_ID) url += `&lesson_id=${CURRENT_LESSON_ID}`;
+
+            fetch(url)
+                .then(r => r.json())
+                .then(data => {
+                    const loadEl = document.getElementById(quizLoadingId);
+                    if (loadEl) loadEl.remove();
+
+                    if (!data || !data.questions || data.questions.length === 0) {
+                        box.innerHTML += `<div class="ai-msg ai-msg-bot">Could not generate quiz at this moment. Please try again!</div>`;
+                        return;
+                    }
+
+                    renderInteractiveQuiz(data);
+                })
+                .catch(err => {
+                    const loadEl = document.getElementById(quizLoadingId);
+                    if (loadEl) loadEl.remove();
+                    box.innerHTML += `<div class="ai-msg ai-msg-bot" style="color: #EF4444;">Error generating quiz. Please check your connection.</div>`;
+                });
+        }
+
+        function renderInteractiveQuiz(quizData) {
+            const box = document.getElementById("theaterAiMessages");
+            const quizContainer = document.createElement("div");
+            quizContainer.className = "ai-msg ai-msg-bot";
+            quizContainer.style.width = "95%";
+            quizContainer.style.maxWidth = "95%";
+
+            let quizHtml = `
+                <div style="font-weight: 800; font-size: 1rem; color: #FFFFFF; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between;">
+                    <span><i class="fa-solid fa-brain" style="color: #A78BFA;"></i> ${escapeHtml(quizData.title || "Lesson Practice Quiz")}</span>
+                    <span id="quizScorePill" style="font-size: 11px; background: rgba(124, 58, 237, 0.25); color: #C4B5FD; padding: 3px 8px; border-radius: 6px; font-weight: 700;">3 Questions</span>
+                </div>
+            `;
+
+            quizData.questions.forEach((q, qIdx) => {
+                const qId = `quiz_q_${qIdx}_${Date.now()}`;
+                quizHtml += `
+                    <div class="ai-quiz-card" id="${qId}">
+                        <div class="ai-quiz-header">
+                            <span>Question ${qIdx + 1} of ${quizData.questions.length}</span>
+                        </div>
+                        <div class="ai-quiz-q">${escapeHtml(q.question)}</div>
+                        <div class="ai-quiz-options">
+                `;
+
+                q.options.forEach((opt, optIdx) => {
+                    const encodedExpl = encodeURIComponent(q.explanation || "");
+                    quizHtml += `
+                        <button type="button" class="ai-quiz-opt" onclick="handleQuizAnswer(this, ${q.correct_index}, ${optIdx}, '${encodedExpl}', '${qId}')">
+                            <span>${escapeHtml(opt)}</span>
+                            <i class="fa-regular fa-circle"></i>
+                        </button>
+                    `;
+                });
+
+                quizHtml += `
+                        </div>
+                        <div class="ai-quiz-expl" id="expl_${qId}"></div>
+                    </div>
+                `;
+            });
+
+            quizContainer.innerHTML = quizHtml;
+            box.appendChild(quizContainer);
+            box.scrollTop = box.scrollHeight;
+        }
+
+        function handleQuizAnswer(selectedBtn, correctIdx, chosenIdx, encodedExpl, qCardId) {
+            const card = document.getElementById(qCardId);
+            if (!card) return;
+
+            const allButtons = card.querySelectorAll(".ai-quiz-opt");
+            allButtons.forEach(btn => btn.disabled = true);
+
+            const isCorrect = (chosenIdx === correctIdx);
+            const expl = decodeURIComponent(encodedExpl);
+            const explBox = document.getElementById("expl_" + qCardId);
+
+            if (isCorrect) {
+                selectedBtn.classList.add("correct");
+                selectedBtn.querySelector("i").className = "fa-solid fa-circle-check";
+            } else {
+                selectedBtn.classList.add("wrong");
+                selectedBtn.querySelector("i").className = "fa-solid fa-circle-xmark";
+                // Highlight the correct one
+                if (allButtons[correctIdx]) {
+                    allButtons[correctIdx].classList.add("correct");
+                    allButtons[correctIdx].querySelector("i").className = "fa-solid fa-circle-check";
+                }
+            }
+
+            if (explBox && expl) {
+                explBox.style.display = "block";
+                explBox.innerHTML = `<strong>${isCorrect ? '✅ Well done!' : '💡 Key Concept:'}</strong> ${escapeHtml(expl)}`;
+            }
+        }
+
+        // ========================================================
+        // VOICE INPUT (Web Speech API)
+        // ========================================================
+        function toggleTheaterVoice() {
+            const micBtn = document.getElementById("theaterMicBtn");
+            const input = document.getElementById("theaterAiInput");
+
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!SpeechRecognition) {
+                alert("Voice recognition is not supported in this browser. Please try Google Chrome, Microsoft Edge, or Safari.");
+                return;
+            }
+
+            if (isListening && speechRecognition) {
+                speechRecognition.stop();
+                isListening = false;
+                micBtn.classList.remove("listening");
+                return;
+            }
+
+            speechRecognition = new SpeechRecognition();
+            speechRecognition.continuous = false;
+            speechRecognition.interimResults = false;
+            speechRecognition.lang = "en-US";
+
+            speechRecognition.onstart = function () {
+                isListening = true;
+                micBtn.classList.add("listening");
+                input.placeholder = "Listening... Speak your doubt now";
+            };
+
+            speechRecognition.onresult = function (event) {
+                const transcript = event.results[0][0].transcript;
+                input.value = transcript;
+                input.placeholder = "Ask about this video or code...";
+                isListening = false;
+                micBtn.classList.remove("listening");
+                input.focus();
+            };
+
+            speechRecognition.onerror = function (event) {
+                console.warn("Speech error:", event.error);
+                isListening = false;
+                micBtn.classList.remove("listening");
+                input.placeholder = "Ask about this video or code...";
+            };
+
+            speechRecognition.onend = function () {
+                isListening = false;
+                micBtn.classList.remove("listening");
+                input.placeholder = "Ask about this video or code...";
+            };
+
+            speechRecognition.start();
+        }
+
+        // Start New Topic / Reset Memory
+        function clearTheaterChat() {
+            if (!confirm("Start a new topic? This will clear current session conversation.")) return;
+
+            let url = `/ai/clear/?course_id=${CURRENT_COURSE_ID}`;
+            if (CURRENT_LESSON_ID) url += `&lesson_id=${CURRENT_LESSON_ID}`;
+
+            fetch(url, { method: "POST" })
+                .then(r => r.json())
+                .then(() => {
+                    const box = document.getElementById("theaterAiMessages");
+                    box.innerHTML = `
+                        <div class="ai-msg ai-msg-bot">
+                            <i class="fa-solid fa-sparkles" style="color: var(--brand-cyan);"></i> Conversation reset. What would you like to explore next in <strong>{{ current_lesson.title|default:course.title }}</strong>?
+                        </div>
+                    `;
+                });
+        }
+
+        // Mentor Escalation
+        function escalateToMentorDirect() {
+            const input = document.getElementById("theaterAiInput");
+            const q = input.value.trim() || "Student needs help regarding {{ current_lesson.title|default:course.title }}";
+            escalateDoubtDirect(encodeURIComponent(q));
+        }
+
+        function escalateDoubtDirect(encodedQ) {
+            const question = decodeURIComponent(encodedQ);
+            const box = document.getElementById("theaterAiMessages");
+
+            fetch("/ai/escalate/", {
+                method: "POST",
+                headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                body: "question=" + encodeURIComponent(question)
+            })
+            .then(r => r.json())
+            .then(data => {
+                box.innerHTML += `
+                    <div class="ai-msg ai-msg-bot" style="border-left: 3px solid #10B981; background: rgba(16, 185, 129, 0.12);">
+                        <div style="font-weight: 800; color: #10B981; margin-bottom: 4px;">
+                            <i class="fa-solid fa-circle-check"></i> Sent to Human Mentor!
+                        </div>
+                        ${escapeHtml(data.message || 'Your doubt has been forwarded directly to your trainer.')}
+                    </div>
+                `;
+                box.scrollTop = box.scrollHeight;
+            })
+            .catch(() => {
+                box.innerHTML += `<div class="ai-msg ai-msg-bot" style="color: #EF4444;">Failed to send to trainer. Please try again.</div>`;
+            });
+        }
+    </script>
+</body>
+</html>

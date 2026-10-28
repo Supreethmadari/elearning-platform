@@ -4,250 +4,443 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login | CYANOPY</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <title>Sign In | CYANOPY</title>
+    <!-- Brand Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
         :root {
-            --primary: #fbc02d;
-            --primary-hover: #f9a825;
-            --dark: #0f172a;
-            --slate: #1e293b;
-            --text-muted: #64748b;
-            --error: #ef4444;
-            --bg-body: #f8fafc;
+            --bg-dark: #0B1120;
+            --bg-card: #0F172A;
+            --brand-cyan: #00D2C4;
+            --brand-cyan-dark: #0284C7;
+            --brand-purple: #7C3AED;
+            --brand-purple-dark: #3B0764;
+            --brand-gradient: linear-gradient(135deg, #00D2C4 0%, #7C3AED 100%);
+            --brand-gradient-hover: linear-gradient(135deg, #0284C7 0%, #6D28D9 100%);
+
+            --text-main: #0F172A;
+            --text-light: #F8FAFC;
+            --text-muted: #64748B;
+            --border-light: #E2E8F0;
+            --error: #EF4444;
+            --success: #10B981;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
         }
 
         body {
-            margin: 0;
-            font-family: 'Poppins', sans-serif;
-            background-color: var(--bg-body);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #F8FAFC;
+            color: var(--text-main);
             display: flex;
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .login-container {
+            display: flex;
+            width: 100%;
             min-height: 100vh;
         }
 
-        .login-wrapper {
-            display: flex;
-            width: 100%;
-        }
-
-        /* --- Left Side: Branding (Matches Register) --- */
-        .branding-side {
-            flex: 1.2;
-            background: linear-gradient(135deg, var(--dark) 0%, var(--slate) 100%);
+        /* --- Left Side: Hero Branding --- */
+        .branding-sidebar {
+            flex: 1.1;
+            background: linear-gradient(135deg, #0B1120 0%, #0F172A 50%, #1E1B4B 100%);
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            color: white;
-            padding: 40px;
+            color: var(--text-light);
+            padding: 60px 48px;
             position: relative;
             overflow: hidden;
         }
 
-        .branding-side::before {
+        .branding-sidebar::before {
             content: '';
             position: absolute;
-            width: 300px;
-            height: 300px;
-            background: var(--primary);
-            filter: blur(150px);
-            opacity: 0.1;
-            bottom: -50px;
-            right: -50px;
+            width: 450px;
+            height: 450px;
+            background: radial-gradient(circle, rgba(0, 210, 196, 0.22) 0%, rgba(124, 58, 237, 0.14) 50%, transparent 70%);
+            border-radius: 50%;
+            top: -100px;
+            left: -100px;
+            pointer-events: none;
         }
 
-        .branding-content {
-            z-index: 1;
-            max-width: 400px;
-            text-align: center;
+        .branding-sidebar::after {
+            content: '';
+            position: absolute;
+            width: 380px;
+            height: 380px;
+            background: radial-gradient(circle, rgba(124, 58, 237, 0.2) 0%, transparent 70%);
+            border-radius: 50%;
+            bottom: -60px;
+            right: -60px;
+            pointer-events: none;
         }
 
-        .logo { font-weight: 800; font-size: 32px; letter-spacing: -1.5px; margin-bottom: 20px; }
-        .logo span { color: var(--primary); }
+        .branding-inner {
+            position: relative;
+            z-index: 2;
+            max-width: 460px;
+            text-align: left;
+        }
 
-        /* --- Right Side: Form --- */
-        .form-side {
+        .brand-logo-wrap {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            margin-bottom: 36px;
+        }
+
+        .brand-logo-text {
+            font-size: 1.6rem;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+            color: #FFFFFF;
+        }
+
+        .brand-o { color: var(--brand-cyan); text-shadow: 0 0 12px rgba(0, 210, 196, 0.6); }
+        .brand-py { color: var(--brand-purple); }
+
+        .brand-heading {
+            font-size: 2.1rem;
+            font-weight: 800;
+            line-height: 1.3;
+            letter-spacing: -0.5px;
+            margin-bottom: 16px;
+            background: linear-gradient(135deg, #FFFFFF 0%, #E2E8F0 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .brand-subtext {
+            color: #94A3B8;
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-bottom: 36px;
+        }
+
+        /* --- Right Side: Login Form --- */
+        .form-content-side {
             flex: 1;
-            background: white;
+            background: #FFFFFF;
             display: flex;
             flex-direction: column;
             justify-content: center;
-            padding: 80px;
+            padding: 50px 60px;
+            overflow-y: auto;
         }
 
-        .form-header { margin-bottom: 35px; }
-        .form-header h2 { font-size: 28px; font-weight: 700; color: var(--dark); margin: 0; }
-        .form-header p { color: var(--text-muted); font-size: 15px; margin-top: 8px; }
-
-        .form-group { margin-bottom: 25px; }
-
-        label {
-            display: block;
-            font-size: 13px;
-            font-weight: 600;
-            color: var(--slate);
-            margin-bottom: 8px;
+        .form-box {
+            max-width: 440px;
+            width: 100%;
+            margin: 0 auto;
         }
 
-        .input-container { position: relative; }
-        .input-container i {
-            position: absolute;
-            left: 15px;
-            top: 50%;
-            transform: translateY(-50%);
+        .form-header-title {
+            font-size: 1.85rem;
+            font-weight: 800;
+            color: #0F172A;
+            letter-spacing: -0.5px;
+            margin-bottom: 6px;
+        }
+
+        .form-header-desc {
             color: var(--text-muted);
-            font-size: 14px;
+            font-size: 0.95rem;
+            margin-bottom: 28px;
         }
 
-        input {
-            width: 100%;
-            padding: 14px 15px 14px 45px;
-            border: 1.5px solid #e2e8f0;
+        /* Alerts */
+        .alert-box {
+            padding: 12px 16px;
             border-radius: 12px;
-            font-family: inherit;
-            font-size: 14px;
-            transition: 0.3s;
-            box-sizing: border-box;
-            background: #fbfbfb;
-        }
-
-        input:focus {
-            outline: none;
-            border-color: var(--primary);
-            background: white;
-            box-shadow: 0 0 0 4px rgba(251, 192, 45, 0.1);
-        }
-
-        .btn-login {
-            width: 100%;
-            padding: 16px;
-            background: var(--dark);
-            color: white;
-            border: none;
-            border-radius: 12px;
-            font-weight: 700;
-            font-size: 16px;
-            cursor: pointer;
-            margin-top: 10px;
-            transition: 0.3s;
-        }
-
-        .btn-login:hover {
-            background: var(--primary);
-            color: var(--dark);
-            transform: translateY(-2px);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-        }
-
-        .alert {
-            padding: 14px;
-            border-radius: 10px;
-            background: #fff5f5;
-            color: var(--error);
-            font-size: 13px;
-            margin-bottom: 25px;
-            border: 1px solid #fed7d7;
+            font-size: 0.88rem;
+            font-weight: 600;
+            margin-bottom: 20px;
             display: flex;
             align-items: center;
             gap: 10px;
         }
 
-        .footer-cta {
-            text-align: center;
-            margin-top: 35px;
+        .alert-error {
+            background: #FEF2F2;
+            color: #DC2626;
+            border: 1px solid #FEE2E2;
+        }
+
+        .alert-success {
+            background: #ECFDF5;
+            color: #059669;
+            border: 1px solid #D1FAE5;
+        }
+
+        .alert-warning {
+            background: #FFFBEB;
+            color: #D97706;
+            border: 1px solid #FEF3C7;
+        }
+
+        .alert-info {
+            background: #EFF6FF;
+            color: #1D4ED8;
+            border: 1px solid #DBEAFE;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .form-label {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: #334155;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 14px;
+            color: #94A3B8;
             font-size: 14px;
+            pointer-events: none;
+            transition: color 0.2s ease;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 13px 14px 13px 40px;
+            border: 1.5px solid var(--border-light);
+            border-radius: 12px;
+            font-family: inherit;
+            font-size: 0.95rem;
+            color: #0F172A;
+            background: #FFFFFF;
+            outline: none;
+            transition: all 0.2s ease;
+        }
+
+        .form-input:focus {
+            border-color: var(--brand-cyan);
+            box-shadow: 0 0 0 4px rgba(0, 210, 196, 0.15);
+        }
+
+        .form-input:focus ~ .input-icon {
+            color: var(--brand-purple);
+        }
+
+        .password-toggle-btn {
+            position: absolute;
+            right: 14px;
+            background: none;
+            border: none;
+            color: #94A3B8;
+            cursor: pointer;
+            font-size: 14px;
+            padding: 4px;
+        }
+
+        .password-toggle-btn:hover {
+            color: #0F172A;
+        }
+
+        .btn-login-submit {
+            width: 100%;
+            padding: 14px;
+            background: var(--brand-gradient);
+            color: #FFFFFF;
+            border: none;
+            border-radius: 12px;
+            font-family: inherit;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 10px;
+            transition: all 0.25s ease;
+            box-shadow: 0 4px 14px rgba(0, 210, 196, 0.35);
+        }
+
+        .btn-login-submit:hover {
+            background: var(--brand-gradient-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 210, 196, 0.5);
+        }
+
+        .form-footer-cta {
+            text-align: center;
+            margin-top: 26px;
+            font-size: 0.92rem;
             color: var(--text-muted);
         }
 
-        .footer-cta a {
-            color: var(--dark);
-            text-decoration: none;
+        .form-footer-cta a {
+            color: var(--brand-purple);
             font-weight: 700;
+            text-decoration: none;
+            transition: color 0.2s;
         }
 
-        /* Responsive */
-        @media (max-width: 1024px) {
-            .branding-side { display: none; }
-            .form-side { padding: 40px 24px; }
+        .form-footer-cta a:hover {
+            color: var(--brand-cyan-dark);
+            text-decoration: underline;
+        }
+
+        @media (max-width: 960px) {
+            .branding-sidebar { display: none; }
+            .form-content-side { padding: 40px 24px; }
         }
     </style>
 </head>
-
 <body>
 
-    <div class="login-wrapper">
-        <div class="branding-side">
-            <div class="branding-content">
-                <div class="logo">CYANO<span>PY</span></div>
-                <h2 style="font-size: 30px; line-height: 1.3;">Welcome back to your learning portal.</h2>
-                <p style="color: #94a3b8; line-height: 1.6;">Log in to resume your courses, connect with mentors, and track your achievements.</p>
-                
-                <div style="margin-top: 40px; opacity: 0.6; font-size: 80px;">
-                    <i class="fa-solid fa-user-shield"></i>
+    <div class="login-container">
+        
+        <!-- Left Side: Hero Branding -->
+        <aside class="branding-sidebar">
+            <div class="branding-inner">
+                <a href="{% url 'landing' %}" class="brand-logo-wrap">
+                    <svg width="34" height="34" viewBox="0 0 100 100" fill="none">
+                        <path d="M50 8C50 8 32 30 32 52C32 64 40 74 50 78C44 70 44 58 48 50C52 42 60 36 60 36C60 36 62 46 58 56C66 48 68 36 68 36C68 36 78 50 78 64C78 78 66 90 50 92C30 92 16 76 16 54C16 30 34 14 50 8Z" fill="url(#cyanFlameLog)"/>
+                        <path d="M52 28C52 28 62 40 62 54C62 62 58 68 52 72C56 66 56 58 54 52C52 46 46 42 46 42C46 42 44 50 48 56C42 50 40 42 40 42C40 42 34 52 34 62C34 72 42 80 52 82C64 82 72 72 72 58C72 42 62 32 52 28Z" fill="url(#purpleFlameLog)"/>
+                        <defs>
+                            <linearGradient id="cyanFlameLog" x1="16" y1="8" x2="78" y2="92" gradientUnits="userSpaceOnUse">
+                                <stop stop-color="#00D2C4"/>
+                                <stop offset="1" stop-color="#0284C7"/>
+                            </linearGradient>
+                            <linearGradient id="purpleFlameLog" x1="34" y1="28" x2="72" y2="82" gradientUnits="userSpaceOnUse">
+                                <stop stop-color="#A78BFA"/>
+                                <stop offset="1" stop-color="#7C3AED"/>
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                    <span class="brand-logo-text">CYAN<span class="brand-o">O</span><span class="brand-py">PY</span></span>
+                </a>
+
+                <h1 class="brand-heading">Welcome back to your learning space.</h1>
+                <p class="brand-subtext">Access your enrolled courses, live mentor sessions, and career progress anytime, anywhere.</p>
+
+                <div style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 16px; padding: 20px;">
+                    <div style="font-weight: 700; font-size: 0.95rem; margin-bottom: 6px; color: var(--brand-cyan);">Next Milestone</div>
+                    <div style="font-size: 0.85rem; color: #94A3B8;">Continue from where you left off. Your certificates and progress are synchronized in real-time.</div>
                 </div>
             </div>
-        </div>
+        </aside>
 
-        <div class="form-side">
-            <div class="form-header">
-                <h2>Sign In</h2>
-                <p>Welcome back! Please enter your details.</p>
-            </div>
+        <!-- Right Side: Login Form -->
+        <main class="form-content-side">
+            <div class="form-box">
+                <h2 class="form-header-title">Student Sign In</h2>
+                <p class="form-header-desc">Enter your email and password to access your dashboard.</p>
 
-        {% if messages %}
-           {% for message in messages %}
-                {% if message.tags == 'error' %}
-                <div class="alert">
-                    <i class="fa-solid fa-circle-exclamation"></i> {{ message }}
-                </div>
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert-box {% if message.tags == 'error' %}alert-error{% elif message.tags == 'warning' %}alert-warning{% elif message.tags == 'info' %}alert-info{% else %}alert-success{% endif %}">
+                            <i class="fa-solid {% if message.tags == 'error' %}fa-circle-exclamation{% elif message.tags == 'warning' %}fa-triangle-exclamation{% elif message.tags == 'info' %}fa-circle-info{% else %}fa-circle-check{% endif %}"></i>
+                            <span>{{ message }}</span>
+                        </div>
+                    {% endfor %}
                 {% endif %}
-            {% endfor %}
-        {% endif %}
 
-            <form method="POST" action="{% url 'login' %}">
-                {% csrf_token %}
+                <form action="{% url 'login' %}" method="POST">
+                    {% csrf_token %}
 
-                <div class="form-group">
-                    <label>Username</label>
-                    <div class="input-container">
-                        <i class="fa-solid fa-user"></i>
-                        <input type="text" name="username" placeholder="Enter your username" required>
+                    <!-- Email Address -->
+                    <div class="form-group">
+                        <label class="form-label">Email Address</label>
+                        <div class="input-wrapper">
+                            <i class="fa-regular fa-envelope input-icon"></i>
+                            <input type="email" name="email" class="form-input" placeholder="you@example.com" required autofocus>
+                        </div>
                     </div>
+
+                    <!-- Password -->
+                    <div class="form-group">
+                        <label class="form-label">Password</label>
+                        <div class="input-wrapper">
+                            <i class="fa-solid fa-lock input-icon"></i>
+                            <input type="password" id="loginPassword" name="password" class="form-input" placeholder="••••••••" required>
+                            <button type="button" class="password-toggle-btn" onclick="togglePass('loginPassword', this)">
+                                <i class="fa-regular fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-login-submit">
+                        <span>Sign In</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </form>
+
+                <div class="form-footer-cta">
+                    New to Cyanopy? <a href="{% url 'register' %}">Create Student Account</a>
                 </div>
-
-                <div class="form-group">
-                    <div style="display: flex; justify-content: space-between; align-items: center;">
-                        <label>Password</label>
-                        <a href="#" style="font-size: 12px; color: var(--text-muted); text-decoration: none; margin-bottom: 8px;">Forgot?</a>
-                    </div>
-                    <div class="input-container">
-                        <i class="fa-solid fa-lock"></i>
-                        <input type="password" name="password" placeholder="••••••••" required>
-                    </div>
-                </div>
-
-                <button type="submit" class="btn-login">Login to Dashboard</button>
-            </form>
-
-            <div class="footer-cta">
-                Don't have an account? <a href="{% url 'register' %}">Create one for free</a>
             </div>
-        </div>
+        </main>
+
     </div>
 
     <script>
-    // Automatically hide the error alert after 5 seconds
-    setTimeout(function() {
-        const alert = document.getElementById('error-alert');
-        if (alert) {
-            alert.style.transition = "opacity 0.6s ease";
-            alert.style.opacity = "0";
-            setTimeout(() => alert.remove(), 600);
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
         }
-    }, 5000);
-</script>
 
+        // Sync CSRF token with active browser cookie on submit (prevents 403 when token was rotated in another tab like Django Admin)
+        document.querySelectorAll('form').forEach(form => {
+            form.addEventListener('submit', function() {
+                const csrfCookie = getCookie('csrftoken');
+                const csrfInput = form.querySelector('input[name="csrfmiddlewaretoken"]');
+                if (csrfCookie && csrfInput) {
+                    csrfInput.value = csrfCookie;
+                }
+            });
+        });
+
+        function togglePass(inputId, btn) {
+            const input = document.getElementById(inputId);
+            const icon = btn.querySelector('i');
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.className = 'fa-regular fa-eye-slash';
+            } else {
+                input.type = 'password';
+                icon.className = 'fa-regular fa-eye';
+            }
+        }
+    </script>
 </body>
 </html>

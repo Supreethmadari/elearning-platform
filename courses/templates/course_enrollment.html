@@ -1,0 +1,714 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Select Course & Complete Enrollment | CYANOPY</title>
+    <!-- Brand Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --bg-dark: #0B1120;
+            --bg-card: #0F172A;
+            --brand-cyan: #00D2C4;
+            --brand-cyan-dark: #0284C7;
+            --brand-purple: #7C3AED;
+            --brand-purple-dark: #3B0764;
+            --brand-gradient: linear-gradient(135deg, #00D2C4 0%, #7C3AED 100%);
+            --brand-gradient-hover: linear-gradient(135deg, #0284C7 0%, #6D28D9 100%);
+
+            --bg-page: #F8FAFC;
+            --text-main: #0F172A;
+            --text-muted: #64748B;
+            --border-light: #E2E8F0;
+            --shadow-card: 0 10px 30px -5px rgba(15, 23, 42, 0.06), 0 0 0 1px rgba(226, 232, 240, 0.8);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-page);
+            color: var(--text-main);
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Top Nav Bar Minimal */
+        .enroll-navbar {
+            background: #FFFFFF;
+            border-bottom: 1px solid var(--border-light);
+            padding: 16px 32px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .brand-logo-wrap {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+
+        .brand-logo-text {
+            font-size: 1.35rem;
+            font-weight: 800;
+            letter-spacing: 1px;
+            color: var(--brand-purple-dark);
+        }
+
+        .brand-o { color: var(--brand-cyan); }
+        .brand-py { color: var(--brand-purple); }
+
+        .user-tag {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.88rem;
+            font-weight: 600;
+            color: var(--text-muted);
+        }
+
+        .user-tag strong {
+            color: var(--text-main);
+        }
+
+        /* Main Container */
+        .enroll-main-wrapper {
+            max-width: 1140px;
+            margin: 36px auto 60px;
+            padding: 0 20px;
+        }
+
+        /* Step Progress */
+        .step-progress-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            margin-bottom: 36px;
+        }
+
+        .step-pill {
+            font-size: 0.82rem;
+            font-weight: 700;
+            padding: 8px 16px;
+            border-radius: 50px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .step-pill.done {
+            background: #D1FAE5;
+            color: #065F46;
+        }
+
+        .step-pill.active {
+            background: rgba(0, 210, 196, 0.12);
+            color: var(--brand-cyan-dark);
+            border: 1px solid rgba(0, 210, 196, 0.4);
+        }
+
+        .step-pill.upcoming {
+            background: #F1F5F9;
+            color: #94A3B8;
+        }
+
+        .step-line {
+            width: 24px;
+            height: 2px;
+            background: #CBD5E1;
+        }
+
+        /* Header Title */
+        .enroll-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .enroll-header h1 {
+            font-size: 2rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            color: #0F172A;
+        }
+
+        .enroll-header p {
+            color: var(--text-muted);
+            font-size: 1rem;
+            margin-top: 6px;
+        }
+
+        /* 2-Column Layout */
+        .enroll-grid {
+            display: grid;
+            grid-template-columns: 1.1fr 1fr;
+            gap: 32px;
+            align-items: start;
+        }
+
+        /* Left Column: Course & Tier Selection */
+        .card-panel {
+            background: #FFFFFF;
+            border-radius: 20px;
+            padding: 32px;
+            box-shadow: var(--shadow-card);
+        }
+
+        .panel-heading {
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: #0F172A;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .panel-heading i {
+            color: var(--brand-cyan-dark);
+        }
+
+        .course-select-list {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            margin-bottom: 28px;
+        }
+
+        .course-option-label {
+            border: 1.5px solid var(--border-light);
+            border-radius: 14px;
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .course-option-label:hover {
+            border-color: var(--brand-cyan);
+            background: #F8FAFC;
+        }
+
+        .course-option-label.selected {
+            border-color: var(--brand-cyan);
+            background: rgba(0, 210, 196, 0.05);
+            box-shadow: 0 0 0 3px rgba(0, 210, 196, 0.15);
+        }
+
+        .course-info-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .course-initial-box {
+            width: 42px;
+            height: 42px;
+            border-radius: 10px;
+            background: var(--brand-gradient);
+            color: #FFFFFF;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            font-weight: 800;
+            flex-shrink: 0;
+        }
+
+        .course-title-text {
+            font-size: 0.98rem;
+            font-weight: 700;
+            color: #0F172A;
+        }
+
+        .course-inst-text {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        .course-price-badge {
+            font-size: 1rem;
+            font-weight: 800;
+            color: var(--brand-purple);
+        }
+
+        /* Tier Selector */
+        .tier-selector-group {
+            margin-top: 24px;
+        }
+
+        .tier-label-title {
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 12px;
+        }
+
+        .tier-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+
+        .tier-card {
+            border: 1.5px solid var(--border-light);
+            border-radius: 12px;
+            padding: 12px 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .tier-card:hover {
+            border-color: var(--brand-purple);
+        }
+
+        .tier-card.active {
+            border-color: var(--brand-purple);
+            background: rgba(124, 58, 237, 0.05);
+            box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.15);
+        }
+
+        .tier-name {
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: #0F172A;
+            margin-bottom: 4px;
+        }
+
+        .tier-price-val {
+            font-size: 0.92rem;
+            font-weight: 800;
+            color: var(--brand-cyan-dark);
+        }
+
+        /* Right Column: Payment Method Tabs */
+        .payment-tabs-nav {
+            display: flex;
+            background: #F1F5F9;
+            border-radius: 12px;
+            padding: 4px;
+            margin-bottom: 24px;
+            gap: 4px;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 10px;
+            font-family: inherit;
+            font-size: 0.88rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: transparent;
+            color: var(--text-muted);
+        }
+
+        .tab-btn.active {
+            background: #FFFFFF;
+            color: #0F172A;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+        }
+
+        /* Order Summary Box */
+        .order-summary-box {
+            background: #F8FAFC;
+            border: 1px solid var(--border-light);
+            border-radius: 14px;
+            padding: 18px 20px;
+            margin-bottom: 24px;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.88rem;
+            margin-bottom: 8px;
+            color: var(--text-muted);
+        }
+
+        .summary-row.total {
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: #0F172A;
+            border-top: 1px dashed var(--border-light);
+            padding-top: 10px;
+            margin-top: 10px;
+            margin-bottom: 0;
+        }
+
+        /* Form Inputs */
+        .form-group {
+            margin-bottom: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .form-label {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: #334155;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 11px 14px;
+            border: 1.5px solid var(--border-light);
+            border-radius: 10px;
+            font-family: inherit;
+            font-size: 0.95rem;
+            color: #0F172A;
+            outline: none;
+            background: #FFFFFF;
+            transition: all 0.2s ease;
+        }
+
+        .form-control:focus {
+            border-color: var(--brand-cyan);
+            box-shadow: 0 0 0 3px rgba(0, 210, 196, 0.15);
+        }
+
+        .btn-submit-action {
+            width: 100%;
+            padding: 14px;
+            border-radius: 12px;
+            background: var(--brand-gradient);
+            color: #FFFFFF;
+            border: none;
+            font-family: inherit;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 14px rgba(0, 210, 196, 0.35);
+        }
+
+        .btn-submit-action:hover {
+            background: var(--brand-gradient-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 210, 196, 0.5);
+        }
+
+        .secure-badge {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: #64748B;
+            margin-top: 14px;
+        }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .enroll-grid { grid-template-columns: 1fr; }
+            .tier-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Minimal Header -->
+    <header class="enroll-navbar">
+        <a href="{% url 'landing' %}" class="brand-logo-wrap">
+            <svg width="26" height="26" viewBox="0 0 100 100" fill="none">
+                <path d="M50 8C50 8 32 30 32 52C32 64 40 74 50 78C44 70 44 58 48 50C52 42 60 36 60 36C60 36 62 46 58 56C66 48 68 36 68 36C68 36 78 50 78 64C78 78 66 90 50 92C30 92 16 76 16 54C16 30 34 14 50 8Z" fill="url(#cFlame)"/>
+                <path d="M52 28C52 28 62 40 62 54C62 62 58 68 52 72C56 66 56 58 54 52C52 46 46 42 46 42C46 42 44 50 48 56C42 50 40 42 40 42C40 42 34 52 34 62C34 72 42 80 52 82C64 82 72 72 72 58C72 42 62 32 52 28Z" fill="url(#pFlame)"/>
+                <defs>
+                    <linearGradient id="cFlame" x1="16" y1="8" x2="78" y2="92" gradientUnits="userSpaceOnUse">
+                        <stop stop-color="#00D2C4"/>
+                        <stop offset="1" stop-color="#0284C7"/>
+                    </linearGradient>
+                    <linearGradient id="pFlame" x1="34" y1="28" x2="72" y2="82" gradientUnits="userSpaceOnUse">
+                        <stop stop-color="#A78BFA"/>
+                        <stop offset="1" stop-color="#7C3AED"/>
+                    </linearGradient>
+                </defs>
+            </svg>
+            <span class="brand-logo-text">CYAN<span class="brand-o">O</span><span class="brand-py">PY</span></span>
+        </a>
+
+        <div class="user-tag">
+            <span>Enrolling as: <strong>{{ request.user.first_name }} ({{ request.user.email }})</strong></span>
+            <a href="{% url 'logout' %}" style="color: #EF4444; text-decoration: none; margin-left: 8px;">Logout</a>
+        </div>
+    </header>
+
+    <main class="enroll-main-wrapper">
+        
+        <!-- Step Progress -->
+        <div class="step-progress-row">
+            <span class="step-pill done"><i class="fa-solid fa-check"></i> 1. Account Created</span>
+            <span class="step-line"></span>
+            <span class="step-pill done"><i class="fa-solid fa-check"></i> 2. Email Verified</span>
+            <span class="step-line"></span>
+            <span class="step-pill active"><i class="fa-solid fa-circle-dot"></i> 3. Course Enrollment</span>
+        </div>
+
+        <div class="enroll-header">
+            <h1>Select Your Course & Enrollment Plan</h1>
+            <p>Choose the career-track program that aligns with your goals.</p>
+        </div>
+
+        {% if messages %}
+            {% for message in messages %}
+                <div style="background: #FEF2F2; color: #DC2626; border: 1px solid #FEE2E2; padding: 14px 20px; border-radius: 12px; margin-bottom: 24px; font-weight: 600;">
+                    <i class="fa-solid fa-circle-exclamation"></i> {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <div class="enroll-grid">
+            
+            <!-- Left: Course Selection & Tier Options -->
+            <div class="card-panel">
+                <div class="panel-heading">
+                    <i class="fa-solid fa-graduation-cap"></i>
+                    <span>1. Select Program</span>
+                </div>
+
+                <div class="course-select-list">
+                    {% for c in courses %}
+                        <div class="course-option-label {% if selected_course.id == c.id %}selected{% endif %}" 
+                             onclick="selectCourse('{{ c.id }}', '{{ c.title|escapejs }}', '{{ c.live_virtual_new_price|default:c.price }}', '{{ c.blended_new_price|default:c.price }}', '{{ c.classroom_new_price|default:c.price }}')">
+                            <div class="course-info-left">
+                                <div class="course-initial-box">{{ c.title|slice:":1"|upper }}</div>
+                                <div>
+                                    <div class="course-title-text">{{ c.title }}</div>
+                                    <div class="course-inst-text">By {{ c.trainer.get_full_name|default:"Cyanopy Expert" }} • 4.9 ★</div>
+                                </div>
+                            </div>
+                            <div class="course-price-badge">₹ {{ c.price }}</div>
+                        </div>
+                    {% empty %}
+                        <p style="color: var(--text-muted);">No courses currently available.</p>
+                    {% endfor %}
+                </div>
+
+                <!-- Tier Selection -->
+                <div class="tier-selector-group">
+                    <div class="tier-label-title">Select Learning Tier</div>
+                    <div class="tier-grid">
+                        <div class="tier-card active" id="tierLive" onclick="setTier('Live Virtual')">
+                            <div class="tier-name">Live Virtual</div>
+                            <div class="tier-price-val" id="priceLiveDisplay">₹ {{ selected_course.live_virtual_new_price|default:selected_course.price }}</div>
+                        </div>
+
+                        <div class="tier-card" id="tierBlended" onclick="setTier('Blended')">
+                            <div class="tier-name">Blended</div>
+                            <div class="tier-price-val" id="priceBlendedDisplay">₹ {{ selected_course.blended_new_price|default:selected_course.price }}</div>
+                        </div>
+
+                        <div class="tier-card" id="tierClassroom" onclick="setTier('Classroom')">
+                            <div class="tier-name">Classroom</div>
+                            <div class="tier-price-val" id="priceClassDisplay">₹ {{ selected_course.classroom_new_price|default:selected_course.price }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right: Payment Options (Online vs Manual) -->
+            <div class="card-panel">
+                <div class="panel-heading">
+                    <i class="fa-solid fa-credit-card"></i>
+                    <span>2. Payment Option</span>
+                </div>
+
+                <!-- Tabs: Online vs Manual -->
+                <div class="payment-tabs-nav">
+                    <button type="button" class="tab-btn active" id="tabOnlineBtn" onclick="switchTab('online')">
+                        <i class="fa-solid fa-bolt"></i> Pay Online
+                    </button>
+                    <button type="button" class="tab-btn" id="tabManualBtn" onclick="switchTab('manual')">
+                        <i class="fa-solid fa-receipt"></i> Already Paid / Manual
+                    </button>
+                </div>
+
+                <!-- Order Summary Breakdown -->
+                <div class="order-summary-box">
+                    <div class="summary-row">
+                        <span>Selected Program</span>
+                        <strong id="summaryCourseName">{{ selected_course.title|default:"Select a Course" }}</strong>
+                    </div>
+                    <div class="summary-row">
+                        <span>Selected Tier</span>
+                        <strong id="summaryTierName">Live Virtual</strong>
+                    </div>
+                    <div class="summary-row total">
+                        <span>Course Fee</span>
+                        <span style="color: var(--brand-purple);" id="summaryTotalFee">₹ {{ selected_course.live_virtual_new_price|default:selected_course.price }}</span>
+                    </div>
+                </div>
+
+                <!-- Option A: Pay Online -->
+                <div id="onlinePaymentPanel">
+                    <form method="POST" action="{% url 'course_enrollment' %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="action" value="pay_online">
+                        <input type="hidden" name="course_id" id="hiddenCourseIdOnline" value="{{ selected_course.id }}">
+                        <input type="hidden" name="tier" id="hiddenTierOnline" value="Live Virtual">
+
+                        <div style="background: rgba(0, 210, 196, 0.08); border: 1px solid rgba(0, 210, 196, 0.2); border-radius: 12px; padding: 16px; margin-bottom: 20px;">
+                            <div style="display: flex; gap: 12px; align-items: center;">
+                                <i class="fa-solid fa-shield-halved" style="color: var(--brand-cyan-dark); font-size: 24px;"></i>
+                                <div style="font-size: 0.88rem; color: #334155;">
+                                    <strong>Instant Activation:</strong> Complete your payment securely via Credit/Debit card, UPI, or NetBanking to start learning immediately.
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn-submit-action">
+                            <span>Proceed to Secure Checkout</span>
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Option B: Already Paid / Manual Payment -->
+                <div id="manualPaymentPanel" style="display: none;">
+                    <form method="POST" action="{% url 'course_enrollment' %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="action" value="manual_payment">
+                        <input type="hidden" name="course_id" id="hiddenCourseIdManual" value="{{ selected_course.id }}">
+                        <input type="hidden" name="tier" id="hiddenTierManual" value="Live Virtual">
+
+                        <div class="form-group">
+                            <label class="form-label">Amount Paid (₹) <span style="color: #EF4444;">*</span></label>
+                            <input type="number" step="0.01" name="amount_paid" class="form-control" placeholder="e.g. 15000" required>
+                            <span style="font-size: 0.75rem; color: var(--text-muted);">Enter the exact amount paid. Admins will verify this claim.</span>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Payment Date <span style="color: #EF4444;">*</span></label>
+                            <input type="date" name="payment_date" class="form-control" id="manualPayDate" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Payment Method <span style="color: #EF4444;">*</span></label>
+                            <select name="payment_method" class="form-control" required>
+                                <option value="UPI">UPI Transfer (GPay, PhonePe, Paytm)</option>
+                                <option value="BANK_TRANSFER">Bank Transfer (NEFT / IMPS / RTGS)</option>
+                                <option value="CASH">Cash Deposit</option>
+                                <option value="CHEQUE">Cheque</option>
+                                <option value="OTHER">Other</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Transaction ID / Reference Number (Optional)</label>
+                            <input type="text" name="payment_reference" class="form-control" placeholder="e.g. UPI Ref / UTR / Cheque No.">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Additional Notes (Optional)</label>
+                            <textarea name="student_notes" class="form-control" rows="2" placeholder="e.g. Paid to counselor via Bank of India"></textarea>
+                        </div>
+
+                        <button type="submit" class="btn-submit-action">
+                            <span>Submit for Admin Verification</span>
+                            <i class="fa-solid fa-paper-plane"></i>
+                        </button>
+                    </form>
+                </div>
+
+                <div class="secure-badge">
+                    <i class="fa-solid fa-lock"></i> 256-bit Encrypted Platform Security
+                </div>
+
+            </div>
+
+        </div>
+
+    </main>
+
+    <script>
+        // Set today's date in datepicker
+        document.getElementById('manualPayDate').valueAsDate = new Date();
+
+        let currentPrices = {
+            'Live Virtual': '{{ selected_course.live_virtual_new_price|default:selected_course.price }}',
+            'Blended': '{{ selected_course.blended_new_price|default:selected_course.price }}',
+            'Classroom': '{{ selected_course.classroom_new_price|default:selected_course.price }}'
+        };
+        let currentTier = 'Live Virtual';
+
+        function selectCourse(id, title, priceLive, priceBlended, priceClass) {
+            document.querySelectorAll('.course-option-label').forEach(el => el.classList.remove('selected'));
+            event.currentTarget.classList.add('selected');
+
+            document.getElementById('hiddenCourseIdOnline').value = id;
+            document.getElementById('hiddenCourseIdManual').value = id;
+            document.getElementById('summaryCourseName').innerText = title;
+
+            currentPrices['Live Virtual'] = priceLive;
+            currentPrices['Blended'] = priceBlended;
+            currentPrices['Classroom'] = priceClass;
+
+            document.getElementById('priceLiveDisplay').innerText = '₹ ' + priceLive;
+            document.getElementById('priceBlendedDisplay').innerText = '₹ ' + priceBlended;
+            document.getElementById('priceClassDisplay').innerText = '₹ ' + priceClass;
+
+            updateSummary();
+        }
+
+        function setTier(tier) {
+            currentTier = tier;
+            document.querySelectorAll('.tier-card').forEach(el => el.classList.remove('active'));
+
+            if (tier === 'Live Virtual') document.getElementById('tierLive').classList.add('active');
+            if (tier === 'Blended') document.getElementById('tierBlended').classList.add('active');
+            if (tier === 'Classroom') document.getElementById('tierClassroom').classList.add('active');
+
+            document.getElementById('hiddenTierOnline').value = tier;
+            document.getElementById('hiddenTierManual').value = tier;
+            document.getElementById('summaryTierName').innerText = tier;
+
+            updateSummary();
+        }
+
+        function updateSummary() {
+            const fee = currentPrices[currentTier] || '0';
+            document.getElementById('summaryTotalFee').innerText = '₹ ' + fee;
+        }
+
+        function switchTab(tab) {
+            if (tab === 'online') {
+                document.getElementById('tabOnlineBtn').classList.add('active');
+                document.getElementById('tabManualBtn').classList.remove('active');
+                document.getElementById('onlinePaymentPanel').style.display = 'block';
+                document.getElementById('manualPaymentPanel').style.display = 'none';
+            } else {
+                document.getElementById('tabManualBtn').classList.add('active');
+                document.getElementById('tabOnlineBtn').classList.remove('active');
+                document.getElementById('manualPaymentPanel').style.display = 'block';
+                document.getElementById('onlinePaymentPanel').style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>

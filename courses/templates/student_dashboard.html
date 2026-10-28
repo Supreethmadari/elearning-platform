@@ -9,21 +9,37 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        /* --- CSS VARIABLES & RESET --- */
+        /* --- CSS VARIABLES & BRAND IDENTITY --- */
         :root {
-            --primary: #FBC02D; /* Cyanopy Yellow */
-            --primary-hover: #F9A825;
-            --secondary: #0F172A; /* Dark Slate */
-            --bg-body: #F1F5F9;
+            /* Cyanopy Brand Identity (Cyan & Purple) */
+            --brand-cyan: #00D2C4;
+            --brand-cyan-dark: #0284C7;
+            --brand-cyan-glow: rgba(0, 210, 196, 0.35);
+            --brand-cyan-bg: rgba(0, 210, 196, 0.12);
+
+            --brand-purple: #7C3AED;
+            --brand-purple-dark: #3B0764;
+            --brand-purple-light: #8B5CF6;
+            --brand-purple-glow: rgba(124, 58, 237, 0.35);
+            --brand-purple-bg: rgba(124, 58, 237, 0.12);
+
+            --brand-gradient: linear-gradient(135deg, #00D2C4 0%, #7C3AED 100%);
+            --brand-gradient-hover: linear-gradient(135deg, #26E5D7 0%, #8B5CF6 100%);
+            --brand-gradient-soft: linear-gradient(135deg, rgba(0, 210, 196, 0.12) 0%, rgba(124, 58, 237, 0.08) 100%);
+
+            --primary: #0284C7;
+            --primary-hover: #0369A1;
+            --secondary: #0F172A; /* Deep Navy */
+            --bg-body: #F8FAFC;
             --bg-card: #FFFFFF;
-            --text-main: #1E293B;
+            --text-main: #0F172A;
             --text-muted: #64748B;
             --border: #E2E8F0;
             --success: #10B981;
             --danger: #EF4444;
-            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.04);
+            --shadow-md: 0 4px 12px rgba(15, 23, 42, 0.06);
+            --shadow-lg: 0 10px 24px rgba(15, 23, 42, 0.08);
             --radius: 16px;
         }
 
@@ -41,74 +57,6 @@
         a { text-decoration: none; color: inherit; transition: 0.2s; }
         ul { list-style: none; }
 
-        /* --- NAVIGATION --- */
-        .navbar {
-            background: var(--bg-card);
-            height: 72px;
-            padding: 0 2rem;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            border-bottom: 1px solid var(--border);
-            box-shadow: var(--shadow-sm);
-        }
-
-        .logo {
-            font-family: 'Poppins', sans-serif;
-            font-size: 24px;
-            font-weight: 800;
-            color: var(--secondary);
-            letter-spacing: -0.5px;
-        }
-        .logo span { color: var(--primary); }
-
-        .nav-menu {
-            display: flex;
-            align-items: center;
-            gap: 32px;
-        }
-
-        .nav-link {
-            font-weight: 500;
-            font-size: 14px;
-            color: var(--text-muted);
-            position: relative;
-        }
-
-        .nav-link:hover, .nav-link.active { color: var(--secondary); }
-        .nav-link.active::after {
-            content: ''; position: absolute; bottom: -26px; left: 0; width: 100%; height: 3px;
-            background: var(--primary); border-radius: 3px 3px 0 0;
-        }
-
-        /* Profile Dropdown */
-        .profile-trigger {
-            display: flex; align-items: center; gap: 10px; cursor: pointer;
-            padding: 6px 12px; border-radius: 50px; border: 1px solid var(--border);
-            background: var(--bg-card); transition: 0.2s;
-        }
-        .profile-trigger:hover { background: #F8FAFC; border-color: #CBD5E1; }
-        
-        .avatar {
-            width: 32px; height: 32px; background: var(--primary); color: var(--secondary);
-            border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            font-weight: 700; font-size: 14px;
-        }
-
-        .dropdown-menu {
-            display: none; position: absolute; top: 80px; right: 2rem; width: 240px;
-            background: var(--bg-card); border-radius: 12px; box-shadow: var(--shadow-lg);
-            border: 1px solid var(--border); overflow: hidden; animation: slideDown 0.2s ease;
-        }
-        .dropdown-menu.show { display: block; }
-        .dropdown-item {
-            padding: 12px 20px; font-size: 14px; color: var(--text-main); display: flex; align-items: center; gap: 10px;
-        }
-        .dropdown-item:hover { background: #F8FAFC; color: var(--primary-hover); }
-
         /* --- LAYOUT --- */
         .main-container {
             max-width: 1280px;
@@ -119,7 +67,7 @@
 
         /* --- HERO SECTION --- */
         .hero {
-            background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
+            background: linear-gradient(135deg, #0F172A 0%, #1E1B4B 50%, #0F172A 100%);
             border-radius: 24px;
             padding: 40px;
             position: relative;
@@ -128,13 +76,14 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            box-shadow: var(--shadow-md);
+            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.12);
             margin-bottom: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
         }
 
         .hero::before {
-            content: ''; position: absolute; top: -50%; right: -10%; width: 400px; height: 400px;
-            background: radial-gradient(circle, rgba(251,192,45,0.15) 0%, rgba(251,192,45,0) 70%);
+            content: ''; position: absolute; top: -50%; right: -10%; width: 440px; height: 440px;
+            background: radial-gradient(circle, rgba(0, 210, 196, 0.22) 0%, rgba(124, 58, 237, 0.14) 40%, transparent 70%);
             border-radius: 50%;
         }
 
@@ -143,11 +92,19 @@
 
         .btn {
             display: inline-flex; align-items: center; gap: 8px;
-            padding: 12px 24px; border-radius: 10px; font-weight: 600; font-size: 14px;
+            padding: 12px 24px; border-radius: 10px; font-weight: 700; font-size: 14px;
             cursor: pointer; border: none; transition: 0.2s;
         }
-        .btn-primary { background: var(--primary); color: var(--secondary); }
-        .btn-primary:hover { background: var(--primary-hover); transform: translateY(-2px); }
+        .btn-primary { 
+            background: linear-gradient(135deg, #00D2C4 0%, #7C3AED 100%); 
+            color: #FFFFFF; 
+            box-shadow: 0 4px 14px rgba(0, 210, 196, 0.35);
+        }
+        .btn-primary:hover { 
+            background: linear-gradient(135deg, #26E5D7 0%, #8B5CF6 100%); 
+            transform: translateY(-2px); 
+            box-shadow: 0 6px 18px rgba(0, 210, 196, 0.45);
+        }
         
         /* --- STATS GRID --- */
         .stats-grid {
@@ -159,22 +116,38 @@
             background: var(--bg-card); padding: 24px; border-radius: var(--radius);
             border: 1px solid var(--border); box-shadow: var(--shadow-sm);
             display: flex; flex-direction: column; gap: 10px;
+            transition: all 0.2s ease;
+        }
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-md);
+            border-color: rgba(0, 210, 196, 0.4);
         }
         
         .stat-icon {
-            width: 40px; height: 40px; border-radius: 10px; background: #FFF9C4;
-            color: #F57F17; display: flex; align-items: center; justify-content: center; font-size: 18px;
+            width: 44px; height: 44px; border-radius: 12px; 
+            background: rgba(0, 210, 196, 0.12);
+            color: #0284C7; display: flex; align-items: center; justify-content: center; font-size: 19px;
+        }
+        .stat-icon.purple {
+            background: rgba(124, 58, 237, 0.12);
+            color: #7C3AED;
+        }
+        .stat-icon.teal {
+            background: rgba(0, 210, 196, 0.15);
+            color: #0891B2;
         }
         
-        .stat-value { font-size: 28px; font-weight: 700; color: var(--secondary); font-family: 'Poppins', sans-serif; }
-        .stat-label { font-size: 13px; color: var(--text-muted); font-weight: 500; }
+        .stat-value { font-size: 28px; font-weight: 800; color: var(--secondary); font-family: 'Poppins', sans-serif; }
+        .stat-label { font-size: 13px; color: var(--text-muted); font-weight: 600; }
 
         /* --- SECTIONS HEADERS --- */
         .section-head {
             display: flex; justify-content: space-between; align-items: end; margin-bottom: 24px;
         }
         .section-title { font-family: 'Poppins', sans-serif; font-size: 20px; font-weight: 700; color: var(--secondary); }
-        .view-all { font-size: 14px; font-weight: 600; color: #8B5CF6; }
+        .view-all { font-size: 14px; font-weight: 700; color: #7C3AED; transition: 0.2s; }
+        .view-all:hover { color: #00D2C4; }
 
         /* --- COURSE CARDS --- */
         .course-grid {
@@ -193,7 +166,9 @@
             font-size: 11px; font-weight: 700; text-transform: uppercase; padding: 4px 10px;
             border-radius: 20px; letter-spacing: 0.5px;
         }
-        .badge-yellow { background: #FFF9C4; color: #854D0E; }
+        .badge-yellow { background: rgba(0, 210, 196, 0.15); color: #0891B2; }
+        .badge-cyan { background: rgba(0, 210, 196, 0.15); color: #0891B2; }
+        .badge-purple { background: rgba(124, 58, 237, 0.12); color: #7C3AED; }
         .badge-red { background: #FEE2E2; color: #991B1B; display: flex; align-items: center; gap: 6px; }
         .badge-green { background: #D1FAE5; color: #065F46; }
 
@@ -212,10 +187,10 @@
         .progress-wrap { margin-bottom: 20px; }
         .progress-info { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 8px; font-weight: 600; }
         .progress-bg { height: 8px; background: #F1F5F9; border-radius: 10px; overflow: hidden; }
-        .progress-bar { height: 100%; background: var(--secondary); border-radius: 10px; }
+        .progress-bar { height: 100%; background: linear-gradient(135deg, #00D2C4 0%, #7C3AED 100%); border-radius: 10px; }
 
-        .btn-block { width: 100%; text-align: center; background: #F8FAFC; color: var(--secondary); }
-        .btn-block:hover { background: var(--secondary); color: white; }
+        .btn-block { width: 100%; text-align: center; background: #F8FAFC; color: var(--secondary); font-weight: 700; border-radius: 10px; padding: 10px; border: 1px solid var(--border); transition: 0.2s; }
+        .btn-block:hover { background: linear-gradient(135deg, #00D2C4 0%, #7C3AED 100%); color: white; border-color: transparent; box-shadow: 0 4px 12px rgba(0, 210, 196, 0.3); }
 
         /* --- LIVE CLASS ANIMATION --- */
         .live-dot {
@@ -241,38 +216,148 @@
             width: 100%; padding: 15px; border: 1px solid var(--border); border-radius: 12px;
             font-family: inherit; margin: 15px 0; resize: none; background: #F8FAFC; font-size: 14px;
         }
-        textarea.form-control:focus { border-color: var(--primary); background: white; }
+        textarea.form-control:focus { border-color: var(--brand-cyan); background: white; box-shadow: 0 0 0 3px rgba(0, 210, 196, 0.15); }
 
         /* --- AI CHATBOT --- */
         .ai-fab {
             position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px;
-            background: var(--secondary); color: var(--primary); border-radius: 50%;
+            background: linear-gradient(135deg, #00D2C4 0%, #7C3AED 100%); 
+            color: #FFFFFF; border-radius: 50%;
             display: flex; align-items: center; justify-content: center; font-size: 24px;
-            cursor: pointer; box-shadow: 0 10px 25px rgba(15, 23, 42, 0.3); z-index: 3000;
+            cursor: pointer; box-shadow: 0 8px 24px rgba(0, 210, 196, 0.4); z-index: 3000;
             transition: 0.3s;
         }
-        .ai-fab:hover { transform: scale(1.1); }
+        .ai-fab:hover { transform: scale(1.08) translateY(-2px); box-shadow: 0 12px 28px rgba(0, 210, 196, 0.5); }
 
         .ai-window {
-            position: fixed; bottom: 100px; right: 30px; width: 350px; height: 500px;
-            background: white; border-radius: 20px; box-shadow: var(--shadow-lg);
+            position: fixed; bottom: 100px; right: 30px; width: 380px; height: 530px;
+            background: white; border-radius: 20px; box-shadow: 0 16px 40px rgba(15, 23, 42, 0.22);
             display: none; flex-direction: column; overflow: hidden; z-index: 3000;
             border: 1px solid var(--border);
+            animation: slideUpChat 0.25s ease-out;
+        }
+        @keyframes slideUpChat {
+            from { opacity: 0; transform: translateY(15px) scale(0.96); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
         }
         .ai-header {
-            background: var(--secondary); padding: 16px; color: white; font-weight: 600;
+            background: linear-gradient(135deg, #0F172A 0%, #1E1B4B 100%); 
+            padding: 16px 20px; color: white; font-weight: 700;
             display: flex; justify-content: space-between; align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
-        .ai-body { flex: 1; padding: 15px; overflow-y: auto; background: #F8FAFC; }
+        .ai-header-status {
+            display: inline-flex; align-items: center; gap: 6px; font-size: 11px;
+            color: #00D2C4; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;
+        }
+        .ai-status-dot {
+            width: 7px; height: 7px; background: #00D2C4; border-radius: 50%;
+            box-shadow: 0 0 8px #00D2C4;
+        }
+        .ai-body { flex: 1; padding: 16px; overflow-y: auto; background: #F8FAFC; display: flex; flex-direction: column; gap: 10px; }
+        .ai-chips-wrap {
+            display: flex; gap: 6px; overflow-x: auto; padding: 8px 12px; background: #FFFFFF;
+            border-top: 1px solid var(--border); scrollbar-width: none;
+        }
+        .ai-chips-wrap::-webkit-scrollbar { display: none; }
+        .ai-chip {
+            white-space: nowrap; font-size: 11px; font-weight: 600; padding: 5px 10px;
+            background: rgba(0, 210, 196, 0.1); color: #0284C7; border-radius: 20px;
+            cursor: pointer; border: 1px solid rgba(0, 210, 196, 0.25); transition: 0.2s;
+        }
+        .ai-chip:hover {
+            background: #0284C7; color: white; border-color: transparent;
+        }
         .ai-input-area {
-            padding: 10px; background: white; border-top: 1px solid var(--border); display: flex; gap: 10px;
+            padding: 10px 14px; background: white; border-top: 1px solid var(--border); display: flex; gap: 10px; align-items: center;
         }
-        .ai-input { flex: 1; padding: 10px; border: 1px solid var(--border); border-radius: 8px; font-size: 13px; }
-        .msg-bubble { padding: 8px 12px; border-radius: 10px; margin-bottom: 8px; max-width: 80%; font-size: 13px; }
-        .msg-user { background: var(--secondary); color: white; margin-left: auto; border-bottom-right-radius: 0; }
-        .msg-bot { background: white; border: 1px solid var(--border); color: var(--text-main); border-bottom-left-radius: 0; }
+        .ai-input { flex: 1; padding: 11px 14px; border: 1px solid var(--border); border-radius: 12px; font-size: 13px; font-family: inherit; }
+        .ai-input:focus { border-color: #00D2C4; box-shadow: 0 0 0 3px rgba(0, 210, 196, 0.15); }
+        .msg-bubble {
+            padding: 10px 14px; border-radius: 14px; max-width: 85%; font-size: 13px;
+            line-height: 1.5; word-break: break-word; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+        }
+        .msg-user {
+            background: linear-gradient(135deg, #0284C7 0%, #7C3AED 100%);
+            color: white; margin-left: auto; border-bottom-right-radius: 2px;
+        }
+        .msg-bot {
+            background: white; border: 1px solid var(--border); color: #0F172A;
+            border-bottom-left-radius: 2px;
+        }
+        .typing-dots {
+            display: inline-flex; gap: 4px; padding: 6px 10px;
+        }
+        .typing-dot {
+            width: 6px; height: 6px; background: #94A3B8; border-radius: 50%;
+            animation: bounce 1.4s infinite ease-in-out both;
+        }
+        .typing-dot:nth-child(1) { animation-delay: -0.32s; }
+        .typing-dot:nth-child(2) { animation-delay: -0.16s; }
+        @keyframes bounce {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1); }
+        }
 
-        @keyframes slideDown { from {opacity:0; transform: translateY(-10px);} to {opacity:1; transform: translateY(0);} }
+        /* --- CODE HIGHLIGHTING & ACTION BUTTONS --- */
+        .ai-code-block {
+            margin: 10px 0; border-radius: 10px; background: #0F172A;
+            color: #F8FAFC; overflow: hidden; font-size: 12px;
+            border: 1px solid #334155; box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        .ai-code-header {
+            display: flex; justify-content: space-between; align-items: center;
+            background: #1E293B; padding: 6px 12px; font-size: 11px;
+            font-weight: 700; color: #94A3B8; text-transform: uppercase; letter-spacing: 0.5px;
+        }
+        .ai-code-copy-btn {
+            background: rgba(255, 255, 255, 0.1); border: none; color: #E2E8F0;
+            padding: 3px 8px; border-radius: 4px; font-size: 11px; cursor: pointer;
+            display: inline-flex; align-items: center; gap: 4px; transition: 0.2s;
+        }
+        .ai-code-copy-btn:hover { background: rgba(0, 210, 196, 0.25); color: #00D2C4; }
+        .ai-code-content {
+            padding: 10px 12px; margin: 0; overflow-x: auto;
+            font-family: 'Consolas', 'Courier New', monospace; line-height: 1.45;
+        }
+        .ai-action-bar {
+            display: flex; align-items: center; gap: 8px; margin-top: 8px; font-size: 11px;
+        }
+        .ai-action-btn {
+            background: #F1F5F9; color: #475569; border: 1px solid #CBD5E1;
+            padding: 4px 10px; border-radius: 6px; cursor: pointer;
+            display: inline-flex; align-items: center; gap: 5px; font-weight: 600; font-size: 11px;
+            transition: 0.2s;
+        }
+        .ai-action-btn:hover { background: #00D2C4; color: white; border-color: #00D2C4; }
+        .ai-icon-btn {
+            cursor: pointer; opacity: 0.8; transition: 0.2s; font-size: 15px;
+        }
+        .ai-icon-btn:hover { opacity: 1; transform: scale(1.1); }
+
+        /* Voice Mic Button */
+        .ai-mic-btn {
+            background: transparent; border: none; color: #64748B; font-size: 16px; cursor: pointer;
+            padding: 8px 10px; border-radius: 8px; transition: 0.2s;
+        }
+        .ai-mic-btn:hover { color: #00D2C4; }
+        .ai-mic-btn.listening { color: #EF4444; animation: pulseMic 1.2s infinite; }
+        @keyframes pulseMic {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        /* Quiz Cards */
+        .ai-quiz-card { background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 10px; padding: 12px; margin: 6px 0; }
+        .ai-quiz-header { font-size: 11px; font-weight: 700; color: #7C3AED; margin-bottom: 6px; }
+        .ai-quiz-q { font-weight: 700; font-size: 12px; margin-bottom: 8px; color: #0F172A; }
+        .ai-quiz-options { display: flex; flex-direction: column; gap: 6px; }
+        .ai-quiz-opt { background: #FFFFFF; border: 1px solid #CBD5E1; color: #334155; padding: 6px 10px; border-radius: 6px; font-size: 12px; cursor: pointer; text-align: left; display: flex; justify-content: space-between; align-items: center; transition: 0.2s; }
+        .ai-quiz-opt:hover:not(:disabled) { background: #F1F5F9; border-color: #00D2C4; }
+        .ai-quiz-opt.correct { background: #DCFCE7 !important; border-color: #10B981 !important; color: #166534 !important; font-weight: 700; }
+        .ai-quiz-opt.wrong { background: #FEE2E2 !important; border-color: #EF4444 !important; color: #991B1B !important; }
+        .ai-quiz-expl { margin-top: 8px; padding: 6px 10px; background: #F0FDFA; border-left: 3px solid #00D2C4; font-size: 11px; color: #334155; display: none; }
 
         /* Mobile */
         @media (max-width: 768px) {
@@ -284,39 +369,7 @@
 </head>
 <body>
 
-    <nav class="navbar">
-        <div class="logo">CYANO<span>PY</span></div>
-        
-        <div class="nav-menu">
-            <a href="{% url 'student_dashboard' %}" class="nav-link active">Home</a>
-            <a href="{% url 'purchase' %}" class="nav-link">Explore</a>
-            <a href="{% url 'my_courses' %}" class="nav-link">My Learning</a>
-            <a href="{% url 'student_doubts' %}" class="nav-link">Doubts</a>
-            <a href="javascript:void(0)" onclick="openSupportModal()">Support</a>
-            
-            <div class="profile-container" style="position: relative;">
-                <div class="profile-trigger" onclick="toggleDropdown()">
-                    <div class="avatar">
-                        {{ request.user.first_name|slice:":1"|upper|default:request.user.username|slice:":1"|upper }}
-                    </div>
-                    <span style="font-size: 13px; font-weight: 600; display: none; @media(min-width: 768px){display:block;}">
-                        {{ request.user.first_name|default:request.user.username }}
-                    </span>
-                    <i class="fa-solid fa-chevron-down" style="font-size: 10px; color: var(--text-muted);"></i>
-                </div>
-
-                <div id="userDropdown" class="dropdown-menu">
-                    <div style="padding: 15px 20px; background: #F8FAFC; border-bottom: 1px solid var(--border);">
-                        <div style="font-weight: 700; color: var(--secondary);">{{ request.user.first_name }} {{ request.user.last_name }}</div>
-                        <div style="font-size: 12px; color: var(--text-muted);">{{ request.user.email }}</div>
-                    </div>
-                    <a href="{% url 'profile' %}" class="dropdown-item"><i class="fa-regular fa-user"></i> Account Settings</a>
-                    <a href="{% url 'my_courses' %}" class="dropdown-item"><i class="fa-solid fa-graduation-cap"></i> My Dashboard</a>
-                    <a href="{% url 'logout' %}" class="dropdown-item" style="color: var(--danger);"><i class="fa-solid fa-arrow-right-from-bracket"></i> Sign Out</a>
-                </div>
-            </div>
-        </div>
-    </nav>
+    {% include 'includes/student_header.html' with active_tab='home' %}
 
     <main class="main-container">
         
@@ -361,6 +414,33 @@
                 </div>
             </div>
         </div>
+        
+        {% if certificates_list %}
+        <div class="section-head" style="margin-top:40px;">
+            <div class="section-title">My Certificates</div>
+        </div>
+        
+        <div class="course-grid" style="margin-bottom: 50px;">
+            {% for c in certificates_list %}
+            <div class="card">
+                <div class="card-header">
+                    <span class="badge badge-green">CERTIFIED</span>
+                </div>
+                <h3 class="card-title">{{ c.course.title }}</h3>
+                <p class="card-sub">Issued by CYANOPY</p>
+                <div style="font-size: 13px; color: var(--text-muted); margin-bottom: 12px;">
+                    Certificate ID: {{ c.certificate_id }}
+                </div>
+                
+                <a href="{{ c.pdf.url }}" target="_blank" class="btn btn-block">
+                    Download Certificate <i class="fa-solid fa-download"></i>
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+
 
         <div class="section-head">
             <div class="section-title">Current Learning</div>
@@ -368,30 +448,52 @@
         </div>
 
         <div class="course-grid" style="margin-bottom: 50px;">
+            {% for item in current_learning_courses %}
             <div class="card">
                 <div class="card-header">
-                    <span class="badge badge-yellow">Programming</span>
+                    <span class="badge badge-cyan">{{ item.tier|default:"Online Course" }}</span>
                     <i class="fa-solid fa-ellipsis" style="color: var(--text-muted);"></i>
                 </div>
-                <h3 class="card-title">Advanced Java Masterclass</h3>
-                <p class="card-sub">Mentor: Expert Mentor</p>
+                <h3 class="card-title">{{ item.course.title }}</h3>
+                <p class="card-sub">Mentor: {{ item.course.trainer.get_full_name|default:item.course.trainer.username|default:"Cyanopy Mentor" }}</p>
 
                 <div class="progress-wrap">
                     <div class="progress-info">
                         <span>Progress</span>
-                        <span>75%</span>
+                        <span>{{ item.progress_pct }}% ({{ item.completed_count }}/{{ item.total_lessons }} Lessons)</span>
                     </div>
                     <div class="progress-bg">
-                        <div class="progress-bar" style="width: 75%;"></div>
+                        <div class="progress-bar" data-progress="{{ item.progress_pct }}"></div>
                     </div>
                 </div>
 
                 <div style="font-size: 13px; color: var(--text-muted); margin-bottom: 15px; display: flex; align-items: center; gap: 8px;">
-                    <i class="fa-solid fa-circle-play" style="color: var(--primary);"></i> Next: Exception Handling
+                    {% if item.is_completed %}
+                        <i class="fa-solid fa-circle-check" style="color: #059669;"></i> Completed &bull; All lessons finished!
+                    {% elif item.next_lesson %}
+                        <i class="fa-solid fa-circle-play" style="color: var(--primary);"></i> Next: {{ item.next_lesson.title }}
+                    {% else %}
+                        <i class="fa-solid fa-book-open" style="color: var(--primary);"></i> Ready to begin
+                    {% endif %}
                 </div>
 
-                <a href="#" class="btn btn-block">Continue Learning</a>
+                {% if item.next_lesson %}
+                <a href="{% url 'course_learning' item.course.id %}?lesson={{ item.next_lesson.id }}" class="btn btn-block">
+                    Continue Learning <i class="fa-solid fa-arrow-right" style="margin-left: 6px;"></i>
+                </a>
+                {% else %}
+                <a href="{% url 'course_learning' item.course.id %}" class="btn btn-block">
+                    Start Learning <i class="fa-solid fa-play" style="margin-left: 6px;"></i>
+                </a>
+                {% endif %}
             </div>
+            {% empty %}
+            <div style="grid-column: 1 / -1; padding: 36px 20px; text-align: center; color: var(--text-muted); background: white; border-radius: var(--radius); border: 1px solid var(--border);">
+                <i class="fa-solid fa-book-open" style="font-size: 32px; color: #0284C7; margin-bottom: 12px; display: block;"></i>
+                <p style="font-size: 15px; font-weight: 600; margin-bottom: 12px; color: var(--secondary);">No active enrolled courses in progress.</p>
+                <a href="{% url 'purchase' %}" class="btn btn-block" style="display: inline-block; width: auto; padding: 10px 24px;">Explore Courses</a>
+            </div>
+            {% endfor %}
         </div>
 
         <div class="section-head">
@@ -431,99 +533,557 @@
 
     </main>
 
-    <div id="supportModal" class="modal-overlay">
+    <!-- Mentor Support Modal -->
+    <div id="mentorModal" class="modal-overlay">
         <div class="modal-box">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                <h2 style="font-size: 20px; font-weight: 700; color: var(--secondary);">Ask Your Mentor</h2>
-                <i class="fa-solid fa-xmark" onclick="closeSupportModal()" style="cursor: pointer; font-size: 20px;"></i>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                <h3 style="margin: 0; font-size: 18px; font-weight: 800; color: var(--secondary);">
+                    <i class="fa-solid fa-chalkboard-user" style="color: var(--brand-cyan);"></i> Connect with Mentor
+                </h3>
+                <i class="fa-solid fa-xmark" style="cursor: pointer; font-size: 18px; color: var(--text-muted);" onclick="closeSupportModal()"></i>
             </div>
-            
-            <form action="/send-support-query/" method="POST">
+            <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 16px;">
+                Have a doubt or need help with a course topic? Send a message directly to your trainer.
+            </p>
+            <form method="POST" action="{% url 'send_support_query' %}">
                 {% csrf_token %}
-                <p style="color: var(--text-muted); font-size: 14px;">Describe your issue below. Your mentor will reply within 24 hours.</p>
-                <textarea name="message" rows="5" class="form-control" placeholder="Type your question here..." required></textarea>
-                
-                <div style="display: flex; gap: 10px; margin-top: 20px;">
-                    <button type="submit" class="btn btn-primary" style="flex: 1;">Send Query</button>
-                    <button type="button" onclick="closeSupportModal()" class="btn" style="flex: 1; background: #F1F5F9;">Cancel</button>
+                <textarea name="message" id="doubtText" rows="4" class="form-control" placeholder="Describe your doubt or question in detail..." required></textarea>
+                <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 15px;">
+                    <button type="button" class="btn" style="background: #E2E8F0; color: #334155;" onclick="closeSupportModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fa-solid fa-paper-plane" style="margin-right: 6px;"></i> Send to Trainer
+                    </button>
                 </div>
             </form>
         </div>
     </div>
 
-    <div class="ai-fab" onclick="toggleAI()">
+    <div class="ai-fab" onclick="toggleAI()" title="Ask CYANOPY Tutor">
         <i class="fa-solid fa-robot"></i>
     </div>
 
     <div id="aiChatBox" class="ai-window">
         <div class="ai-header">
-            <span><i class="fa-solid fa-brain"></i> CYANOPY Tutor</span>
-            <i class="fa-solid fa-chevron-down" style="cursor: pointer;" onclick="toggleAI()"></i>
+            <div>
+                <div style="font-size: 15px; font-weight: 800; display: flex; align-items: center; gap: 8px;">
+                    <i class="fa-solid fa-brain" style="color: #00D2C4;"></i> CYANOPY Tutor
+                </div>
+                <div class="ai-header-status">
+                    <span class="ai-status-dot"></span> AI Assistant Online
+                </div>
+            </div>
+            <div style="display: flex; align-items: center; gap: 14px;">
+                <i class="fa-solid fa-arrows-rotate ai-icon-btn" title="Start New Topic / Clear Memory" onclick="clearAIHistory()"></i>
+                <i class="fa-solid fa-xmark ai-icon-btn" title="Close" onclick="toggleAI()"></i>
+            </div>
         </div>
         
         <div id="aiMessages" class="ai-body">
-            <div class="msg-bubble msg-bot">Hello {{ request.user.first_name }}! I am your AI assistant. Ask me anything about your course.</div>
+            <div class="msg-bubble msg-bot">
+                👋 Hello <strong>{{ request.user.first_name|default:request.user.username }}</strong>! I am your personal AI educational mentor.<br><br>
+                I remember our conversation context as we talk. Ask me any question about your courses, code, concepts, or platform features!
+            </div>
+        </div>
+
+        <!-- Quick Interactive Prompt Chips -->
+        <div class="ai-chips-wrap">
+            <span class="ai-chip" onclick="askQuickPrompt('Explain Data Structures in simple terms')">💡 Data Structures?</span>
+            <span class="ai-chip" onclick="startDashboardQuiz()" style="background: rgba(124, 58, 237, 0.12); color: #7C3AED; border-color: rgba(124, 58, 237, 0.3);"><i class="fa-solid fa-brain"></i> Practice Quiz</span>
+            <span class="ai-chip" onclick="askQuickPrompt('How do I view my uploaded lesson notes?')">📄 Lesson Notes?</span>
+            <span class="ai-chip" onclick="askQuickPrompt('Where can I join my Live Class?')">🎥 Live Class?</span>
+            <span class="ai-chip" onclick="askQuickPrompt('How do I earn my course certificate?')">🏆 Certificate?</span>
         </div>
 
         <div class="ai-input-area">
-            <input id="aiInput" class="ai-input" placeholder="Type your doubt..." onkeypress="handleEnter(event)">
-            <button onclick="sendAI()" class="btn btn-primary" style="padding: 8px 12px;"><i class="fa-solid fa-paper-plane"></i></button>
+            <input id="aiInput" class="ai-input" placeholder="Ask a doubt or follow-up question..." onkeypress="handleEnter(event)">
+            <button type="button" id="dashMicBtn" onclick="toggleDashboardVoice()" class="ai-mic-btn" title="Speak your question">
+                <i class="fa-solid fa-microphone"></i>
+            </button>
+            <button id="aiSendBtn" onclick="sendAI()" class="btn btn-primary" style="padding: 10px 14px; border-radius: 10px;">
+                <i class="fa-solid fa-paper-plane"></i>
+            </button>
         </div>
     </div>
 
     <script>
-        function toggleDropdown() {
-            document.getElementById('userDropdown').classList.toggle('show');
-        }
+        let hasLoadedDashHistory = false;
+        let dashSpeechRec = null;
+        let isDashListening = false;
 
-        function openSupportModal() {
-            document.getElementById('supportModal').style.display = 'flex';
-        }
-
-        function closeSupportModal() {
-            document.getElementById('supportModal').style.display = 'none';
-        }
-
-        window.onclick = function(event) {
-            if (!event.target.closest('.profile-trigger')) {
-                document.getElementById('userDropdown').classList.remove('show');
-            }
-            if (event.target == document.getElementById('supportModal')) {
-                closeSupportModal();
-            }
-        }
-
-        // AI Chat Logic
+        // AI Chat UI & Logic
         function toggleAI(){
             const box = document.getElementById("aiChatBox");
-            box.style.display = box.style.display === "flex" ? "none" : "flex";
+            if (box.style.display === "flex") {
+                box.style.display = "none";
+            } else {
+                box.style.display = "flex";
+                setTimeout(() => document.getElementById("aiInput").focus(), 150);
+                if (!hasLoadedDashHistory) {
+                    loadDashboardHistory();
+                    hasLoadedDashHistory = true;
+                }
+            }
+        }
+
+        function loadDashboardHistory() {
+            fetch("/ai/history/")
+                .then(r => r.json())
+                .then(data => {
+                    if (data && data.messages && data.messages.length > 0) {
+                        const box = document.getElementById("aiMessages");
+                        box.innerHTML = "";
+                        data.messages.forEach(msg => {
+                            if (msg.role === "user") {
+                                box.innerHTML += `<div class="msg-bubble msg-user">${msg.content.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</div>`;
+                            } else if (msg.role === "assistant") {
+                                const botDiv = document.createElement("div");
+                                botDiv.className = "msg-bubble msg-bot";
+                                botDiv.innerHTML = formatAiReply(msg.content);
+                                box.appendChild(botDiv);
+                            }
+                        });
+                        box.scrollTop = box.scrollHeight;
+                    }
+                })
+                .catch(err => console.debug("Error loading history:", err));
         }
 
         function handleEnter(e) {
-            if(e.key === 'Enter') sendAI();
+            if (e.key === 'Enter') sendAI();
+        }
+
+        function askQuickPrompt(text) {
+            document.getElementById("aiInput").value = text;
+            sendAI();
+        }
+
+        function clearAIHistory() {
+            if (!confirm("Start a new topic and reset conversation memory?")) return;
+            fetch("/ai/clear/")
+                .then(r => r.json())
+                .then(data => {
+                    const box = document.getElementById("aiMessages");
+                    box.innerHTML = `
+                        <div class="msg-bubble msg-bot">
+                            ✨ Memory refreshed! Hello <strong>{{ request.user.first_name|default:request.user.username }}</strong>, what new topic would you like to explore today?
+                        </div>
+                    `;
+                    box.scrollTop = box.scrollHeight;
+                });
+        }
+
+        function copyCode(btn, encodedCode) {
+            const code = decodeURIComponent(encodedCode);
+            navigator.clipboard.writeText(code).then(() => {
+                const original = btn.innerHTML;
+                btn.innerHTML = `<i class="fa-solid fa-check"></i> Copied!`;
+                btn.style.color = '#10B981';
+                setTimeout(() => {
+                    btn.innerHTML = original;
+                    btn.style.color = '';
+                }, 2000);
+            });
+        }
+
+        function openSupportModal(prefillText) {
+            const modal = document.getElementById('mentorModal');
+            const textarea = document.getElementById('doubtText');
+            if (textarea && prefillText) {
+                try {
+                    textarea.value = decodeURIComponent(prefillText);
+                } catch(e) {
+                    textarea.value = prefillText;
+                }
+            }
+            if (modal) {
+                modal.style.display = 'flex';
+                const chatBox = document.getElementById("aiChatBox");
+                if (chatBox && chatBox.style.display === "flex") {
+                    chatBox.style.display = "none";
+                }
+                setTimeout(() => { if (textarea) textarea.focus(); }, 150);
+            }
+        }
+
+        function closeSupportModal() {
+            const modal = document.getElementById('mentorModal');
+            if (modal) modal.style.display = 'none';
+        }
+
+        function escalateDoubt(btn, encodedQuestion) {
+            let question = "";
+            try {
+                question = decodeURIComponent(encodedQuestion);
+            } catch(e) {
+                question = encodedQuestion;
+            }
+            const box = document.getElementById("aiMessages");
+            
+            if (btn) {
+                btn.disabled = true;
+                btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Sending to Trainer...`;
+            }
+
+            fetch("/ai/escalate/", {
+                method: "POST",
+                headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                body: "question=" + encodeURIComponent(question)
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.status === "success") {
+                    if (btn) {
+                        btn.innerHTML = `<i class="fa-solid fa-check"></i> Sent to Trainer!`;
+                        btn.style.background = "#10B981";
+                        btn.style.color = "#FFFFFF";
+                        btn.style.borderColor = "#10B981";
+                    }
+
+                    // Render instant bot reply confirmation bubble
+                    const confirmBubble = document.createElement("div");
+                    confirmBubble.className = "msg-bubble msg-bot";
+                    confirmBubble.style.borderLeft = "4px solid #00D2C4";
+                    confirmBubble.style.background = "#F0FDF4";
+                    confirmBubble.innerHTML = `
+                        <div style="font-weight: 700; color: #065F46; margin-bottom: 6px; display: flex; align-items: center; gap: 6px;">
+                            <i class="fa-solid fa-circle-check" style="color: #10B981;"></i> Doubt Sent to Trainer!
+                        </div>
+                        <p style="margin: 0 0 10px 0; font-size: 13px; color: #1E293B; line-height: 1.5;">
+                            Your question has been sent directly to your course trainer. When they answer, you can view their personal response anytime on your doubts page.
+                        </p>
+                        <a href="{% url 'student_doubts' %}" class="ai-action-btn" style="background: #0284C7; color: white; border: none; padding: 6px 14px; text-decoration: none; border-radius: 8px; font-weight: 700;">
+                            <i class="fa-solid fa-clipboard-question"></i> View My Doubts &rarr;
+                        </a>
+                    `;
+                    box.appendChild(confirmBubble);
+                    box.scrollTop = box.scrollHeight;
+                } else {
+                    if (btn) {
+                        btn.disabled = false;
+                        btn.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> Error. Try again`;
+                    }
+                }
+            })
+            .catch(err => {
+                if (btn) {
+                    btn.disabled = false;
+                    btn.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> Network error. Try again`;
+                }
+            });
+        }
+
+        function formatAiReply(text) {
+            if (!text) return "";
+            let str = text;
+
+            // 1. Extract fenced code blocks ```lang\ncode\n```
+            const codeBlocks = [];
+            str = str.replace(/```([a-zA-Z0-9_\-\+]*)\n([\s\S]*?)```/g, function(match, lang, code) {
+                const id = 'CODEBLOCK_' + codeBlocks.length;
+                codeBlocks.push({ lang: lang || 'code', code: code.trim() });
+                return `__${id}__`;
+            });
+
+            // 2. Escape HTML for safe rendering outside code blocks
+            str = str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
+            // 3. Headings
+            str = str.replace(/^### (.*$)/gim, '<div style="font-weight: 800; font-size: 14px; margin: 8px 0 4px; color: #0F172A;">$1</div>');
+            str = str.replace(/^## (.*$)/gim, '<div style="font-weight: 800; font-size: 15px; margin: 10px 0 4px; color: #0F172A;">$1</div>');
+
+            // 4. Bold and inline code
+            str = str.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+            str = str.replace(/`([^`]+)`/g, '<code style="background: rgba(0,0,0,0.06); padding: 2px 6px; border-radius: 4px; font-family: monospace; font-size: 12px; color: #7C3AED;">$1</code>');
+
+            // 5. Bullet points & lines
+            str = str.replace(/^\s*[\*\-]\s+(.*)$/gm, '&bull; $1<br>');
+            str = str.replace(/\n\n/g, '<br><br>').replace(/\n/g, '<br>');
+
+            // 6. Restore code blocks with IDE UI & Copy button
+            codeBlocks.forEach((block, idx) => {
+                const id = `__CODEBLOCK_${idx}__`;
+                const escapedCode = block.code.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+                const encodedCode = encodeURIComponent(block.code);
+                const html = `
+                    <div class="ai-code-block">
+                        <div class="ai-code-header">
+                            <span><i class="fa-solid fa-code"></i> ${block.lang.toUpperCase()}</span>
+                            <button class="ai-code-copy-btn" onclick="copyCode(this, '${encodedCode}')">
+                                <i class="fa-regular fa-copy"></i> Copy
+                            </button>
+                        </div>
+                        <pre class="ai-code-content"><code>${escapedCode}</code></pre>
+                    </div>
+                `;
+                str = str.replace(id, html);
+            });
+
+            return str;
+        }
+
+        // Typewriter streaming effect
+        function streamAiReply(containerEl, fullReply, questionText, onDone) {
+            const words = fullReply.split(" ");
+            let current = "";
+            let i = 0;
+            // Adaptive step size: if answer is long, stream 2-3 words per tick
+            const step = words.length > 120 ? 3 : (words.length > 60 ? 2 : 1);
+            const box = document.getElementById("aiMessages");
+
+            const timer = setInterval(() => {
+                if (i < words.length) {
+                    const chunk = words.slice(i, i + step).join(" ");
+                    current += (i === 0 ? "" : " ") + chunk;
+                    i += step;
+                    containerEl.innerHTML = formatAiReply(current);
+                    box.scrollTop = box.scrollHeight;
+                } else {
+                    clearInterval(timer);
+                    containerEl.innerHTML = formatAiReply(fullReply);
+                    // Add Action bar with Ask Human Mentor button
+                    const encodedQ = encodeURIComponent(questionText);
+                    const actionBar = document.createElement("div");
+                    actionBar.className = "ai-action-bar";
+                    actionBar.innerHTML = `
+                        <button class="ai-action-btn" onclick="escalateDoubt(this, '${encodedQ}')" title="Send this doubt directly to your course trainer">
+                            <i class="fa-solid fa-chalkboard-user"></i> Ask Human Mentor
+                        </button>
+                        <button class="ai-action-btn" onclick="openSupportModal('${encodedQ}')" title="Customize message for your trainer" style="background: transparent; border-color: transparent; color: #64748B;">
+                            <i class="fa-solid fa-pen-to-square"></i> Edit
+                        </button>
+                    `;
+                    containerEl.appendChild(actionBar);
+                    box.scrollTop = box.scrollHeight;
+                    if (onDone) onDone();
+                }
+            }, 30);
         }
 
         function sendAI(){
-            let input = document.getElementById("aiInput");
-            let msg = input.value;
-            if(!msg.trim()) return;
+            const input = document.getElementById("aiInput");
+            const btn = document.getElementById("aiSendBtn");
+            const box = document.getElementById("aiMessages");
+            const msg = input.value.trim();
+            if (!msg) return;
 
-            let box = document.getElementById("aiMessages");
-            box.innerHTML += `<div class="msg-bubble msg-user">${msg}</div>`;
+            // Render user bubble
+            box.innerHTML += `<div class="msg-bubble msg-user">${msg.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</div>`;
             input.value = "";
             box.scrollTop = box.scrollHeight;
 
-            // Simulate loading or fetch from backend
+            // Render Typing indicator
+            const typingId = "typing-" + Date.now();
+            box.innerHTML += `
+                <div id="${typingId}" class="msg-bubble msg-bot" style="display: flex; align-items: center; gap: 8px;">
+                    <span style="font-size: 12px; color: #94A3B8;">Thinking</span>
+                    <div class="typing-dots">
+                        <span class="typing-dot"></span>
+                        <span class="typing-dot"></span>
+                        <span class="typing-dot"></span>
+                    </div>
+                </div>
+            `;
+            box.scrollTop = box.scrollHeight;
+
+            input.disabled = true;
+            btn.disabled = true;
+            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i>`;
+
             fetch("/ai/chat/?msg=" + encodeURIComponent(msg))
-            .then(res => res.json())
-            .then(data => {
-                box.innerHTML += `<div class="msg-bubble msg-bot">${data.reply}</div>`;
-                box.scrollTop = box.scrollHeight;
-            })
-            .catch(err => {
-                box.innerHTML += `<div class="msg-bubble msg-bot" style="color:red">Error connecting to AI.</div>`;
-            });
+                .then(res => res.json())
+                .then(data => {
+                    const typingEl = document.getElementById(typingId);
+                    if (typingEl) typingEl.remove();
+
+                    // Create bot response bubble
+                    const botBubble = document.createElement("div");
+                    botBubble.className = "msg-bubble msg-bot";
+                    box.appendChild(botBubble);
+                    box.scrollTop = box.scrollHeight;
+
+                    // Stream the reply with typewriter effect
+                    streamAiReply(botBubble, data.reply, msg, () => {
+                        input.disabled = false;
+                        btn.disabled = false;
+                        btn.innerHTML = `<i class="fa-solid fa-paper-plane"></i>`;
+                        input.focus();
+                    });
+                })
+                .catch(err => {
+                    const typingEl = document.getElementById(typingId);
+                    if (typingEl) typingEl.remove();
+
+                    box.innerHTML += `<div class="msg-bubble msg-bot" style="color:#DC2626;"><i class="fa-solid fa-triangle-exclamation"></i> Error connecting to AI tutor.</div>`;
+                    box.scrollTop = box.scrollHeight;
+                    input.disabled = false;
+                    btn.disabled = false;
+                    btn.innerHTML = `<i class="fa-solid fa-paper-plane"></i>`;
+                    input.focus();
+                });
         }
+
+        // ========================================================
+        // DASHBOARD VOICE INPUT (Web Speech API)
+        // ========================================================
+        function toggleDashboardVoice() {
+            const micBtn = document.getElementById("dashMicBtn");
+            const input = document.getElementById("aiInput");
+
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!SpeechRecognition) {
+                alert("Voice recognition is not supported in this browser. Please use Chrome, Edge, or Safari.");
+                return;
+            }
+
+            if (isDashListening && dashSpeechRec) {
+                dashSpeechRec.stop();
+                isDashListening = false;
+                micBtn.classList.remove("listening");
+                return;
+            }
+
+            dashSpeechRec = new SpeechRecognition();
+            dashSpeechRec.continuous = false;
+            dashSpeechRec.interimResults = false;
+            dashSpeechRec.lang = "en-US";
+
+            dashSpeechRec.onstart = function () {
+                isDashListening = true;
+                micBtn.classList.add("listening");
+                input.placeholder = "Listening... Speak your question";
+            };
+
+            dashSpeechRec.onresult = function (event) {
+                const transcript = event.results[0][0].transcript;
+                input.value = transcript;
+                input.placeholder = "Ask a doubt or follow-up question...";
+                isDashListening = false;
+                micBtn.classList.remove("listening");
+                input.focus();
+            };
+
+            dashSpeechRec.onerror = function () {
+                isDashListening = false;
+                micBtn.classList.remove("listening");
+                input.placeholder = "Ask a doubt or follow-up question...";
+            };
+
+            dashSpeechRec.onend = function () {
+                isDashListening = false;
+                micBtn.classList.remove("listening");
+                input.placeholder = "Ask a doubt or follow-up question...";
+            };
+
+            dashSpeechRec.start();
+        }
+
+        // ========================================================
+        // DASHBOARD INTERACTIVE QUIZ GENERATOR
+        // ========================================================
+        function startDashboardQuiz() {
+            const box = document.getElementById("aiMessages");
+            const quizLoadId = "dash-quiz-" + Date.now();
+
+            box.innerHTML += `
+                <div id="${quizLoadId}" class="msg-bubble msg-bot">
+                    <i class="fa-solid fa-brain fa-bounce" style="color: #7C3AED; margin-right: 6px;"></i>
+                    Generating a quick practice quiz for you...
+                </div>
+            `;
+            box.scrollTop = box.scrollHeight;
+
+            fetch("/ai/quiz/")
+                .then(r => r.json())
+                .then(data => {
+                    const loadEl = document.getElementById(quizLoadId);
+                    if (loadEl) loadEl.remove();
+
+                    if (!data || !data.questions) {
+                        box.innerHTML += `<div class="msg-bubble msg-bot">Could not generate quiz right now. Try again!</div>`;
+                        return;
+                    }
+
+                    const quizContainer = document.createElement("div");
+                    quizContainer.className = "msg-bubble msg-bot";
+                    quizContainer.style.maxWidth = "95%";
+
+                    let html = `
+                        <div style="font-weight: 800; font-size: 13px; color: #0F172A; margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between;">
+                            <span><i class="fa-solid fa-brain" style="color: #7C3AED;"></i> ${data.title || "Practice Quiz"}</span>
+                            <span style="font-size: 10px; background: rgba(124, 58, 237, 0.1); color: #7C3AED; padding: 2px 6px; border-radius: 4px; font-weight: 700;">3 Questions</span>
+                        </div>
+                    `;
+
+                    data.questions.forEach((q, qIdx) => {
+                        const qId = `dash_q_${qIdx}_${Date.now()}`;
+                        html += `
+                            <div class="ai-quiz-card" id="${qId}">
+                                <div class="ai-quiz-header">Question ${qIdx + 1} of ${data.questions.length}</div>
+                                <div class="ai-quiz-q">${q.question.replace(/</g, "&lt;")}</div>
+                                <div class="ai-quiz-options">
+                        `;
+                        q.options.forEach((opt, optIdx) => {
+                            const encodedExpl = encodeURIComponent(q.explanation || "");
+                            html += `
+                                <button type="button" class="ai-quiz-opt" onclick="handleDashboardQuizAnswer(this, ${q.correct_index}, ${optIdx}, '${encodedExpl}', '${qId}')">
+                                    <span>${opt.replace(/</g, "&lt;")}</span>
+                                    <i class="fa-regular fa-circle"></i>
+                                </button>
+                            `;
+                        });
+                        html += `
+                                </div>
+                                <div class="ai-quiz-expl" id="expl_${qId}"></div>
+                            </div>
+                        `;
+                    });
+
+                    quizContainer.innerHTML = html;
+                    box.appendChild(quizContainer);
+                    box.scrollTop = box.scrollHeight;
+                })
+                .catch(() => {
+                    const loadEl = document.getElementById(quizLoadId);
+                    if (loadEl) loadEl.remove();
+                    box.innerHTML += `<div class="msg-bubble msg-bot" style="color: #DC2626;">Error creating quiz.</div>`;
+                });
+        }
+
+        function handleDashboardQuizAnswer(selectedBtn, correctIdx, chosenIdx, encodedExpl, qCardId) {
+            const card = document.getElementById(qCardId);
+            if (!card) return;
+
+            const buttons = card.querySelectorAll(".ai-quiz-opt");
+            buttons.forEach(b => b.disabled = true);
+
+            const isCorrect = (chosenIdx === correctIdx);
+            const expl = decodeURIComponent(encodedExpl);
+            const explBox = document.getElementById("expl_" + qCardId);
+
+            if (isCorrect) {
+                selectedBtn.classList.add("correct");
+                selectedBtn.querySelector("i").className = "fa-solid fa-circle-check";
+            } else {
+                selectedBtn.classList.add("wrong");
+                selectedBtn.querySelector("i").className = "fa-solid fa-circle-xmark";
+                if (buttons[correctIdx]) {
+                    buttons[correctIdx].classList.add("correct");
+                    buttons[correctIdx].querySelector("i").className = "fa-solid fa-circle-check";
+                }
+            }
+
+            if (explBox && expl) {
+                explBox.style.display = "block";
+                explBox.innerHTML = `<strong>${isCorrect ? '✅ Well done!' : '💡 Key Concept:'}</strong> ${expl.replace(/</g, "&lt;")}`;
+            }
+        }
+
+        // Initialize progress bar widths
+        document.addEventListener("DOMContentLoaded", function() {
+            document.querySelectorAll(".progress-bar[data-progress]").forEach(function(bar) {
+                bar.style.width = (bar.getAttribute("data-progress") || 0) + "%";
+            });
+        });
     </script>
 </body>
 </html>

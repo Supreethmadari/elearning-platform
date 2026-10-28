@@ -1,114 +1,509 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit Course | Trainer Dashboard</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <title>Edit Course | CYANOPY</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --bg-color: #0f172a;
-            --sidebar-color: #1e293b;
-            --accent-color: #f59e0b; /* Amber for editing/warning */
-            --input-bg: #1e293b;
-            --card-bg: rgba(255, 255, 255, 0.03);
-            --text-main: #f8fafc;
-            --text-dim: #94a3b8;
+            /* Cyanopy Brand Identity (Cyan & Purple on Crisp White) */
+            --brand-cyan: #0284C7;
+            --brand-cyan-light: #00D2C4;
+            --brand-cyan-glow: rgba(0, 210, 196, 0.25);
+            --brand-cyan-bg: rgba(2, 132, 199, 0.08);
+            --brand-cyan-border: rgba(2, 132, 199, 0.3);
+
+            --brand-purple: #7C3AED;
+            --brand-purple-dark: #3B0764;
+            --brand-purple-light: #8B5CF6;
+            --brand-purple-glow: rgba(124, 58, 237, 0.25);
+            --brand-purple-bg: rgba(124, 58, 237, 0.08);
+            --brand-purple-border: rgba(124, 58, 237, 0.3);
+
+            --brand-gradient: linear-gradient(135deg, #00D2C4 0%, #7C3AED 100%);
+            --brand-gradient-hover: linear-gradient(135deg, #06B6D4 0%, #6D28D9 100%);
+            --brand-gradient-soft: linear-gradient(135deg, rgba(0, 210, 196, 0.1) 0%, rgba(124, 58, 237, 0.08) 100%);
+
+            /* White Background & Light Palette */
+            --bg-color: #FFFFFF;
+            --sidebar-color: #FFFFFF;
+            --card-bg: #FFFFFF;
+            --input-bg: #F8FAFC;
+            --text-main: #0F172A;
+            --text-dim: #64748B;
+            --border: #E2E8F0;
+            --border-hover: rgba(0, 210, 196, 0.45);
+            --shadow-sm: 0 2px 8px rgba(15, 23, 42, 0.04);
+            --shadow-md: 0 4px 20px -2px rgba(15, 23, 42, 0.06);
+            --shadow-lg: 0 10px 30px -4px rgba(15, 23, 42, 0.08);
+
+            --danger: #EF4444;
+            --danger-bg: rgba(239, 68, 68, 0.08);
+            --success: #10B981;
+        }
+
+        * {
+            box-sizing: border-box;
         }
 
         body {
             margin: 0;
-            font-family: 'Poppins', sans-serif;
+            font-family: 'Plus Jakarta Sans', sans-serif;
             background-color: var(--bg-color);
             color: var(--text-main);
             display: flex;
             min-height: 100vh;
+            background-image:
+                radial-gradient(at 0% 0%, rgba(0, 210, 196, 0.04) 0px, transparent 40%),
+                radial-gradient(at 100% 0%, rgba(124, 58, 237, 0.04) 0px, transparent 40%);
+            background-attachment: fixed;
         }
 
-        /* Sidebar Navigation */
+        /* ----- Primary Constant Sidebar (Image 3 - Light Mode) ----- */
         nav {
-            width: 260px;
+            width: 240px;
             background-color: var(--sidebar-color);
-            padding: 2rem;
+            padding: 1.6rem 1.1rem;
             display: flex;
             flex-direction: column;
-            border-right: 1px solid rgba(255, 255, 255, 0.1);
+            border-right: 1px solid var(--border);
+            position: fixed;
+            height: 100vh;
+            z-index: 100;
+            box-shadow: 2px 0 20px rgba(0, 0, 0, 0.03);
         }
 
-        nav h2 { font-size: 1.2rem; margin-bottom: 2rem; color: var(--accent-color); letter-spacing: 1px; }
-        .nav-link { color: var(--text-dim); text-decoration: none; padding: 0.8rem 0; display: block; font-size: 0.9rem; }
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.25rem;
+            font-weight: 800;
+            margin-bottom: 2.3rem;
+            padding-left: 6px;
+            color: var(--brand-purple-dark);
+            text-decoration: none;
+            letter-spacing: 1.5px;
+            cursor: default;
+            user-select: none;
+        }
 
-        /* Main Workspace */
+        .nav-logo .brand-mark {
+            flex-shrink: 0;
+            filter: drop-shadow(0 2px 8px rgba(0, 210, 196, 0.3));
+        }
+
+        .nav-logo .brand-o {
+            color: #00D2C4;
+            text-shadow: 0 0 10px rgba(0, 210, 196, 0.3);
+        }
+
+        .nav-logo .brand-py {
+            color: var(--brand-purple-dark);
+        }
+
+        .nav-link {
+            color: var(--text-dim);
+            text-decoration: none;
+            padding: 11px 16px;
+            border-radius: 12px;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            font-size: 0.92rem;
+            font-weight: 600;
+            margin-bottom: 4px;
+            position: relative;
+        }
+
+        .nav-link:hover {
+            color: var(--text-main);
+            background: #F1F5F9;
+            transform: translateX(3px);
+        }
+
+        .nav-link.active {
+            background: var(--brand-gradient-soft);
+            color: var(--brand-cyan);
+            border-left: 3px solid #00D2C4;
+            box-shadow: 0 2px 8px rgba(0, 210, 196, 0.08);
+            font-weight: 700;
+        }
+
+        .nav-link.active i {
+            color: var(--brand-cyan);
+        }
+
+        /* Submenu tree under My Courses */
+        .nav-sub-tree {
+            margin: 4px 0 10px 22px;
+            padding-left: 14px;
+            border-left: 2px solid rgba(0, 210, 196, 0.3);
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+
+        .nav-sub-link {
+            color: var(--text-dim);
+            text-decoration: none;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 0.84rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.2s ease;
+        }
+
+        .nav-sub-link:hover {
+            color: var(--text-main);
+            background: #F1F5F9;
+            transform: translateX(2px);
+        }
+
+        .nav-sub-link.active {
+            color: var(--brand-cyan);
+            background: var(--brand-cyan-bg);
+            font-weight: 700;
+        }
+
+        .nav-sub-link i {
+            font-size: 0.75rem;
+            width: 14px;
+            text-align: center;
+        }
+
+        .logout-link {
+            color: #EF4444;
+            margin-top: auto;
+            margin-bottom: 20px;
+            border-top: 1px solid var(--border);
+            padding-top: 18px;
+            font-weight: 700;
+        }
+
+        .logout-link:hover {
+            background: var(--danger-bg);
+            color: #DC2626;
+        }
+
+        /* ----- Main Workspace (White Canvas) ----- */
         main {
             flex-grow: 1;
-            padding: 3rem;
+            margin-left: 240px;
+            padding: 30px 48px;
+            background-color: var(--bg-color);
+        }
+
+        /* ----- Top Breadcrumb Bar (Matching Reference Design) ----- */
+        .breadcrumb-bar {
+            background: #FFFFFF;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 12px 20px;
             display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 12px rgba(15, 23, 42, 0.04);
+            width: 100%;
+        }
+
+        .breadcrumb-left {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        /* Back Arrow Button (Dark Rounded Square from Reference) */
+        .back-btn {
+            width: 38px;
+            height: 38px;
+            background: #1E293B;
+            color: #FFFFFF;
+            border-radius: 10px;
+            display: inline-flex;
+            align-items: center;
             justify-content: center;
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: all 0.2s ease;
+            border: none;
+            flex-shrink: 0;
+        }
+
+        .back-btn:hover {
+            background: #0F172A;
+            transform: translateX(-2px);
+            color: #FFFFFF;
+        }
+
+        /* Breadcrumb Trail */
+        .breadcrumb-trail {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.95rem;
+            color: #64748B;
+            font-weight: 500;
+        }
+
+        .breadcrumb-trail a {
+            color: #64748B;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .breadcrumb-trail a:hover {
+            color: #0F172A;
+        }
+
+        .breadcrumb-trail .separator {
+            color: #94A3B8;
+            font-size: 0.75rem;
+        }
+
+        .breadcrumb-trail .current-page {
+            color: #2563EB;
+            font-weight: 600;
+        }
+
+        /* Date Pill (Right Side from Reference) */
+        .date-pill {
+            background: #1E293B;
+            color: #FFFFFF;
+            padding: 8px 16px;
+            border-radius: 9px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 9px;
+            box-shadow: 0 2px 6px rgba(30, 41, 59, 0.12);
+            flex-shrink: 0;
+            letter-spacing: 0.1px;
+        }
+
+        .date-pill svg {
+            color: #94A3B8;
+            flex-shrink: 0;
         }
 
         .edit-container {
             width: 100%;
-            max-width: 600px;
+            max-width: 720px;
         }
 
-        .header-section { margin-bottom: 2rem; }
-        .header-section h1 { margin: 0; font-size: 1.8rem; }
-        .header-section p { color: var(--text-dim); margin-top: 5px; }
+        .header-section {
+            margin-bottom: 2rem;
+        }
+
+        .header-section h1 {
+            margin: 0;
+            font-size: 2rem;
+            font-weight: 800;
+            letter-spacing: -0.6px;
+            color: var(--text-main);
+        }
+
+        .header-section p {
+            margin: 6px 0 0;
+            color: var(--text-dim);
+            font-size: 0.95rem;
+        }
 
         .form-card {
-            background: var(--card-bg);
-            padding: 2.5rem;
-            border-radius: 16px;
-            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: #FFFFFF;
+            padding: 2.8rem;
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-md);
         }
 
-        .form-group { margin-bottom: 1.5rem; }
-        label { display: block; font-size: 0.75rem; color: var(--accent-color); margin-bottom: 8px; font-weight: 600; }
+        .form-group {
+            margin-bottom: 1.8rem;
+        }
 
-        input, textarea {
+        label {
+            display: block;
+            font-size: 0.78rem;
+            color: var(--brand-cyan);
+            margin-bottom: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        input,
+        textarea {
             width: 100%;
-            padding: 12px 16px;
+            padding: 14px 18px;
             background: var(--input-bg);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 8px;
-            color: white;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: var(--text-main);
             font-family: inherit;
+            font-size: 0.92rem;
             box-sizing: border-box;
+            transition: all 0.2s ease;
         }
 
-        textarea { height: 120px; resize: none; }
+        input:focus,
+        textarea:focus {
+            outline: none;
+            background: #FFFFFF;
+            border-color: var(--brand-cyan-light);
+            box-shadow: 0 0 0 3px rgba(0, 210, 196, 0.15);
+        }
+
+        textarea {
+            height: 130px;
+            resize: vertical;
+        }
 
         .save-btn {
             width: 100%;
             padding: 14px;
-            background: var(--accent-color);
-            color: #000;
+            background: var(--brand-gradient);
+            color: #FFFFFF;
             border: none;
-            border-radius: 8px;
-            font-weight: 600;
+            border-radius: 12px;
+            font-weight: 800;
             cursor: pointer;
-            margin-top: 1rem;
+            margin-top: 1.5rem;
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 16px rgba(0, 210, 196, 0.35);
+            transition: all 0.2s;
+        }
+
+        .save-btn:hover {
+            background: var(--brand-gradient-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(124, 58, 237, 0.35);
         }
 
         .cancel-link {
             display: block;
             text-align: center;
-            margin-top: 1.5rem;
+            margin-top: 1.4rem;
             color: var(--text-dim);
             text-decoration: none;
             font-size: 0.9rem;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+
+        .cancel-link:hover {
+            color: #EF4444;
         }
     </style>
 </head>
+
 <body>
 
+    <!-- Primary Constant Sidebar (Image 3 - Light Mode) -->
     <nav>
-        <h2>CYANOPY</h2>
-        <a href="/trainer-courses/" class="nav-link">← Back to Dashboard</a>
-        <a href="#" class="nav-link" style="color: var(--accent-color);">Editor Mode</a>
+        <div class="nav-logo">
+            <svg class="brand-mark" width="28" height="28" viewBox="0 0 120 120" fill="none"
+                xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <linearGradient id="cyanGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#00F5D4" />
+                        <stop offset="50%" stop-color="#00D2C4" />
+                        <stop offset="100%" stop-color="#06B6D4" />
+                    </linearGradient>
+                    <linearGradient id="purpleGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#9333EA" />
+                        <stop offset="50%" stop-color="#7C3AED" />
+                        <stop offset="100%" stop-color="#4C1D95" />
+                    </linearGradient>
+                </defs>
+                <path
+                    d="M66 8 C62 20 48 34 38 48 C28 62 28 80 40 92 C42 84 44 76 50 67 C56 59 62 53 64 42 C66 31 66 20 66 8 Z"
+                    fill="url(#cyanGrad)" />
+                <path
+                    d="M63 46 C71 31 82 24 87 32 C93 42 91 56 84 71 C76 84 64 97 54 108 C51 104 50 96 52 88 C57 76 69 68 71 57 C72 50 68 46 63 46 Z"
+                    fill="url(#purpleGrad)" />
+            </svg>
+            <span class="brand-text">CYAN<span class="brand-o">O</span><span class="brand-py">PY</span></span>
+        </div>
+
+        <a href="/trainer-dashboard/" class="nav-link">
+            <i class="fa-solid fa-house-chimney"></i> Dashboard
+        </a>
+
+        <!-- My Courses (Active with sub-navigation) -->
+        <a href="/trainer-courses/" class="nav-link active">
+            <i class="fa-solid fa-book-open"></i> My Courses
+        </a>
+
+        <!-- My Courses Nested Sub-tree -->
+        <div class="nav-sub-tree">
+            <a href="/trainer-courses/" class="nav-sub-link">
+                <i class="fa-solid fa-layer-group"></i> Manage Courses
+            </a>
+            <a href="/create-course/" class="nav-sub-link">
+                <i class="fa-solid fa-circle-plus"></i> Create Course
+            </a>
+            <a href="/add-lesson/" class="nav-sub-link">
+                <i class="fa-solid fa-video"></i> Add Lesson
+            </a>
+        </div>
+
+        <a href="/trainer-analytics/" class="nav-link">
+            <i class="fa-solid fa-chart-line"></i> Analytics
+        </a>
+        <a href="#" class="nav-link">
+            <i class="fa-solid fa-sliders"></i> Settings
+        </a>
+
+        <a href="/logout/" class="nav-link logout-link">
+            <i class="fa-solid fa-power-off"></i> Logout
+        </a>
     </nav>
 
     <main>
+        <!-- Top Breadcrumb Bar (Matches Reference Image Exactly) -->
+        <div class="breadcrumb-bar">
+            <div class="breadcrumb-left">
+                <!-- Back Button -->
+                <a href="/trainer-courses/" class="back-btn" title="Back to Manage Courses">
+                    <i class="fa-solid fa-arrow-left"></i>
+                </a>
+                <!-- Breadcrumb Trail -->
+                <div class="breadcrumb-trail">
+                    <a href="/trainer-dashboard/">Dashboard</a>
+                    <i class="fa-solid fa-chevron-right separator"></i>
+                    <a href="/trainer-courses/">My Courses</a>
+                    <i class="fa-solid fa-chevron-right separator"></i>
+                    <span class="current-page">Edit Course</span>
+                </div>
+            </div>
+
+            <!-- Date Pill (Right Side from Reference) -->
+            <div class="date-pill">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                    <line x1="16" y1="2" x2="16" y2="6"></line>
+                    <line x1="8" y1="2" x2="8" y2="6"></line>
+                    <line x1="3" y1="10" x2="21" y2="10"></line>
+                    <circle cx="15.5" cy="15.5" r="3.5" fill="#1E293B"></circle>
+                    <polyline points="15.5 13.8 15.5 15.5 16.8 15.5"></polyline>
+                </svg>
+                <span class="dynamic-date">Today, 27 Sep 2026</span>
+            </div>
+        </div>
+
         <div class="edit-container">
             <div class="header-section">
                 <h1>Edit Course</h1>
@@ -118,28 +513,76 @@
             <div class="form-card">
                 <form method="POST">
                     {% csrf_token %}
-                    
+
                     <div class="form-group">
-                        <label>COURSE TITLE</label>
+                        <label>Course Title</label>
                         <input type="text" name="title" value="{{ course.title }}" required>
                     </div>
 
                     <div class="form-group">
-                        <label>DESCRIPTION</label>
+                        <label>Description</label>
                         <textarea name="description" required>{{ course.description }}</textarea>
                     </div>
 
                     <div class="form-group">
-                        <label>PRICE (₹)</label>
+                        <label>Base Price (₹)</label>
                         <input type="number" name="price" value="{{ course.price }}" required>
                     </div>
 
+                    <hr style="border: 0; border-top: 1px solid var(--border); margin: 2rem 0;">
+                    <h3
+                        style="font-size: 0.95rem; color: var(--brand-purple); margin-bottom: 1.5rem; text-transform: uppercase; font-weight: 800; letter-spacing: 0.5px;">
+                        Tiered Fee Structure</h3>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 1.5rem;">
+                        <div class="form-group">
+                            <label>Live Virtual (Old ₹)</label>
+                            <input type="number" name="live_old" value="{{ course.live_virtual_old_price }}">
+                        </div>
+                        <div class="form-group">
+                            <label>Live Virtual (New ₹)</label>
+                            <input type="number" name="live_new" value="{{ course.live_virtual_new_price }}">
+                        </div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 1.5rem;">
+                        <div class="form-group">
+                            <label>Blended (Old ₹)</label>
+                            <input type="number" name="blended_old" value="{{ course.blended_old_price }}">
+                        </div>
+                        <div class="form-group">
+                            <label>Blended (New ₹)</label>
+                            <input type="number" name="blended_new" value="{{ course.blended_new_price }}">
+                        </div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 1.5rem;">
+                        <div class="form-group">
+                            <label>Classroom (Old ₹)</label>
+                            <input type="number" name="class_old" value="{{ course.classroom_old_price }}">
+                        </div>
+                        <div class="form-group">
+                            <label>Classroom (New ₹)</label>
+                            <input type="number" name="class_new" value="{{ course.classroom_new_price }}">
+                        </div>
+                    </div>
+
                     <button type="submit" class="save-btn">Update Course Details</button>
-                    <a href="/" class="cancel-link">Discard Changes</a>
+                    <a href="/trainer-courses/" class="cancel-link">Discard Changes</a>
                 </form>
             </div>
         </div>
     </main>
 
+    <script>
+        (function () {
+            const dateEl = document.querySelectorAll('.dynamic-date');
+            const now = new Date();
+            const options = { day: 'numeric', month: 'short', year: 'numeric' };
+            const formatted = 'Today, ' + now.toLocaleDateString('en-GB', options);
+            dateEl.forEach(el => el.textContent = formatted);
+        })();
+    </script>
 </body>
+
 </html>

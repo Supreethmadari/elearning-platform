@@ -1,214 +1,524 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Secure Checkout | CYANOPY</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Brand Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Official Razorpay Checkout Modal SDK -->
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
     <style>
         :root {
-            --kodnest-yellow: #ffc107;
-            --bg-light: #f4f7f6;
-            --text-dark: #2d3436;
-            --success-green: #00c853;
+            --bg-dark: #0B1120;
+            --bg-surface: #0F172A;
+            --brand-cyan: #00D2C4;
+            --brand-cyan-dark: #0284C7;
+            --brand-purple: #7C3AED;
+            --brand-purple-dark: #3B0764;
+            --brand-gradient: linear-gradient(135deg, #00D2C4 0%, #7C3AED 100%);
+            --brand-gradient-hover: linear-gradient(135deg, #0284C7 0%, #6D28D9 100%);
+
+            --bg-body: #F8FAFC;
+            --text-dark: #0F172A;
+            --text-muted: #64748B;
+            --border: #E2E8F0;
+            --shadow-card: 0 10px 30px -5px rgba(15, 23, 42, 0.08);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
         }
 
         body {
-            margin: 0;
-            font-family: 'Poppins', sans-serif;
-            background-color: var(--bg-light);
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-dark);
             min-height: 100vh;
-        }
-
-        .checkout-container {
-            background: white;
-            width: 100%;
-            max-width: 900px;
             display: flex;
-            border-radius: 20px;
-            overflow: hidden;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
-            margin: 20px;
+            align-items: center;
+            justify-content: center;
+            padding: 30px 20px;
         }
 
-        /* --- Left Side: Order Summary --- */
-        .order-summary {
+        .checkout-box {
+            display: flex;
+            background: #FFFFFF;
+            max-width: 940px;
+            width: 100%;
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(15, 23, 42, 0.08);
+            border: 1px solid var(--border);
+        }
+
+        /* Order Summary Left Side */
+        .order-summary-side {
             flex: 1;
-            background: #1e1e1e;
-            color: white;
-            padding: 40px;
+            background: linear-gradient(135deg, #0B1120 0%, #0F172A 100%);
+            color: #FFFFFF;
+            padding: 44px;
             display: flex;
             flex-direction: column;
+            justify-content: space-between;
         }
 
-        .order-summary h2 { font-size: 22px; margin-bottom: 30px; }
-        
-        .course-preview {
+        .brand-logo-wrap {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            margin-bottom: 30px;
+        }
+
+        .brand-logo-text {
+            font-size: 1.35rem;
+            font-weight: 800;
+            letter-spacing: 1.2px;
+            color: #FFFFFF;
+        }
+
+        .brand-o { color: var(--brand-cyan); text-shadow: 0 0 10px rgba(0, 210, 196, 0.6); }
+        .brand-py { color: var(--brand-purple); }
+
+        .course-highlight-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 24px;
+        }
+
+        .course-badge {
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--brand-cyan);
+            margin-bottom: 6px;
+        }
+
+        .course-title {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: #FFFFFF;
+            margin-bottom: 6px;
+            line-height: 1.4;
+        }
+
+        .course-tier {
+            font-size: 0.85rem;
+            color: #94A3B8;
+        }
+
+        .fee-breakdown {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .fee-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            color: #94A3B8;
+        }
+
+        .fee-row.total {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 14px;
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: #FFFFFF;
+        }
+
+        .total-price-val {
+            color: var(--brand-cyan);
+        }
+
+        /* Payment Form Right Side */
+        .payment-form-side {
+            flex: 1.2;
+            padding: 44px;
+            background: #FFFFFF;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .form-title {
+            font-size: 1.45rem;
+            font-weight: 800;
+            color: #0F172A;
+            margin-bottom: 4px;
+        }
+
+        .form-subtitle {
+            font-size: 0.88rem;
+            color: var(--text-muted);
+            margin-bottom: 22px;
+        }
+
+        /* Gateway Gateway Badge */
+        .gateway-banner {
+            background: #F8FAFC;
+            border: 1.5px solid #E2E8F0;
+            border-radius: 14px;
+            padding: 16px;
+            margin-bottom: 22px;
             display: flex;
             align-items: center;
-            gap: 15px;
-            margin-bottom: 30px;
-            padding-bottom: 20px;
-            border-bottom: 1px solid #333;
-        }
-
-        .course-icon-small {
-            width: 50px; height: 50px;
-            background: var(--kodnest-yellow);
-            color: black;
-            border-radius: 10px;
-            display: flex; align-items: center; justify-content: center;
-            font-weight: 700; font-size: 20px;
-        }
-
-        .price-details { margin-top: auto; }
-        .price-row {
-            display: flex;
             justify-content: space-between;
-            margin-bottom: 10px;
-            font-size: 14px;
-            color: #bbb;
         }
-        .total-row {
+
+        .gateway-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(16, 185, 129, 0.12);
+            color: #059669;
+            font-size: 0.72rem;
+            font-weight: 800;
+            padding: 4px 10px;
+            border-radius: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .gateway-pill.test-mode {
+            background: rgba(124, 58, 237, 0.12);
+            color: #7C3AED;
+            border: 1px solid rgba(124, 58, 237, 0.25);
+        }
+
+        /* Supported payment options list */
+        .pay-methods-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .pay-method-card {
+            border: 1.5px solid #E2E8F0;
+            border-radius: 14px;
+            padding: 14px;
             display: flex;
-            justify-content: space-between;
-            margin-top: 20px;
-            font-size: 20px;
-            font-weight: 700;
-            color: white;
-            border-top: 1px solid #333;
-            padding-top: 20px;
+            align-items: center;
+            gap: 12px;
+            background: #FFFFFF;
+            transition: all 0.2s ease;
         }
 
-        /* --- Right Side: Payment Form --- */
-        .payment-form {
-            flex: 1.2;
-            padding: 40px;
+        .pay-method-card:hover {
+            border-color: var(--brand-cyan);
+            background: rgba(0, 210, 196, 0.03);
+            transform: translateY(-2px);
         }
 
-        .payment-form h2 { font-size: 22px; margin-bottom: 10px; }
-        .secure-tag {
-            font-size: 12px;
-            color: var(--success-green);
-            margin-bottom: 30px;
-            display: flex; align-items: center; gap: 5px;
-        }
-
-        .input-group { margin-bottom: 20px; }
-        label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 8px; color: #666; }
-        
-        input {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            box-sizing: border-box;
-            font-family: 'Poppins';
-            font-size: 14px;
-        }
-
-        .row { display: flex; gap: 15px; }
-
-        .pay-btn {
-            width: 100%;
-            background: var(--kodnest-yellow);
-            color: black;
-            border: none;
-            padding: 15px;
+        .pay-method-icon {
+            width: 36px;
+            height: 36px;
             border-radius: 10px;
-            font-weight: 700;
+            background: #F1F5F9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             font-size: 16px;
-            cursor: pointer;
-            margin-top: 20px;
-            transition: 0.3s;
+            color: #0F172A;
         }
 
-        .pay-btn:hover { background: #eab106; transform: translateY(-2px); }
+        .pay-method-info h4 {
+            font-size: 0.88rem;
+            font-weight: 700;
+            color: #0F172A;
+            margin: 0;
+        }
+
+        .pay-method-info p {
+            font-size: 0.72rem;
+            color: #64748B;
+            margin: 2px 0 0;
+        }
+
+        .btn-pay-complete {
+            width: 100%;
+            padding: 16px;
+            border-radius: 14px;
+            background: var(--brand-gradient);
+            color: #FFFFFF;
+            border: none;
+            font-family: inherit;
+            font-size: 1.05rem;
+            font-weight: 800;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: all 0.25s ease;
+            box-shadow: 0 8px 24px rgba(0, 210, 196, 0.35);
+        }
+
+        .btn-pay-complete:hover {
+            background: var(--brand-gradient-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 12px 28px rgba(0, 210, 196, 0.5);
+        }
+
+        .btn-pay-complete:active {
+            transform: translateY(0);
+        }
 
         .back-link {
             display: block;
             text-align: center;
-            margin-top: 20px;
-            color: #888;
+            margin-top: 18px;
+            font-size: 0.85rem;
+            color: var(--text-muted);
             text-decoration: none;
-            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .back-link:hover {
+            color: var(--brand-purple);
+        }
+
+        @media (max-width: 840px) {
+            .checkout-box { flex-direction: column; }
+            .order-summary-side, .payment-form-side { padding: 30px 24px; }
+            .pay-methods-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
 
-    <div class="checkout-container">
-        <div class="order-summary">
-            <h2>Order Summary</h2>
-            <div class="course-preview">
-                <div class="course-icon-small">{{ course.title|slice:":1" }}</div>
-                <div>
-                    <div style="font-weight: 600;">{{ course.title }}</div>
-                    <div style="font-size: 12px; color: #888;">Professional Certification</div>
+    <div class="checkout-box">
+        
+        <!-- Left: Summary -->
+        <div class="order-summary-side">
+            <div>
+                <a href="{% url 'landing' %}" class="brand-logo-wrap">
+                    <svg width="28" height="28" viewBox="0 0 100 100" fill="none">
+                        <path d="M50 8C50 8 32 30 32 52C32 64 40 74 50 78C44 70 44 58 48 50C52 42 60 36 60 36C60 36 62 46 58 56C66 48 68 36 68 36C68 36 78 50 78 64C78 78 66 90 50 92C30 92 16 76 16 54C16 30 34 14 50 8Z" fill="url(#cGw)"/>
+                        <path d="M52 28C52 28 62 40 62 54C62 62 58 68 52 72C56 66 56 58 54 52C52 46 46 42 46 42C46 42 44 50 48 56C42 50 40 42 40 42C40 42 34 52 34 62C34 72 42 80 52 82C64 82 72 72 72 58C72 42 62 32 52 28Z" fill="url(#pGw)"/>
+                        <defs>
+                            <linearGradient id="cGw" x1="16" y1="8" x2="78" y2="92" gradientUnits="userSpaceOnUse">
+                                <stop stop-color="#00D2C4"/>
+                                <stop offset="1" stop-color="#0284C7"/>
+                            </linearGradient>
+                            <linearGradient id="pGw" x1="34" y1="28" x2="72" y2="82" gradientUnits="userSpaceOnUse">
+                                <stop stop-color="#A78BFA"/>
+                                <stop offset="1" stop-color="#7C3AED"/>
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                    <span class="brand-logo-text">CYAN<span class="brand-o">O</span><span class="brand-py">PY</span></span>
+                </a>
+
+                <div class="course-highlight-card">
+                    <div class="course-badge">Verified Career Program</div>
+                    <div class="course-title">{{ course.title }}</div>
+                    <div class="course-tier">Learning Plan: <strong>{{ tier }}</strong></div>
+                </div>
+
+                <div class="fee-breakdown">
+                    <div class="fee-row">
+                        <span>Course Fee</span>
+                        <span>₹ {{ fee }}</span>
+                    </div>
+                    <div class="fee-row">
+                        <span>Live AI Tutor & Study Notes</span>
+                        <span style="color: var(--brand-cyan); font-weight: 700;">INCLUDED</span>
+                    </div>
+                    <div class="fee-row">
+                        <span>Certificate of Completion</span>
+                        <span style="color: var(--brand-cyan); font-weight: 700;">INCLUDED</span>
+                    </div>
+                    <div class="fee-row total">
+                        <span>Total Payable</span>
+                        <span class="total-price-val">₹ {{ fee }}</span>
+                    </div>
                 </div>
             </div>
 
-            <div class="price-details">
-                <div class="price-row">
-                    <span>Course Price</span>
-                    <span>₹ {{ course.price }}</span>
-                </div>
-                <div class="price-row">
-                    <span>Platform Fee</span>
-                    <span>FREE</span>
-                </div>
-                <div class="total-row">
-                    <span>Total</span>
-                    <span>₹ {{ course.price }}</span>
-                </div>
+            <div style="font-size: 0.8rem; color: #64748B; margin-top: 30px; display: flex; align-items: center; gap: 8px;">
+                <i class="fa-solid fa-shield-halved" style="color: var(--brand-cyan);"></i>
+                <span>Razorpay 256-Bit SSL Bank Encrypted Checkout</span>
             </div>
         </div>
 
-        <div class="payment-form">
-            <h2>Payment Details</h2>
-            <div class="secure-tag">
-                <i class="fa-solid fa-shield-halved"></i> 256-bit SSL Secure Checkout
+        <!-- Right: Razorpay Gateway Activation -->
+        <div class="payment-form-side">
+            <div>
+                <h2 class="form-title">Payment Options</h2>
+                <p class="form-subtitle">Choose your preferred payment method to activate immediate course access.</p>
+
+                <div class="gateway-banner">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <i class="fa-solid fa-bolt" style="color: #0284C7; font-size: 18px;"></i>
+                        <div>
+                            <div style="font-weight: 700; font-size: 0.88rem; color: #0F172A;">Instant Automated Verification</div>
+                            <div style="font-size: 0.76rem; color: #64748B;">Powered by Razorpay Payments</div>
+                        </div>
+                    </div>
+                    {% if "test" in razorpay_key_id %}
+                    <span class="gateway-pill test-mode"><i class="fa-solid fa-flask"></i> Sandbox Test Mode</span>
+                    {% else %}
+                    <span class="gateway-pill"><i class="fa-solid fa-lock"></i> Live Verified</span>
+                    {% endif %}
+                </div>
+
+                <!-- Visual list of supported payment channels -->
+                <div class="pay-methods-grid">
+                    <div class="pay-method-card">
+                        <div class="pay-method-icon" style="color: #059669; background: #ECFDF5;">
+                            <i class="fa-solid fa-qrcode"></i>
+                        </div>
+                        <div class="pay-method-info">
+                            <h4>UPI & QR Code</h4>
+                            <p>GPay, PhonePe, Paytm, BHIM</p>
+                        </div>
+                    </div>
+
+                    <div class="pay-method-card">
+                        <div class="pay-method-icon" style="color: #0284C7; background: #F0F9FF;">
+                            <i class="fa-regular fa-credit-card"></i>
+                        </div>
+                        <div class="pay-method-info">
+                            <h4>Debit / Credit Card</h4>
+                            <p>Visa, MasterCard, RuPay</p>
+                        </div>
+                    </div>
+
+                    <div class="pay-method-card">
+                        <div class="pay-method-icon" style="color: #7C3AED; background: #F5F3FF;">
+                            <i class="fa-solid fa-building-columns"></i>
+                        </div>
+                        <div class="pay-method-info">
+                            <h4>Netbanking</h4>
+                            <p>SBI, HDFC, ICICI & 50+ Banks</p>
+                        </div>
+                    </div>
+
+                    <div class="pay-method-card">
+                        <div class="pay-method-icon" style="color: #D97706; background: #FFFBEB;">
+                            <i class="fa-solid fa-wallet"></i>
+                        </div>
+                        <div class="pay-method-info">
+                            <h4>Wallets & PayLater</h4>
+                            <p>Mobikwik, Freecharge, EMI</p>
+                        </div>
+                    </div>
+                </div>
             </div>
 
-            <form action="{% url 'payment_success' course.id %}" method="POST">
-                {% csrf_token %}
-                
-                <div class="input-group">
-                    <label>Cardholder Name</label>
-                    <input type="text" placeholder="Full Name as on card" required>
-                </div>
-
-                <div class="input-group">
-                    <label>Card Number</label>
-                    <div style="position: relative;">
-                        <input type="text" placeholder="0000 0000 0000 0000" required>
-                        <i class="fa-brands fa-cc-visa" style="position: absolute; right: 15px; top: 13px; color: #666;"></i>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="input-group" style="flex: 1;">
-                        <label>Expiry Date</label>
-                        <input type="text" placeholder="MM / YY" required>
-                    </div>
-                    <div class="input-group" style="flex: 1;">
-                        <label>CVV</label>
-                        <input type="password" placeholder="***" required>
-                    </div>
-                </div>
-
-                <button type="submit" class="pay-btn">
-                    Complete Purchase <i class="fa-solid fa-arrow-right" style="margin-left: 10px;"></i>
+            <div>
+                <!-- Primary Razorpay Checkout Trigger -->
+                <button type="button" id="rzpPayBtn" class="btn-pay-complete">
+                    <i class="fa-solid fa-lock"></i>
+                    <span>Pay ₹ {{ fee }} via Razorpay</span>
                 </button>
 
-                <a href="{% url 'purchase' %}" class="back-link">Cancel and return to courses</a>
-            </form>
+                <p style="text-align: center; font-size: 0.78rem; color: #94A3B8; margin-top: 10px;">
+                    <i class="fa-solid fa-shield-check" style="color: #10B981;"></i> Safe & secure checkout. Zero card info stored on Cyanopy.
+                </p>
+
+                <a href="{% url 'course_enrollment' %}" class="back-link">
+                    <i class="fa-solid fa-arrow-left"></i> Cancel and return to course selection
+                </a>
+            </div>
         </div>
+
     </div>
+
+    <!-- Hidden form submitted via JavaScript upon successful Razorpay payment -->
+    <form id="razorpaySuccessForm" action="{% url 'payment_success' course.id %}" method="POST" style="display: none;">
+        {% csrf_token %}
+        <input type="hidden" name="razorpay_payment_id" id="rzp_payment_id">
+        <input type="hidden" name="razorpay_order_id" id="rzp_order_id">
+        <input type="hidden" name="razorpay_signature" id="rzp_signature">
+        <input type="hidden" name="tier" value="{{ tier }}">
+        {% if is_balance %}<input type="hidden" name="is_balance" value="1">{% endif %}
+    </form>
+
+    <script>
+        const RAZORPAY_KEY = "{{ razorpay_key_id }}";
+        const RAZORPAY_ORDER_ID = "{{ razorpay_order_id }}";
+        const ORDER_AMOUNT = "{{ order_amount_paise }}";
+        const STUDENT_NAME = "{{ request.user.get_full_name|default:request.user.first_name|default:request.user.username }}";
+        const STUDENT_EMAIL = "{{ request.user.email }}";
+        const STUDENT_CONTACT = "{{ request.user.contact_number|default:'' }}";
+
+        const options = {
+            "key": RAZORPAY_KEY,
+            "amount": ORDER_AMOUNT,
+            "currency": "INR",
+            "name": "CYANOPY Learning",
+            "description": "{{ course.title }} - {{ tier }}",
+            "image": "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
+            "order_id": RAZORPAY_ORDER_ID,
+            "prefill": {
+                "name": STUDENT_NAME,
+                "email": STUDENT_EMAIL,
+                "contact": STUDENT_CONTACT
+            },
+            "notes": {
+                "course_id": "{{ course.id }}",
+                "tier": "{{ tier }}"
+            },
+            "theme": {
+                "color": "#00D2C4"
+            },
+            "handler": function (response) {
+                // Invoked automatically upon successful completion
+                document.getElementById('rzp_payment_id').value = response.razorpay_payment_id;
+                document.getElementById('rzp_order_id').value = response.razorpay_order_id;
+                document.getElementById('rzp_signature').value = response.razorpay_signature;
+
+                // Visual loading state
+                const btn = document.getElementById('rzpPayBtn');
+                btn.disabled = true;
+                btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Activating Course Enrollment...`;
+
+                // Submit to backend for cryptographic signature verification
+                document.getElementById('razorpaySuccessForm').submit();
+            },
+            "modal": {
+                "ondismiss": function() {
+                    const btn = document.getElementById('rzpPayBtn');
+                    btn.disabled = false;
+                    btn.innerHTML = `<i class="fa-solid fa-lock"></i> Pay ₹ {{ fee }} via Razorpay`;
+                }
+            }
+        };
+
+        const rzp = new Razorpay(options);
+
+        // Click handler to launch checkout
+        document.getElementById('rzpPayBtn').addEventListener('click', function (e) {
+            e.preventDefault();
+            this.disabled = true;
+            this.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Opening Secure Gateway...`;
+            
+            setTimeout(() => {
+                rzp.open();
+                this.disabled = false;
+                this.innerHTML = `<i class="fa-solid fa-lock"></i> Pay ₹ {{ fee }} via Razorpay`;
+            }, 300);
+        });
+
+        rzp.on('payment.failed', function (response){
+            alert("Payment Failed: " + (response.error.description || "The transaction was declined by the bank."));
+        });
+    </script>
 
 </body>
 </html>

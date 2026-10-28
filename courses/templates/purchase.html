@@ -5,254 +5,743 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Explore Courses | CYANOPY</title>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Brand Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600;700;800&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-<style>
-    :root {
-        --primary: #fbc02d;
-        --primary-light: #fff9c4;
-        --dark: #0f172a;
-        --slate: #64748b;
-        --bg: #f8fafc;
-        --white: #ffffff;
-        --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-    }
+    <style>
+        :root {
+            /* Cyanopy Brand Colors */
+            --brand-cyan: #00D2C4;
+            --brand-cyan-dark: #0284C7;
+            --brand-purple: #7C3AED;
+            --brand-purple-dark: #3B0764;
+            --brand-gradient: linear-gradient(135deg, #00D2C4 0%, #7C3AED 100%);
+            --brand-gradient-hover: linear-gradient(135deg, #0284C7 0%, #6D28D9 100%);
 
-    body {
-        margin: 0;
-        font-family: 'Plus Jakarta Sans', sans-serif;
-        background-color: var(--bg);
-        color: var(--dark);
-    }
+            --dark: #0F172A;
+            --dark-card: #0B1120;
+            --slate: #64748B;
+            --bg-body: #F8FAFC;
+            --white: #FFFFFF;
+            --border-light: #E2E8F0;
+            --shadow-card: 0 4px 20px rgba(15, 23, 42, 0.05);
+        }
 
-    /* --- Enhanced Navbar --- */
-    .main-header {
-        background: rgba(255, 255, 255, 0.8);
-        backdrop-filter: blur(10px);
-        height: 75px;
-        padding: 0 6%;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        border-bottom: 1px solid #e2e8f0;
-        position: sticky;
-        top: 0;
-        z-index: 1000;
-    }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
-    .logo { font-weight: 800; font-size: 24px; color: var(--dark); text-decoration: none; letter-spacing: -1px; }
-    .logo span { color: var(--primary); }
+        body {
+            font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+            background-color: var(--bg-body);
+            color: var(--dark);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            -webkit-font-smoothing: antialiased;
+        }
 
-    .nav-menu { display: flex; gap: 30px; }
-    .nav-menu a {
-        text-decoration: none;
-        color: var(--slate);
-        font-weight: 600;
-        font-size: 14px;
-        transition: 0.3s;
-    }
+        /* --- Main Layout Container (Matches student dashboard 1280px standard) --- */
+        .main-container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 28px 20px 60px 20px;
+            width: 100%;
+        }
 
-    .nav-menu a:hover, .nav-menu a.active { color: var(--dark); }
-    .nav-menu a.active { color: var(--primary); }
+        /* --- Modern Balanced Hero Card --- */
+        .explore-hero-card {
+            background: linear-gradient(135deg, #0F172A 0%, #1E1B4B 55%, #0F172A 100%);
+            border-radius: 24px;
+            padding: 42px 48px;
+            color: #FFFFFF;
+            margin-bottom: 32px;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 36px;
+            box-shadow: 0 12px 36px rgba(15, 23, 42, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
 
-    /* --- Hero Section --- */
-    .hero-banner {
-        background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-        padding: 60px 6%;
-        color: white;
-        margin-bottom: 40px;
-        border-radius: 0 0 40px 40px;
-    }
+        /* Ambient Glow Circles */
+        .explore-hero-card::before {
+            content: '';
+            position: absolute;
+            top: -120px;
+            right: 25%;
+            width: 380px;
+            height: 380px;
+            background: radial-gradient(circle, rgba(0, 210, 196, 0.22) 0%, rgba(124, 58, 237, 0.14) 45%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+        }
 
-    .hero-banner h1 { font-size: 32px; font-weight: 800; margin: 0; }
-    .hero-banner p { color: #94a3b8; margin-top: 10px; font-size: 16px; }
+        .explore-hero-card::after {
+            content: '';
+            position: absolute;
+            bottom: -100px;
+            left: -60px;
+            width: 320px;
+            height: 320px;
+            background: radial-gradient(circle, rgba(124, 58, 237, 0.18) 0%, transparent 65%);
+            border-radius: 50%;
+            pointer-events: none;
+        }
 
-    /* --- Container & Grid --- */
-    .container { max-width: 1300px; margin: 0 auto; padding: 0 6% 60px 6%; }
+        .hero-left {
+            flex: 1.3;
+            position: relative;
+            z-index: 2;
+        }
 
-    .course-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-        gap: 30px;
-    }
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(0, 210, 196, 0.12);
+            border: 1px solid rgba(0, 210, 196, 0.3);
+            color: #2DD4BF;
+            padding: 6px 14px;
+            border-radius: 100px;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.4px;
+            margin-bottom: 16px;
+        }
 
-    /* --- Professional Course Card --- */
-    .course-card {
-        background: var(--white);
-        border-radius: 24px;
-        overflow: hidden;
-        border: 1px solid #f1f5f9;
-        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        display: flex;
-        flex-direction: column;
-        position: relative;
-    }
+        .hero-title {
+            font-family: 'Poppins', 'Plus Jakarta Sans', sans-serif;
+            font-size: 2.35rem;
+            font-weight: 800;
+            line-height: 1.25;
+            letter-spacing: -0.5px;
+            margin-bottom: 12px;
+            background: linear-gradient(135deg, #FFFFFF 0%, #E2E8F0 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
 
-    .course-card:hover {
-        transform: translateY(-10px);
-        box-shadow: var(--shadow);
-        border-color: var(--primary-light);
-    }
+        .hero-subtitle {
+            color: #94A3B8;
+            font-size: 15.5px;
+            line-height: 1.6;
+            max-width: 580px;
+            margin-bottom: 24px;
+        }
 
-    .card-image-area {
-        height: 180px;
-        background: var(--dark);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        position: relative;
-    }
+        .hero-chips-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
 
-    .category-badge {
-        position: absolute;
-        top: 15px;
-        left: 15px;
-        background: rgba(255, 255, 255, 0.2);
-        backdrop-filter: blur(5px);
-        color: white;
-        padding: 5px 12px;
-        border-radius: 100px;
-        font-size: 11px;
-        font-weight: 700;
-        text-transform: uppercase;
-    }
+        .hero-chip-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.07);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(8px);
+            padding: 7px 14px;
+            border-radius: 100px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #F1F5F9;
+            transition: all 0.2s ease;
+        }
 
-    .course-initial {
-        font-size: 60px;
-        font-weight: 800;
-        color: var(--primary);
-        opacity: 0.8;
-    }
+        .hero-chip-item:hover {
+            background: rgba(255, 255, 255, 0.12);
+            border-color: rgba(0, 210, 196, 0.4);
+            transform: translateY(-1px);
+        }
 
-    .card-content {
-        padding: 24px;
-        flex-grow: 1;
-        display: flex;
-        flex-direction: column;
-    }
+        .hero-chip-item i {
+            color: var(--brand-cyan);
+            font-size: 12px;
+        }
 
-    .course-meta {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 12px;
-    }
+        /* Hero Right: Modern Glass Highlights Showcase */
+        .hero-right {
+            flex: 0.9;
+            position: relative;
+            z-index: 2;
+            display: flex;
+            justify-content: flex-end;
+        }
 
-    .rating { color: #fbbf24; font-size: 12px; font-weight: 700; }
+        .glass-highlight-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 20px;
+            padding: 24px 28px;
+            width: 100%;
+            max-width: 360px;
+            box-shadow: 0 10px 28px rgba(0, 0, 0, 0.2);
+        }
 
-    .course-title {
-        font-size: 20px;
-        font-weight: 700;
-        margin: 0 0 10px 0;
-        line-height: 1.4;
-    }
+        .glass-highlight-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 18px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
 
-    .instructor-info {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        margin-bottom: 20px;
-    }
+        .glass-highlight-title {
+            font-size: 13px;
+            font-weight: 800;
+            letter-spacing: 0.8px;
+            color: var(--brand-cyan);
+            text-transform: uppercase;
+        }
 
-    .inst-avatar {
-        width: 24px;
-        height: 24px;
-        border-radius: 50%;
-        background: var(--primary);
-    }
+        .glass-stat-row {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 14px;
+        }
 
-    .inst-name { font-size: 13px; color: var(--slate); font-weight: 500; }
+        .glass-stat-row:last-child {
+            margin-bottom: 0;
+        }
 
-    .card-footer {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding-top: 20px;
-        border-top: 1px solid #f1f5f9;
-        margin-top: auto;
-    }
+        .glass-stat-icon {
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            background: rgba(0, 210, 196, 0.15);
+            color: var(--brand-cyan);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 15px;
+            flex-shrink: 0;
+        }
 
-    .price-container { display: flex; flex-direction: column; }
-    .price-label { font-size: 11px; color: var(--slate); font-weight: 600; }
-    .price-value { font-size: 20px; font-weight: 800; color: var(--dark); }
+        .glass-stat-icon.purple {
+            background: rgba(124, 58, 237, 0.2);
+            color: #A78BFA;
+        }
 
-    .btn-enroll {
-        background: var(--dark);
-        color: white;
-        padding: 12px 24px;
-        border-radius: 14px;
-        text-decoration: none;
-        font-weight: 700;
-        font-size: 14px;
-        transition: 0.3s;
-    }
+        .glass-stat-icon.amber {
+            background: rgba(245, 158, 11, 0.18);
+            color: #FBBF24;
+        }
 
-    .btn-enroll:hover {
-        background: var(--primary);
-        color: var(--dark);
-    }
+        .glass-stat-text {
+            display: flex;
+            flex-direction: column;
+        }
 
-    /* --- Profile Trigger --- */
-    .avatar-circle {
-        width: 40px;
-        height: 40px;
-        background: var(--primary);
-        border-radius: 12px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: 800;
-    }
-</style>
+        .glass-stat-label {
+            font-size: 13.5px;
+            font-weight: 700;
+            color: #FFFFFF;
+        }
+
+        .glass-stat-sub {
+            font-size: 11.5px;
+            color: #94A3B8;
+        }
+
+        /* --- Filter Toolbar --- */
+        .filter-toolbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-bottom: 32px;
+            background: #FFFFFF;
+            padding: 14px 20px;
+            border-radius: 18px;
+            border: 1px solid var(--border-light);
+            box-shadow: 0 2px 8px rgba(15, 23, 42, 0.03);
+        }
+
+        .category-tabs {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .cat-tab {
+            padding: 8px 18px;
+            border-radius: 10px;
+            border: 1px solid transparent;
+            background: #F1F5F9;
+            color: #475569;
+            font-family: inherit;
+            font-size: 13.5px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .cat-tab:hover {
+            background: #E2E8F0;
+            color: #0F172A;
+        }
+
+        .cat-tab.active {
+            background: var(--brand-gradient);
+            color: #FFFFFF;
+            box-shadow: 0 3px 10px rgba(0, 210, 196, 0.3);
+        }
+
+        .search-box {
+            position: relative;
+            display: flex;
+            align-items: center;
+            min-width: 280px;
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 14px;
+            color: #94A3B8;
+            font-size: 14px;
+            pointer-events: none;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 10px 14px 10px 38px;
+            border-radius: 12px;
+            border: 1.5px solid var(--border-light);
+            font-family: inherit;
+            font-size: 13.5px;
+            color: #0F172A;
+            outline: none;
+            transition: all 0.2s ease;
+            background: #F8FAFC;
+        }
+
+        .search-input:focus {
+            background: #FFFFFF;
+            border-color: var(--brand-cyan);
+            box-shadow: 0 0 0 3px rgba(0, 210, 196, 0.15);
+        }
+
+        /* --- Course Cards Grid (STRICTLY PRESERVES CARD DIMENSIONS) --- */
+        .course-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 320px));
+            gap: 28px;
+        }
+
+        /* --- Professional Course Card (EXACT SAME DIMENSIONS & PROPORTIONS) --- */
+        .course-card {
+            background: var(--white);
+            border-radius: 24px;
+            overflow: hidden;
+            border: 1px solid #E2E8F0;
+            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            box-shadow: var(--shadow-card);
+            width: 100%;
+            max-width: 320px;
+        }
+
+        .course-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 16px 36px rgba(15, 23, 42, 0.09);
+            border-color: rgba(0, 210, 196, 0.45);
+        }
+
+        /* Card Image Header: EXACT 180px HEIGHT */
+        .card-image-area {
+            height: 180px;
+            background: linear-gradient(135deg, #0B1120 0%, #0F172A 60%, #1E1B4B 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Subtle grid background inside image header */
+        .card-image-area::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image: 
+                radial-gradient(circle at 50% 50%, rgba(0, 210, 196, 0.18) 0%, transparent 60%),
+                linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+            background-size: 100% 100%, 20px 20px, 20px 20px;
+            pointer-events: none;
+        }
+
+        .category-badge {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: rgba(255, 255, 255, 0.18);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.22);
+            color: #FFFFFF;
+            padding: 5px 12px;
+            border-radius: 100px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            z-index: 2;
+        }
+
+        /* Upgraded Glowing Emblem for Initial Letter */
+        .course-emblem-wrap {
+            position: relative;
+            z-index: 2;
+            width: 74px;
+            height: 74px;
+            border-radius: 20px;
+            background: rgba(15, 23, 42, 0.85);
+            border: 1.5px solid rgba(0, 210, 196, 0.4);
+            box-shadow: 0 0 24px rgba(0, 210, 196, 0.25), inset 0 0 14px rgba(0, 210, 196, 0.12);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .course-card:hover .course-emblem-wrap {
+            transform: scale(1.06);
+            border-color: var(--brand-cyan);
+            box-shadow: 0 0 30px rgba(0, 210, 196, 0.45), inset 0 0 18px rgba(0, 210, 196, 0.2);
+        }
+
+        .course-emblem-letter {
+            font-size: 38px;
+            font-weight: 800;
+            color: var(--brand-cyan);
+            text-shadow: 0 0 14px rgba(0, 210, 196, 0.55);
+            line-height: 1;
+        }
+
+        /* --- Card Content: EXACT 24px PADDING --- */
+        .card-content {
+            padding: 24px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            background: #FFFFFF;
+        }
+
+        .course-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .rating {
+            color: #F59E0B;
+            font-size: 12.5px;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .rating i {
+            color: #FBBF24;
+        }
+
+        .review-count {
+            color: var(--slate);
+            font-weight: 600;
+            font-size: 12px;
+        }
+
+        .course-title {
+            font-size: 19px;
+            font-weight: 800;
+            color: #0F172A;
+            margin: 0 0 12px 0;
+            line-height: 1.35;
+            min-height: 52px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            letter-spacing: -0.2px;
+        }
+
+        .instructor-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 18px;
+        }
+
+        .inst-avatar {
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #00D2C4 0%, #0284C7 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #FFFFFF;
+            font-size: 11px;
+            flex-shrink: 0;
+        }
+
+        .inst-name {
+            font-size: 13px;
+            color: var(--slate);
+            font-weight: 600;
+        }
+
+        /* --- Card Footer --- */
+        .card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 18px;
+            border-top: 1px solid #F1F5F9;
+            margin-top: auto;
+        }
+
+        .price-container {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .price-label {
+            font-size: 10.5px;
+            color: var(--slate);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .price-value {
+            font-size: 21px;
+            font-weight: 800;
+            color: var(--dark);
+            letter-spacing: -0.3px;
+        }
+
+        .btn-enroll {
+            padding: 10px 22px;
+            background: var(--brand-gradient);
+            color: #FFFFFF;
+            text-decoration: none;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 14px;
+            transition: all 0.25s ease;
+            box-shadow: 0 4px 12px rgba(0, 210, 196, 0.35);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-enroll:hover {
+            background: var(--brand-gradient-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(0, 210, 196, 0.5);
+            color: #FFFFFF;
+        }
+
+        /* When already enrolled */
+        .btn-enrolled {
+            background: #ECFDF5;
+            color: #059669;
+            border: 1.5px solid #A7F3D0;
+            box-shadow: none;
+        }
+
+        .btn-enrolled:hover {
+            background: #D1FAE5;
+            color: #047857;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+        }
+
+        /* Empty state */
+        .empty-courses {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 80px 20px;
+            background: #FFFFFF;
+            border-radius: 20px;
+            border: 1px dashed #CBD5E1;
+        }
+
+        .empty-courses i {
+            font-size: 48px;
+            color: #94A3B8;
+            margin-bottom: 16px;
+        }
+
+        .empty-courses h4 {
+            font-size: 18px;
+            font-weight: 700;
+            color: #0F172A;
+            margin-bottom: 6px;
+        }
+
+        .empty-courses p {
+            color: #64748B;
+            font-size: 14px;
+        }
+
+        @media (max-width: 960px) {
+            .explore-hero-card {
+                flex-direction: column;
+                padding: 32px 24px;
+                text-align: left;
+            }
+            .hero-right {
+                width: 100%;
+                justify-content: flex-start;
+            }
+            .glass-highlight-card {
+                max-width: 100%;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero-title { font-size: 1.85rem; }
+            .course-grid { grid-template-columns: 1fr; }
+            .course-card { max-width: 100%; }
+        }
+    </style>
 </head>
 
 <body>
+    <!-- Consistent Common Student Header across all screens -->
+    {% include 'includes/student_header.html' with active_tab='explore' %}
 
-    <nav class="main-header">
-        <a href="{% url 'student_dashboard' %}" class="logo">CYANO<span>PY</span></a>
-        
-        <div class="nav-menu">
-            <a href="{% url 'student_dashboard' %}">Home</a>
-            <a href="{% url 'purchase' %}" class="active">Explore</a>
-            <a href="{% url 'my_courses' %}">My Learning</a>
-            <a href="">Support</a>
-        </div>
+    <main class="main-container">
+        <!-- Upgraded Contained Hero Card (Matches student dashboard layout) -->
+        <section class="explore-hero-card">
+            <!-- Left Side: Content & Features -->
+            <div class="hero-left">
+                <div class="hero-badge">
+                    <i class="fa-solid fa-sparkles"></i> Industry-Grade Tech Curriculum
+                </div>
+                <h1 class="hero-title">Knowledge at your fingertips</h1>
+                <p class="hero-subtitle">
+                    Elevate your skills with industry-leading courses and hands-on mentorship from Cyanopy Experts.
+                </p>
 
-        <div class="header-right" style="display: flex; align-items: center; gap: 15px; cursor: pointer;" id="profileTrigger">
-            <div style="text-align: right;">
-                <div style="font-size: 13px; font-weight: 800;">{{ request.user.username }}</div>
-                <div style="font-size: 11px; color: var(--slate);">Student Account</div>
+                <div class="hero-chips-row">
+                    <div class="hero-chip-item">
+                        <i class="fa-solid fa-certificate"></i> Verified Industry Certification
+                    </div>
+                    <div class="hero-chip-item">
+                        <i class="fa-solid fa-code"></i> Hands-on Coding Labs
+                    </div>
+                    <div class="hero-chip-item">
+                        <i class="fa-solid fa-comments"></i> 1-on-1 Mentor Guidance
+                    </div>
+                </div>
             </div>
-            <div class="avatar-circle">{{ request.user.username|slice:":1"|upper }}</div>
-        </div>
-    </nav>
 
-    <header class="hero-banner">
-        <div style="max-width: 1300px; margin: 0 auto;">
-            <h1>Knowledge at your fingertips</h1>
-            <p>Elevate your skills with industry-leading courses from Cyanopy Experts.</p>
-        </div>
-    </header>
+            <!-- Right Side: Highlights & Stats (Balances layout without empty void) -->
+            <div class="hero-right">
+                <div class="glass-highlight-card">
+                    <div class="glass-highlight-header">
+                        <span class="glass-highlight-title">Why Cyanopy</span>
+                        <i class="fa-solid fa-bolt" style="color: var(--brand-cyan);"></i>
+                    </div>
 
-    <div class="container">
-        <div class="course-grid">
+                    <div class="glass-stat-row">
+                        <div class="glass-stat-icon">
+                            <i class="fa-solid fa-laptop-code"></i>
+                        </div>
+                        <div class="glass-stat-text">
+                            <span class="glass-stat-label">Project-Based Labs</span>
+                            <span class="glass-stat-sub">Real software engineering challenges</span>
+                        </div>
+                    </div>
+
+                    <div class="glass-stat-row">
+                        <div class="glass-stat-icon purple">
+                            <i class="fa-solid fa-users"></i>
+                        </div>
+                        <div class="glass-stat-text">
+                            <span class="glass-stat-label">Dedicated Mentors</span>
+                            <span class="glass-stat-sub">Ask doubts anytime with fast replies</span>
+                        </div>
+                    </div>
+
+                    <div class="glass-stat-row">
+                        <div class="glass-stat-icon amber">
+                            <i class="fa-solid fa-star"></i>
+                        </div>
+                        <div class="glass-stat-text">
+                            <span class="glass-stat-label">4.9 / 5.0 Rating</span>
+                            <span class="glass-stat-sub">Trusted by thousands of tech learners</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Filter & Search Toolbar -->
+        <div class="filter-toolbar">
+            <div class="category-tabs">
+                <button class="cat-tab active" onclick="filterCategory('all', this)">All Courses</button>
+                <button class="cat-tab" onclick="filterCategory('dsa', this)">Data Structures & DSA</button>
+                <button class="cat-tab" onclick="filterCategory('python', this)">Python & Full Stack</button>
+                <button class="cat-tab" onclick="filterCategory('ai', this)">AI & Machine Learning</button>
+            </div>
+
+            <div class="search-box">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" id="courseSearchInput" class="search-input" placeholder="Search courses or topics..." oninput="handleSearch()">
+            </div>
+        </div>
+
+        <!-- Course Grid with EXACT Same Card Size & Layout -->
+        <div class="course-grid" id="courseGrid">
             {% for c in courses %}
-            <div class="course-card">
+            <div class="course-card" data-title="{{ c.title|lower }}" data-desc="{{ c.description|lower }}">
+                <!-- Card Image Area: Exact 180px Height -->
                 <div class="card-image-area">
-                    <span class="category-badge">Premium Course</span>
-                    <div class="course-initial">{{ c.title|slice:":1"|upper }}</div>
+                    <span class="category-badge">PREMIUM COURSE</span>
+                    
+                    <div class="course-emblem-wrap">
+                        <span class="course-emblem-letter">{{ c.title|slice:":1"|upper }}</span>
+                    </div>
                 </div>
 
+                <!-- Card Content Area: Exact 24px Padding -->
                 <div class="card-content">
                     <div class="course-meta">
-                        <span class="rating"><i class="fa-solid fa-star"></i> 4.9 (2k+ Reviews)</span>
+                        <span class="rating">
+                            <i class="fa-solid fa-star"></i> 4.9 
+                            <span class="review-count">(2k+ Reviews)</span>
+                        </span>
                     </div>
                     
                     <h3 class="course-title">{{ c.title }}</h3>
                     
                     <div class="instructor-info">
-                        <div class="inst-avatar"></div>
+                        <div class="inst-avatar">
+                            <i class="fa-solid fa-chalkboard-user"></i>
+                        </div>
                         <span class="inst-name">Cyanopy Expert</span>
                     </div>
 
@@ -261,18 +750,73 @@
                             <span class="price-label">INVESTMENT</span>
                             <span class="price-value">₹ {{ c.price }}</span>
                         </div>
-                        <a href="{% url 'checkout' c.id %}" class="btn-enroll">Buy Now</a>
+
+                        {% if c.id in enrolled_ids %}
+                            <a href="{% url 'course_learning' c.id %}" class="btn-enroll btn-enrolled">
+                                <i class="fa-solid fa-circle-check"></i> Enrolled
+                            </a>
+                        {% else %}
+                            <a href="{% url 'checkout' c.id %}" class="btn-enroll">
+                                Buy Now
+                            </a>
+                        {% endif %}
                     </div>
                 </div>
             </div>
             {% empty %}
-            <div style="grid-column: 1/-1; text-align: center; padding: 100px 0;">
-                <img src="https://cdn-icons-png.flaticon.com/512/7486/7486744.png" width="80" style="opacity: 0.2;">
-                <p style="color: var(--slate); margin-top: 20px;">No courses are available right now. Check back later!</p>
+            <div class="empty-courses">
+                <i class="fa-solid fa-graduation-cap"></i>
+                <h4>No courses available at the moment</h4>
+                <p>New curriculum modules are being published shortly. Please check back soon!</p>
             </div>
             {% endfor %}
         </div>
-    </div>
+    </main>
 
-    </body>
+    <!-- Client-side Interactive Filter Script -->
+    <script>
+        function filterCategory(cat, btn) {
+            document.querySelectorAll('.cat-tab').forEach(t => t.classList.remove('active'));
+            btn.classList.add('active');
+
+            const query = document.getElementById('courseSearchInput').value.toLowerCase().trim();
+            filterAll(cat, query);
+        }
+
+        function handleSearch() {
+            const query = document.getElementById('courseSearchInput').value.toLowerCase().trim();
+            const activeTab = document.querySelector('.cat-tab.active');
+            const cat = activeTab ? activeTab.getAttribute('onclick').match(/'([^']+)'/)[1] : 'all';
+            filterAll(cat, query);
+        }
+
+        function filterAll(category, query) {
+            const cards = document.querySelectorAll('.course-card');
+            cards.forEach(card => {
+                const title = card.getAttribute('data-title') || '';
+                const desc = card.getAttribute('data-desc') || '';
+                
+                let matchesCategory = true;
+                if (category === 'dsa') {
+                    matchesCategory = title.includes('data') || title.includes('structure') || title.includes('algorithm') || title.includes('dsa');
+                } else if (category === 'python') {
+                    matchesCategory = title.includes('python') || title.includes('stack') || title.includes('web') || title.includes('mastery');
+                } else if (category === 'ai') {
+                    matchesCategory = title.includes('ai') || title.includes('machine') || title.includes('data') || title.includes('intelligence');
+                }
+
+                let matchesQuery = true;
+                if (query) {
+                    matchesQuery = title.includes(query) || desc.includes(query);
+                }
+
+                if (matchesCategory && matchesQuery) {
+                    card.style.display = 'flex';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+    </script>
+</body>
 </html>

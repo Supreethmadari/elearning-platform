@@ -1,0 +1,553 @@
+<!-- Shared Student Navigation Header Component -->
+<style>
+    /* ----- CYANOPY STUDENT NAVIGATION BAR ----- */
+    .student-navbar-wrapper {
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        background: rgba(255, 255, 255, 0.96);
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
+        border-bottom: 1px solid #E2E8F0;
+        box-shadow: 0 2px 14px rgba(15, 23, 42, 0.04);
+        width: 100%;
+    }
+
+    .student-navbar {
+        height: 72px;
+        max-width: 1380px;
+        margin: 0 auto;
+        padding: 0 2rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        position: relative;
+    }
+
+    /* Left: Brand Logo */
+    .student-nav-left {
+        display: flex;
+        align-items: center;
+        z-index: 5;
+    }
+
+    .student-logo {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+        font-size: 1.25rem;
+        font-weight: 800;
+        letter-spacing: 1.2px;
+        color: #3B0764;
+        text-decoration: none;
+        transition: transform 0.2s ease;
+    }
+    .student-logo:hover {
+        transform: translateY(-1px);
+    }
+    .student-logo .brand-mark {
+        flex-shrink: 0;
+        filter: drop-shadow(0 2px 8px rgba(0, 210, 196, 0.35));
+    }
+    .student-logo .brand-o {
+        color: #00D2C4;
+        text-shadow: 0 0 10px rgba(0, 210, 196, 0.4);
+    }
+    .student-logo .brand-py {
+        color: #7C3AED;
+    }
+
+    /* Center: Navigation Menu (Strictly Centered, Unobstructed & Clickable) */
+    .student-nav-center {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 32px;
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 20;
+        pointer-events: auto;
+    }
+
+    .student-nav-link {
+        font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+        font-size: 15px;
+        font-weight: 700; /* Bold typography requirement */
+        color: #64748B;
+        text-decoration: none;
+        padding: 10px 6px;
+        position: relative;
+        letter-spacing: 0.1px;
+        transition: all 0.2s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        cursor: pointer;
+        z-index: 21;
+    }
+
+    .student-nav-link:hover {
+        color: #0F172A;
+        transform: translateY(-1px);
+    }
+
+    .student-nav-link.active {
+        color: #0284C7;
+        font-weight: 800;
+    }
+
+    .student-nav-link.active::after {
+        content: '';
+        position: absolute;
+        bottom: -15px;
+        left: 0;
+        width: 100%;
+        height: 3.5px;
+        background: linear-gradient(135deg, #00D2C4 0%, #7C3AED 100%);
+        border-radius: 4px 4px 0 0;
+        box-shadow: 0 -2px 8px rgba(0, 210, 196, 0.4);
+    }
+
+    /* Right: Profile Dropdown & Quick Actions */
+    .student-nav-right {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 16px;
+        z-index: 5;
+        position: relative;
+    }
+
+    .student-profile-trigger {
+        display: inline-flex;
+        align-items: center;
+        gap: 11px;
+        padding: 6px 14px 6px 6px;
+        border-radius: 50px;
+        border: 1px solid #E2E8F0;
+        background: #FFFFFF;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+        user-select: none;
+    }
+
+    .student-profile-trigger:hover {
+        background: #F8FAFC;
+        border-color: rgba(0, 210, 196, 0.5);
+        box-shadow: 0 2px 8px rgba(0, 210, 196, 0.12);
+    }
+
+    .student-avatar {
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #00D2C4 0%, #7C3AED 100%);
+        color: #FFFFFF;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 800;
+        font-size: 13px;
+        box-shadow: 0 2px 6px rgba(0, 210, 196, 0.3);
+        flex-shrink: 0;
+    }
+
+    .student-user-info {
+        display: flex;
+        flex-direction: column;
+        text-align: left;
+        line-height: 1.2;
+    }
+
+    .student-user-name {
+        font-size: 13px;
+        font-weight: 700;
+        color: #0F172A;
+    }
+
+    .student-user-role {
+        font-size: 11px;
+        font-weight: 600;
+        color: #0284C7;
+    }
+
+    .student-chevron {
+        font-size: 10px;
+        color: #94A3B8;
+        transition: transform 0.2s ease;
+    }
+
+    .student-dropdown-menu {
+        display: none;
+        position: absolute;
+        top: 55px;
+        right: 0;
+        width: 250px;
+        background: #FFFFFF;
+        border-radius: 16px;
+        box-shadow: 0 10px 30px rgba(15, 23, 42, 0.12);
+        border: 1px solid #E2E8F0;
+        overflow: hidden;
+        animation: studentMenuSlide 0.2s ease forwards;
+        z-index: 1050;
+    }
+
+    .student-dropdown-menu.show {
+        display: block;
+    }
+
+    @keyframes studentMenuSlide {
+        from { opacity: 0; transform: translateY(-8px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .student-dropdown-header {
+        padding: 16px 20px;
+        background: #F8FAFC;
+        border-bottom: 1px solid #E2E8F0;
+    }
+    .student-dropdown-header-name {
+        font-weight: 800;
+        font-size: 14px;
+        color: #0F172A;
+    }
+    .student-dropdown-header-email {
+        font-size: 12px;
+        color: #64748B;
+        margin-top: 2px;
+    }
+
+    .student-dropdown-item {
+        padding: 12px 20px;
+        font-size: 13.5px;
+        font-weight: 600;
+        color: #334155;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        text-decoration: none;
+        transition: all 0.15s ease;
+    }
+    .student-dropdown-item i {
+        font-size: 14px;
+        color: #64748B;
+        width: 18px;
+        text-align: center;
+    }
+    .student-dropdown-item:hover {
+        background: #F8FAFC;
+        color: #0284C7;
+    }
+    .student-dropdown-item:hover i {
+        color: #0284C7;
+    }
+    .student-dropdown-item.logout {
+        color: #EF4444;
+        border-top: 1px solid #F1F5F9;
+    }
+    .student-dropdown-item.logout i {
+        color: #EF4444;
+    }
+    .student-dropdown-item.logout:hover {
+        background: #FEF2F2;
+        color: #DC2626;
+    }
+
+    /* Support Modal Overlay */
+    .global-support-modal {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(15, 23, 42, 0.65);
+        backdrop-filter: blur(5px);
+        -webkit-backdrop-filter: blur(5px);
+        z-index: 99999;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+    }
+
+    .global-support-box {
+        background: #FFFFFF;
+        width: 100%;
+        max-width: 480px;
+        padding: 32px;
+        border-radius: 20px;
+        box-shadow: 0 20px 40px rgba(15, 23, 42, 0.16);
+        border: 1px solid #E2E8F0;
+        position: relative;
+        animation: studentModalPop 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @keyframes studentModalPop {
+        from { opacity: 0; transform: scale(0.95); }
+        to { opacity: 1; transform: scale(1); }
+    }
+
+    .global-support-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 18px;
+    }
+    .global-support-title {
+        font-size: 1.25rem;
+        font-weight: 800;
+        color: #0F172A;
+        letter-spacing: -0.3px;
+        margin: 0;
+    }
+    .global-support-close {
+        width: 32px;
+        height: 32px;
+        border-radius: 8px;
+        border: 1px solid #E2E8F0;
+        background: #F8FAFC;
+        color: #64748B;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: 0.2s;
+    }
+    .global-support-close:hover {
+        background: #F1F5F9;
+        color: #0F172A;
+    }
+
+    .global-support-textarea {
+        width: 100%;
+        padding: 14px 16px;
+        border: 1px solid #CBD5E1;
+        border-radius: 12px;
+        font-family: inherit;
+        font-size: 14px;
+        color: #0F172A;
+        background: #F8FAFC;
+        margin: 14px 0 22px;
+        resize: none;
+        outline: none;
+        transition: all 0.2s;
+        box-sizing: border-box;
+    }
+    .global-support-textarea:focus {
+        border-color: #00D2C4;
+        background: #FFFFFF;
+        box-shadow: 0 0 0 3px rgba(0, 210, 196, 0.2);
+    }
+
+    .global-support-actions {
+        display: flex;
+        gap: 12px;
+    }
+    .btn-support-submit {
+        flex: 1;
+        background: linear-gradient(135deg, #00D2C4 0%, #7C3AED 100%);
+        color: #FFFFFF;
+        border: none;
+        padding: 12px 20px;
+        border-radius: 10px;
+        font-weight: 700;
+        font-size: 14px;
+        cursor: pointer;
+        transition: all 0.2s;
+        box-shadow: 0 4px 14px rgba(0, 210, 196, 0.3);
+    }
+    .btn-support-submit:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 6px 18px rgba(0, 210, 196, 0.4);
+    }
+    .btn-support-cancel {
+        flex: 1;
+        background: #F1F5F9;
+        color: #64748B;
+        border: 1px solid #E2E8F0;
+        padding: 12px 20px;
+        border-radius: 10px;
+        font-weight: 700;
+        font-size: 14px;
+        cursor: pointer;
+        transition: 0.2s;
+    }
+    .btn-support-cancel:hover {
+        background: #E2E8F0;
+        color: #0F172A;
+    }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+        .student-nav-center {
+            position: static;
+            transform: none;
+            gap: 18px;
+        }
+        .student-user-info {
+            display: none;
+        }
+    }
+    @media (max-width: 720px) {
+        .student-nav-center {
+            display: none;
+        }
+    }
+</style>
+
+<header class="student-navbar-wrapper">
+    <nav class="student-navbar">
+        <!-- Left: Official Dual-Flame Company Logo -->
+        <div class="student-nav-left">
+            <a href="{% url 'student_dashboard' %}" class="student-logo">
+                <svg class="brand-mark" width="28" height="28" viewBox="0 0 100 100" fill="none">
+                    <path d="M50 8C50 8 32 30 32 52C32 64 40 74 50 78C44 70 44 58 48 50C52 42 60 36 60 36C60 36 62 46 58 56C66 48 68 36 68 36C68 36 78 50 78 64C78 78 66 90 50 92C30 92 16 76 16 54C16 30 34 14 50 8Z" fill="url(#cyanFlameStudent)"/>
+                    <path d="M52 28C52 28 62 40 62 54C62 62 58 68 52 72C56 66 56 58 54 52C52 46 46 42 46 42C46 42 44 50 48 56C42 50 40 42 40 42C40 42 34 52 34 62C34 72 42 80 52 82C64 82 72 72 72 58C72 42 62 32 52 28Z" fill="url(#purpleFlameStudent)"/>
+                    <defs>
+                        <linearGradient id="cyanFlameStudent" x1="16" y1="8" x2="78" y2="92" gradientUnits="userSpaceOnUse">
+                            <stop stop-color="#00D2C4"/>
+                            <stop offset="1" stop-color="#0284C7"/>
+                        </linearGradient>
+                        <linearGradient id="purpleFlameStudent" x1="34" y1="28" x2="72" y2="82" gradientUnits="userSpaceOnUse">
+                            <stop stop-color="#A78BFA"/>
+                            <stop offset="1" stop-color="#7C3AED"/>
+                        </linearGradient>
+                    </defs>
+                </svg>
+                <span>CYAN<span class="brand-o">O</span><span class="brand-py">PY</span></span>
+            </a>
+        </div>
+
+        <!-- Center: Navigation Links (Bold, Centered, High Z-Index) -->
+        <div class="student-nav-center">
+            <a href="{% url 'student_dashboard' %}" class="student-nav-link {% if active_tab == 'home' %}active{% endif %}">
+                Home
+            </a>
+            <a href="{% url 'purchase' %}" class="student-nav-link {% if active_tab == 'explore' %}active{% endif %}">
+                Explore
+            </a>
+            <a href="{% url 'my_courses' %}" class="student-nav-link {% if active_tab == 'my_learning' %}active{% endif %}">
+                My Learning
+            </a>
+            <a href="{% url 'student_doubts' %}" class="student-nav-link {% if active_tab == 'doubts' %}active{% endif %}">
+                Doubts
+            </a>
+            <a href="javascript:void(0);" onclick="openSupportModal(event)" class="student-nav-link {% if active_tab == 'support' %}active{% endif %}">
+                Support
+            </a>
+        </div>
+
+        <!-- Right: Profile Dropdown -->
+        <div class="student-nav-right">
+            <div class="student-profile-trigger" onclick="toggleStudentDropdown(event)">
+                <div class="student-avatar">
+                    {{ request.user.first_name|slice:":1"|upper|default:request.user.username|slice:":1"|upper|default:"S" }}
+                </div>
+                <div class="student-user-info">
+                    <span class="student-user-name">{{ request.user.first_name|default:request.user.username|default:"Student" }}</span>
+                    <span class="student-user-role">Student</span>
+                </div>
+                <i class="fa-solid fa-chevron-down student-chevron"></i>
+            </div>
+
+            <!-- Dropdown Menu -->
+            <div id="studentDropdownMenu" class="student-dropdown-menu">
+                <div class="student-dropdown-header">
+                    <div class="student-dropdown-header-name">
+                        {{ request.user.first_name }} {{ request.user.last_name|default:"" }}
+                        {% if not request.user.first_name %}{{ request.user.username }}{% endif %}
+                    </div>
+                    <div class="student-dropdown-header-email">{{ request.user.email|default:"student@cyanopy.com" }}</div>
+                </div>
+                <a href="{% url 'profile' %}" class="student-dropdown-item">
+                    <i class="fa-regular fa-user"></i> Account Settings
+                </a>
+                <a href="{% url 'student_dashboard' %}" class="student-dropdown-item">
+                    <i class="fa-solid fa-house"></i> Student Dashboard
+                </a>
+                <a href="{% url 'my_courses' %}" class="student-dropdown-item">
+                    <i class="fa-solid fa-graduation-cap"></i> My Learning
+                </a>
+                <a href="{% url 'student_doubts' %}" class="student-dropdown-item">
+                    <i class="fa-solid fa-comments"></i> Doubts & Queries
+                </a>
+                <a href="{% url 'logout' %}" class="student-dropdown-item logout">
+                    <i class="fa-solid fa-arrow-right-from-bracket"></i> Sign Out
+                </a>
+            </div>
+        </div>
+    </nav>
+</header>
+
+<!-- Global Support Modal -->
+<div id="globalSupportModal" class="global-support-modal">
+    <div class="global-support-box">
+        <div class="global-support-header">
+            <h2 class="global-support-title">Ask Your Mentor</h2>
+            <div class="global-support-close" onclick="closeSupportModal(event)">
+                <i class="fa-solid fa-xmark"></i>
+            </div>
+        </div>
+
+        <form action="/send-support-query/" method="POST">
+            {% csrf_token %}
+            <p style="color: #64748B; font-size: 14px; margin: 0; line-height: 1.5;">
+                Describe your question or difficulty below. An instructor will reply to your registered email or under your doubts dashboard.
+            </p>
+            <textarea name="message" rows="5" class="global-support-textarea" placeholder="Type your question or issue in detail..." required></textarea>
+            
+            <div class="global-support-actions">
+                <button type="submit" class="btn-support-submit">Send Query</button>
+                <button type="button" onclick="closeSupportModal(event)" class="btn-support-cancel">Cancel</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    function toggleStudentDropdown(e) {
+        if (e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+        const menu = document.getElementById('studentDropdownMenu');
+        if (menu) menu.classList.toggle('show');
+    }
+
+    function openSupportModal(e) {
+        if (e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+        const modal = document.getElementById('globalSupportModal');
+        if (modal) {
+            modal.style.display = 'flex';
+        }
+    }
+
+    function closeSupportModal(e) {
+        if (e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+        const modal = document.getElementById('globalSupportModal');
+        if (modal) {
+            modal.style.display = 'none';
+        }
+    }
+
+    // Global click listener to close dropdown & modal
+    window.addEventListener('click', function(e) {
+        const trigger = document.querySelector('.student-profile-trigger');
+        const menu = document.getElementById('studentDropdownMenu');
+        if (menu && trigger && !trigger.contains(e.target) && !menu.contains(e.target)) {
+            menu.classList.remove('show');
+        }
+
+        const modal = document.getElementById('globalSupportModal');
+        if (modal && e.target === modal) {
+            closeSupportModal();
+        }
+    });
+</script>

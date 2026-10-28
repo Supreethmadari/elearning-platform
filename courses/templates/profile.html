@@ -1,126 +1,818 @@
-{% extends 'base.html' %}
-
-{% block title %}My Profile | CYANOPY{% endblock %}
-
-{% block extra_css %}
-<style>
-    /* Profile specific styling */
-    .profile-card {
-        background: white; max-width: 650px; margin: 50px auto;
-        padding: 40px; border-radius: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.06);
-        text-align: center; border: 1px solid #f0f0f0;
-    }
-    .avatar-circle {
-        width: 100px; height: 100px; background: #fbc02d; border-radius: 50%;
-        display: flex; align-items: center; justify-content: center;
-        font-size: 40px; font-weight: 700; margin: 0 auto 20px;
-    }
-    .section-label { 
-        text-align: left; font-size: 14px; font-weight: 700; color: #8e44ad; 
-        margin: 20px 0 10px; border-bottom: 2px solid #fbc02d; width: fit-content;
-    }
-    .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; text-align: left; }
-    .full-row { grid-column: span 2; }
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account Settings | CYANOPY</title>
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    label { font-size: 11px; color: #999; text-transform: uppercase; font-weight: 600; }
-    p { margin: 4px 0 12px; font-weight: 500; border-bottom: 1px solid #eee; padding-bottom: 6px; min-height: 24px; }
-    
-    input, select { 
-        display: none; width: 100%; padding: 10px; margin-top: 5px;
-        border: 1px solid #ddd; border-radius: 8px; font-family: inherit;
-    }
+    <style>
+        :root {
+            /* Cyanopy Official Brand System */
+            --brand-cyan: #00D2C4;
+            --brand-cyan-dark: #0284C7;
+            --brand-purple: #7C3AED;
+            --brand-purple-dark: #3B0764;
+            --brand-gradient: linear-gradient(135deg, #00D2C4 0%, #7C3AED 100%);
+            --brand-gradient-hover: linear-gradient(135deg, #0284C7 0%, #6D28D9 100%);
 
-    .action-area { margin-top: 30px; display: flex; gap: 10px; justify-content: center; }
-    .btn { padding: 12px 25px; border-radius: 10px; font-weight: 600; cursor: pointer; border: none; transition: 0.3s; }
-    .btn-edit { background: #000; color: white; }
-    .btn-save { background: #27ae60; color: white; display: none; }
-    .back-link { display: block; margin-top: 20px; color: #888; text-decoration: none; font-size: 13px; }
-</style>
-{% endblock %}
+            --bg-body: #F8FAFC;
+            --bg-card: #FFFFFF;
+            --text-dark: #0F172A;
+            --text-body: #334155;
+            --text-muted: #64748B;
+            --border-light: #E2E8F0;
+            --border-focus: #00D2C4;
+            
+            --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.04);
+            --shadow-card: 0 10px 30px -5px rgba(15, 23, 42, 0.05), 0 0 0 1px rgba(226, 232, 240, 0.8);
+            --shadow-glow: 0 10px 25px -4px rgba(0, 210, 196, 0.35);
+        }
 
-{% block content %}
-<div class="profile-card">
-    <form method="POST">
-        {% csrf_token %}
-        <div class="avatar-circle">{{ user.username|slice:":1"|upper }}</div>
-        <h2 style="margin: 0;">{{ user.username }}</h2>
-        <p style="border: none; color: #888; font-size: 14px;">{{ user.email }}</p>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
-        <div class="section-label">Personal Details</div>
-        <div class="info-grid">
-            <div class="full-row">
-                <label>Full Name</label>
-                <p class="view">{{ user.get_full_name|default:user.username }}</p>
-                <input type="text" name="full_name" class="edit" value="{{ user.get_full_name }}">
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-body);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ----- Main Layout ----- */
+        .profile-main-wrapper {
+            max-width: 1200px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 32px 24px 60px;
+            flex: 1;
+        }
+
+        /* Top Action Bar & Breadcrumbs */
+        .page-header-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 28px;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .btn-back-dash {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-decoration: none;
+            padding: 8px 14px;
+            background: #FFFFFF;
+            border: 1px solid var(--border-light);
+            border-radius: 10px;
+            transition: all 0.2s ease;
+        }
+
+        .btn-back-dash:hover {
+            color: var(--brand-purple);
+            border-color: var(--brand-purple);
+            transform: translateX(-3px);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .header-title-group h1 {
+            font-size: 1.85rem;
+            font-weight: 800;
+            color: var(--text-dark);
+            letter-spacing: -0.5px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .header-title-group p {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        /* Alerts & Toast */
+        .alert-banner {
+            background: #ECFDF5;
+            border: 1px solid #A7F3D0;
+            color: #065F46;
+            padding: 14px 20px;
+            border-radius: 14px;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 0.95rem;
+            font-weight: 600;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Profile Layout Grid */
+        .settings-grid {
+            display: grid;
+            grid-template-columns: 340px 1fr;
+            gap: 30px;
+            align-items: start;
+        }
+
+        /* Left Column: Sidebar Card */
+        .profile-sidebar-card {
+            background: var(--bg-card);
+            border-radius: 20px;
+            padding: 36px 24px;
+            text-align: center;
+            box-shadow: var(--shadow-card);
+            position: sticky;
+            top: 96px;
+        }
+
+        .avatar-wrapper {
+            position: relative;
+            width: 108px;
+            height: 108px;
+            margin: 0 auto 20px;
+        }
+
+        .avatar-circle-main {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: var(--brand-gradient);
+            color: #FFFFFF;
+            font-size: 42px;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--shadow-glow);
+            border: 4px solid #FFFFFF;
+        }
+
+        .avatar-badge-icon {
+            position: absolute;
+            bottom: 2px;
+            right: 2px;
+            width: 30px;
+            height: 30px;
+            background: #0284C7;
+            color: #FFFFFF;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            border: 2px solid #FFFFFF;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+        }
+
+        .profile-name-text {
+            font-size: 1.35rem;
+            font-weight: 800;
+            color: var(--text-dark);
+            margin-bottom: 4px;
+            word-break: break-word;
+        }
+
+        .profile-email-text {
+            font-size: 0.88rem;
+            color: var(--text-muted);
+            margin-bottom: 16px;
+            word-break: break-word;
+        }
+
+        .badge-role {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            border-radius: 50px;
+            background: rgba(0, 210, 196, 0.12);
+            color: #0369A1;
+            font-size: 0.78rem;
+            font-weight: 700;
+            letter-spacing: 0.3px;
+            text-transform: uppercase;
+            margin-bottom: 24px;
+        }
+
+        .sidebar-divider {
+            height: 1px;
+            background: var(--border-light);
+            margin: 20px 0;
+        }
+
+        .meta-list {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            text-align: left;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 0.85rem;
+        }
+
+        .meta-label {
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+        }
+
+        .meta-label i {
+            color: var(--brand-purple);
+            font-size: 14px;
+            width: 16px;
+        }
+
+        .meta-val {
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+
+        .sidebar-cta-btn {
+            margin-top: 24px;
+            width: 100%;
+            padding: 12px;
+            border-radius: 12px;
+            border: none;
+            background: var(--brand-gradient);
+            color: #FFFFFF;
+            font-weight: 700;
+            font-size: 0.92rem;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.25s ease;
+            box-shadow: 0 4px 12px rgba(124, 58, 237, 0.25);
+        }
+
+        .sidebar-cta-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(124, 58, 237, 0.35);
+        }
+
+        /* Right Column: Settings Sections */
+        .settings-content-cards {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .section-card {
+            background: var(--bg-card);
+            border-radius: 20px;
+            padding: 28px 32px;
+            box-shadow: var(--shadow-card);
+            transition: box-shadow 0.2s ease;
+        }
+
+        .section-card-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 24px;
+            padding-bottom: 14px;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .section-icon-wrap {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: rgba(124, 58, 237, 0.08);
+            color: var(--brand-purple);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 17px;
+        }
+
+        .section-card-header h2 {
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: var(--text-dark);
+            margin: 0;
+        }
+
+        .form-grid-2col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .col-full {
+            grid-column: span 2;
+        }
+
+        /* Field Block */
+        .field-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .field-label {
+            font-size: 0.78rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .field-value-box {
+            background: #F8FAFC;
+            border: 1px solid var(--border-light);
+            border-radius: 12px;
+            padding: 12px 16px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            min-height: 46px;
+            display: flex;
+            align-items: center;
+            transition: all 0.2s ease;
+        }
+
+        .field-value-box.empty-val {
+            color: #94A3B8;
+            font-style: italic;
+            font-weight: 500;
+        }
+
+        .field-value-box.readonly-field {
+            background: #F1F5F9;
+            color: #64748B;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .field-input-wrap {
+            position: relative;
+            display: none; /* Hidden in view mode */
+        }
+
+        .field-input {
+            width: 100%;
+            padding: 12px 16px 12px 42px;
+            background: #FFFFFF;
+            border: 1.5px solid var(--border-light);
+            border-radius: 12px;
+            font-family: inherit;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            outline: none;
+            transition: all 0.2s ease;
+        }
+
+        .field-input:focus {
+            border-color: var(--brand-cyan);
+            box-shadow: 0 0 0 4px rgba(0, 210, 196, 0.15);
+        }
+
+        .field-input-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94A3B8;
+            font-size: 15px;
+            pointer-events: none;
+            transition: color 0.2s ease;
+        }
+
+        .field-input:focus ~ .field-input-icon {
+            color: var(--brand-purple);
+        }
+
+        select.field-input {
+            appearance: none;
+            -webkit-appearance: none;
+            cursor: pointer;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2364748B' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 14px center;
+            background-size: 16px;
+            padding-right: 40px;
+        }
+
+        /* Action Buttons Area */
+        .form-action-bar {
+            background: var(--bg-card);
+            border-radius: 20px;
+            padding: 20px 32px;
+            box-shadow: var(--shadow-card);
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 14px;
+        }
+
+        .btn-action {
+            padding: 12px 28px;
+            border-radius: 12px;
+            font-family: inherit;
+            font-size: 0.95rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            border: none;
+            transition: all 0.2s ease;
+        }
+
+        .btn-edit-trigger {
+            background: #0F172A;
+            color: #FFFFFF;
+        }
+
+        .btn-edit-trigger:hover {
+            background: #1E293B;
+            transform: translateY(-1px);
+        }
+
+        .btn-cancel-edit {
+            background: #F1F5F9;
+            color: var(--text-dark);
+            border: 1px solid var(--border-light);
+            display: none;
+        }
+
+        .btn-cancel-edit:hover {
+            background: #E2E8F0;
+        }
+
+        .btn-save-profile {
+            background: var(--brand-gradient);
+            color: #FFFFFF;
+            display: none;
+            box-shadow: 0 4px 14px rgba(0, 210, 196, 0.3);
+        }
+
+        .btn-save-profile:hover {
+            background: var(--brand-gradient-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 210, 196, 0.45);
+        }
+
+        /* Responsive Breakpoints */
+        @media (max-width: 900px) {
+            .settings-grid {
+                grid-template-columns: 1fr;
+            }
+            .profile-sidebar-card {
+                position: static;
+            }
+            .form-grid-2col {
+                grid-template-columns: 1fr;
+            }
+            .col-full {
+                grid-column: span 1;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Unified Cyanopy Student Navigation Header -->
+    {% include 'includes/student_header.html' with active_tab='' %}
+
+    <main class="profile-main-wrapper">
+
+        <!-- Top Breadcrumbs / Navigation -->
+        <div class="page-header-row">
+            <div class="header-title-group">
+                <h1>
+                    <i class="fa-solid fa-sliders" style="color: var(--brand-cyan); font-size: 1.5rem;"></i>
+                    Account Settings
+                </h1>
+                <p>Manage your profile details, contact information, and academic credentials</p>
             </div>
-            <div>
-                <label>Contact Number</label>
-                <p class="view">{{ user.contact_number|default:"Not Provided" }}</p>
-                <input type="text" name="contact" class="edit" value="{{ user.contact_number }}">
-            </div>
-            <div>
-                <label>Date of Birth</label>
-                <p class="view">{{ user.date_of_birth|date:"Y-m-d"|default:"Not Set" }}</p>
-                <input type="date" name="dob" class="edit" value="{{ user.date_of_birth|date:'Y-m-d' }}">
-            </div>
+            <a href="{% url 'student_dashboard' %}" class="btn-back-dash">
+                <i class="fa-solid fa-arrow-left"></i> Back to Dashboard
+            </a>
         </div>
 
-        <div class="section-label">Education</div>
-        <div class="info-grid">
-            <div class="full-row">
-                <label>College Name</label>
-                <p class="view">{{ user.college_name|default:"Not Set" }}</p>
-                <input type="text" name="college" class="edit" value="{{ user.college_name }}">
-            </div>
-            <div>
-                <label>Education/Degree</label>
-                <p class="view">{{ user.education|default:"Not Set" }}</p>
-                <input type="text" name="education" class="edit" value="{{ user.education }}">
-            </div>
-            <div>
-                <label>Gender</label>
-                <p class="view">{{ user.gender|default:"Not Set" }}</p>
-                <select name="gender" class="edit">
-                    <option value="Male" {% if user.gender == 'Male' %}selected{% endif %}>Male</option>
-                    <option value="Female" {% if user.gender == 'Female' %}selected{% endif %}>Female</option>
-                </select>
-            </div>
-        </div>
+        <!-- Success/Error Feedback Messages -->
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert-banner">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <i class="fa-solid fa-circle-check" style="font-size: 1.2rem;"></i>
+                        <span>{{ message }}</span>
+                    </div>
+                    <i class="fa-solid fa-xmark" style="cursor: pointer;" onclick="this.parentElement.style.display='none'"></i>
+                </div>
+            {% endfor %}
+        {% endif %}
 
-        <div class="section-label">Location</div>
-        <div class="info-grid">
-            <div>
-                <label>Current State</label>
-                <p class="view">{{ user.current_state|default:"Not Set" }}</p>
-                <input type="text" name="state" class="edit" value="{{ user.current_state }}">
-            </div>
-            <div>
-                <label>Current City</label>
-                <p class="view">{{ user.current_city|default:"Not Set" }}</p>
-                <input type="text" name="city" class="edit" value="{{ user.current_city }}">
-            </div>
-        </div>
+        <form method="POST" id="profileForm" action="{% url 'profile' %}">
+            {% csrf_token %}
 
-        <div class="action-area">
-            <button type="button" id="editBtn" class="btn btn-edit" onclick="toggleEdit()">Edit Profile</button>
-            <button type="submit" id="saveBtn" class="btn btn-save">Save Changes</button>
-        </div>
-    </form>
-    
-    <a href="{% url 'student_dashboard' %}" class="back-link">← Back to Dashboard</a>
-</div>
-{% endblock %}
+            <div class="settings-grid">
+                
+                <!-- Left Column: Student Identity Overview -->
+                <aside class="profile-sidebar-card">
+                    <div class="avatar-wrapper">
+                        <div class="avatar-circle-main">
+                            {{ user.first_name|slice:":1"|upper|default:user.username|slice:":1"|upper|default:"S" }}
+                        </div>
+                        <div class="avatar-badge-icon" title="Verified Cyanopy Student">
+                            <i class="fa-solid fa-check"></i>
+                        </div>
+                    </div>
 
-{% block extra_js %}
-<script>
-    function toggleEdit() {
-        // Toggle the visibility of view vs edit elements
-        document.querySelectorAll('.view').forEach(el => el.style.display = 'none');
-        document.querySelectorAll('.edit').forEach(el => el.style.display = 'block');
-        
-        // Switch buttons
-        document.getElementById('editBtn').style.display = 'none';
-        document.getElementById('saveBtn').style.display = 'block';
-    }
-</script>
-{% endblock %}
+                    <h2 class="profile-name-text">
+                        {{ user.get_full_name|default:user.username }}
+                    </h2>
+                    <p class="profile-email-text">{{ user.email|default:"No email registered" }}</p>
+
+                    <div class="badge-role">
+                        <i class="fa-solid fa-graduation-cap"></i> Verified Student
+                    </div>
+
+                    <div class="sidebar-divider"></div>
+
+                    <div class="meta-list">
+                        <div class="meta-item">
+                            <span class="meta-label"><i class="fa-regular fa-user"></i> Username</span>
+                            <span class="meta-val">@{{ user.username }}</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-label"><i class="fa-regular fa-calendar-check"></i> Enrolled Since</span>
+                            <span class="meta-val">{{ user.date_joined|date:"M Y"|default:"2025" }}</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-label"><i class="fa-solid fa-shield-halved"></i> Account Status</span>
+                            <span class="meta-val" style="color: #059669; display: flex; align-items: center; gap: 5px;">
+                                <i class="fa-solid fa-circle" style="font-size: 8px;"></i> Active
+                            </span>
+                        </div>
+                    </div>
+
+                    <button type="button" class="sidebar-cta-btn" id="sidebarEditBtn" onclick="toggleEditMode(true)">
+                        <i class="fa-solid fa-pen-to-square"></i> Edit Profile Details
+                    </button>
+                </aside>
+
+                <!-- Right Column: Settings Sections -->
+                <div class="settings-content-cards">
+                    
+                    <!-- Section 1: Personal Details -->
+                    <section class="section-card">
+                        <div class="section-card-header">
+                            <div class="section-icon-wrap">
+                                <i class="fa-solid fa-id-card"></i>
+                            </div>
+                            <h2>Personal Details</h2>
+                        </div>
+
+                        <div class="form-grid-2col">
+                            <!-- Full Name -->
+                            <div class="field-group col-full">
+                                <label class="field-label">Full Name</label>
+                                <div class="field-value-box view-mode-item">
+                                    {{ user.get_full_name|default:user.username }}
+                                </div>
+                                <div class="field-input-wrap edit-mode-item">
+                                    <input type="text" name="full_name" class="field-input" 
+                                           value="{{ user.get_full_name|default:user.username }}" 
+                                           placeholder="Enter your full name" required>
+                                    <i class="fa-regular fa-user field-input-icon"></i>
+                                </div>
+                            </div>
+
+                            <!-- Email Address (Read-only account key) -->
+                            <div class="field-group">
+                                <label class="field-label">Registered Email</label>
+                                <div class="field-value-box readonly-field">
+                                    <span>{{ user.email|default:"Not Provided" }}</span>
+                                    <i class="fa-solid fa-lock" style="font-size: 12px; color: #94A3B8;" title="Account identifier cannot be altered directly"></i>
+                                </div>
+                            </div>
+
+                            <!-- Contact Number -->
+                            <div class="field-group">
+                                <label class="field-label">Contact Number</label>
+                                <div class="field-value-box view-mode-item {% if not user.contact_number %}empty-val{% endif %}">
+                                    {{ user.contact_number|default:"Not Provided" }}
+                                </div>
+                                <div class="field-input-wrap edit-mode-item">
+                                    <input type="tel" name="contact" class="field-input" 
+                                           value="{{ user.contact_number|default:'' }}" 
+                                           placeholder="+91 98765 43210">
+                                    <i class="fa-solid fa-phone field-input-icon"></i>
+                                </div>
+                            </div>
+
+                            <!-- Date of Birth -->
+                            <div class="field-group">
+                                <label class="field-label">Date of Birth</label>
+                                <div class="field-value-box view-mode-item {% if not user.date_of_birth %}empty-val{% endif %}">
+                                    {{ user.date_of_birth|date:"d M, Y"|default:"Not Set" }}
+                                </div>
+                                <div class="field-input-wrap edit-mode-item">
+                                    <input type="date" name="dob" class="field-input" 
+                                           value="{{ user.date_of_birth|date:'Y-m-d' }}">
+                                    <i class="fa-regular fa-calendar field-input-icon"></i>
+                                </div>
+                            </div>
+
+                            <!-- Gender -->
+                            <div class="field-group">
+                                <label class="field-label">Gender</label>
+                                <div class="field-value-box view-mode-item {% if not user.gender %}empty-val{% endif %}">
+                                    {{ user.gender|default:"Not Set" }}
+                                </div>
+                                <div class="field-input-wrap edit-mode-item">
+                                    <select name="gender" class="field-input">
+                                        <option value="" {% if not user.gender %}selected{% endif %}>Select Gender</option>
+                                        <option value="Male" {% if user.gender == 'Male' %}selected{% endif %}>Male</option>
+                                        <option value="Female" {% if user.gender == 'Female' %}selected{% endif %}>Female</option>
+                                        <option value="Other" {% if user.gender == 'Other' %}selected{% endif %}>Other</option>
+                                        <option value="Prefer not to say" {% if user.gender == 'Prefer not to say' %}selected{% endif %}>Prefer not to say</option>
+                                    </select>
+                                    <i class="fa-solid fa-venus-mars field-input-icon"></i>
+                                </div>
+                            </div>
+
+                            <!-- Age -->
+                            <div class="field-group">
+                                <label class="field-label">Age</label>
+                                <div class="field-value-box view-mode-item {% if not user.age %}empty-val{% endif %}">
+                                    {{ user.age|default:"Not Set" }}
+                                </div>
+                                <div class="field-input-wrap edit-mode-item">
+                                    <input type="number" name="age" min="10" max="100" class="field-input" 
+                                           value="{{ user.age|default:'' }}" placeholder="e.g. 22">
+                                    <i class="fa-solid fa-hashtag field-input-icon"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Section 2: Academic & Education -->
+                    <section class="section-card">
+                        <div class="section-card-header">
+                            <div class="section-icon-wrap" style="background: rgba(0, 210, 196, 0.1); color: var(--brand-cyan-dark);">
+                                <i class="fa-solid fa-graduation-cap"></i>
+                            </div>
+                            <h2>Education & Institution</h2>
+                        </div>
+
+                        <div class="form-grid-2col">
+                            <!-- College / Institution Name -->
+                            <div class="field-group col-full">
+                                <label class="field-label">College / University Name</label>
+                                <div class="field-value-box view-mode-item {% if not user.college_name %}empty-val{% endif %}">
+                                    {{ user.college_name|default:"Not Set" }}
+                                </div>
+                                <div class="field-input-wrap edit-mode-item">
+                                    <input type="text" name="college" class="field-input" 
+                                           value="{{ user.college_name|default:'' }}" 
+                                           placeholder="e.g. Stanford University / IIT Delhi">
+                                    <i class="fa-solid fa-building-columns field-input-icon"></i>
+                                </div>
+                            </div>
+
+                            <!-- Education / Degree -->
+                            <div class="field-group col-full">
+                                <label class="field-label">Education / Degree</label>
+                                <div class="field-value-box view-mode-item {% if not user.education %}empty-val{% endif %}">
+                                    {{ user.education|default:"Not Set" }}
+                                </div>
+                                <div class="field-input-wrap edit-mode-item">
+                                    <input type="text" name="education" class="field-input" 
+                                           value="{{ user.education|default:'' }}" 
+                                           placeholder="e.g. Bachelor of Technology (B.Tech - CS)">
+                                    <i class="fa-solid fa-book-open field-input-icon"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Section 3: Location Details -->
+                    <section class="section-card">
+                        <div class="section-card-header">
+                            <div class="section-icon-wrap" style="background: rgba(2, 132, 199, 0.1); color: #0284C7;">
+                                <i class="fa-solid fa-location-dot"></i>
+                            </div>
+                            <h2>Location Information</h2>
+                        </div>
+
+                        <div class="form-grid-2col">
+                            <!-- Current State -->
+                            <div class="field-group">
+                                <label class="field-label">Current State / Region</label>
+                                <div class="field-value-box view-mode-item {% if not user.current_state %}empty-val{% endif %}">
+                                    {{ user.current_state|default:"Not Set" }}
+                                </div>
+                                <div class="field-input-wrap edit-mode-item">
+                                    <input type="text" name="state" class="field-input" 
+                                           value="{{ user.current_state|default:'' }}" 
+                                           placeholder="e.g. Karnataka / California">
+                                    <i class="fa-regular fa-map field-input-icon"></i>
+                                </div>
+                            </div>
+
+                            <!-- Current City -->
+                            <div class="field-group">
+                                <label class="field-label">Current City</label>
+                                <div class="field-value-box view-mode-item {% if not user.current_city %}empty-val{% endif %}">
+                                    {{ user.current_city|default:"Not Set" }}
+                                </div>
+                                <div class="field-input-wrap edit-mode-item">
+                                    <input type="text" name="city" class="field-input" 
+                                           value="{{ user.current_city|default:'' }}" 
+                                           placeholder="e.g. Bengaluru / San Francisco">
+                                    <i class="fa-solid fa-city field-input-icon"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Form Action Bar -->
+                    <div class="form-action-bar">
+                        <button type="button" id="mainEditBtn" class="btn-action btn-edit-trigger" onclick="toggleEditMode(true)">
+                            <i class="fa-solid fa-pen-to-square"></i> Edit Profile
+                        </button>
+                        
+                        <button type="button" id="cancelBtn" class="btn-action btn-cancel-edit" onclick="toggleEditMode(false)">
+                            <i class="fa-solid fa-xmark"></i> Cancel
+                        </button>
+
+                        <button type="submit" id="saveBtn" class="btn-action btn-save-profile">
+                            <i class="fa-solid fa-check"></i> Save Changes
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+        </form>
+
+    </main>
+
+    <!-- Interactive Toggle Script -->
+    <script>
+        function toggleEditMode(isEditing) {
+            const viewItems = document.querySelectorAll('.view-mode-item');
+            const editItems = document.querySelectorAll('.edit-mode-item');
+            const mainEditBtn = document.getElementById('mainEditBtn');
+            const sidebarEditBtn = document.getElementById('sidebarEditBtn');
+            const cancelBtn = document.getElementById('cancelBtn');
+            const saveBtn = document.getElementById('saveBtn');
+
+            if (isEditing) {
+                viewItems.forEach(el => el.style.display = 'none');
+                editItems.forEach(el => el.style.display = 'block');
+                
+                mainEditBtn.style.display = 'none';
+                if (sidebarEditBtn) sidebarEditBtn.style.display = 'none';
+                cancelBtn.style.display = 'inline-flex';
+                saveBtn.style.display = 'inline-flex';
+                
+                // Focus the first editable input
+                const firstInput = document.querySelector('input[name="full_name"]');
+                if (firstInput) firstInput.focus();
+            } else {
+                viewItems.forEach(el => el.style.display = 'flex');
+                editItems.forEach(el => el.style.display = 'none');
+                
+                mainEditBtn.style.display = 'inline-flex';
+                if (sidebarEditBtn) sidebarEditBtn.style.display = 'inline-flex';
+                cancelBtn.style.display = 'none';
+                saveBtn.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>

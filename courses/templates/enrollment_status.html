@@ -1,0 +1,457 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enrollment Status | CYANOPY</title>
+    <!-- Brand Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --bg-dark: #0B1120;
+            --brand-cyan: #00D2C4;
+            --brand-cyan-dark: #0284C7;
+            --brand-purple: #7C3AED;
+            --brand-purple-dark: #3B0764;
+            --brand-gradient: linear-gradient(135deg, #00D2C4 0%, #7C3AED 100%);
+            --brand-gradient-hover: linear-gradient(135deg, #0284C7 0%, #6D28D9 100%);
+
+            --bg-body: #F8FAFC;
+            --text-dark: #0F172A;
+            --text-muted: #64748B;
+            --border: #E2E8F0;
+            --shadow-card: 0 10px 30px -5px rgba(15, 23, 42, 0.08);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-dark);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 30px 20px;
+        }
+
+        .status-container {
+            max-width: 620px;
+            width: 100%;
+            background: #FFFFFF;
+            border-radius: 24px;
+            padding: 44px 36px;
+            box-shadow: var(--shadow-card);
+            border: 1px solid var(--border);
+            text-align: center;
+            position: relative;
+        }
+
+        /* Top Brand Logo */
+        .brand-logo-wrap {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            margin-bottom: 28px;
+        }
+
+        .brand-logo-text {
+            font-size: 1.35rem;
+            font-weight: 800;
+            letter-spacing: 1.2px;
+            color: var(--brand-purple-dark);
+        }
+
+        .brand-o { color: var(--brand-cyan); }
+        .brand-py { color: var(--brand-purple); }
+
+        /* Status Icon Rings */
+        .status-icon-circle {
+            width: 76px;
+            height: 76px;
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+        }
+
+        .status-icon-circle.pending {
+            background: rgba(2, 132, 199, 0.1);
+            color: #0284C7;
+            border: 2px solid rgba(2, 132, 199, 0.3);
+            animation: pulseSoft 2s infinite ease-in-out;
+        }
+
+        .status-icon-circle.active {
+            background: rgba(16, 185, 129, 0.1);
+            color: #10B981;
+            border: 2px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .status-icon-circle.partial {
+            background: rgba(245, 158, 11, 0.1);
+            color: #D97706;
+            border: 2px solid rgba(245, 158, 11, 0.3);
+        }
+
+        .status-icon-circle.rejected {
+            background: rgba(239, 68, 68, 0.1);
+            color: #EF4444;
+            border: 2px solid rgba(239, 68, 68, 0.3);
+        }
+
+        @keyframes pulseSoft {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .status-heading {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: #0F172A;
+            margin-bottom: 8px;
+            letter-spacing: -0.4px;
+        }
+
+        .status-desc {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            line-height: 1.5;
+            margin-bottom: 28px;
+        }
+
+        /* Details Card */
+        .details-card {
+            background: #F8FAFC;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 20px 24px;
+            text-align: left;
+            margin-bottom: 28px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.9rem;
+        }
+
+        .detail-label {
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        .detail-value {
+            font-weight: 700;
+            color: #0F172A;
+        }
+
+        /* Status Badge */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.78rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            padding: 4px 10px;
+            border-radius: 50px;
+        }
+
+        .badge-pending { background: #E0F2FE; color: #0284C7; }
+        .badge-active { background: #D1FAE5; color: #065F46; }
+        .badge-partial { background: #FEF3C7; color: #92400E; }
+        .badge-rejected { background: #FEE2E2; color: #991B1B; }
+
+        .btn-status-action {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            padding: 14px;
+            border-radius: 12px;
+            font-family: inherit;
+            font-size: 1rem;
+            font-weight: 700;
+            text-decoration: none;
+            cursor: pointer;
+            border: none;
+            transition: all 0.25s ease;
+        }
+
+        .btn-gradient {
+            background: var(--brand-gradient);
+            color: #FFFFFF;
+            box-shadow: 0 4px 14px rgba(0, 210, 196, 0.35);
+        }
+
+        .btn-gradient:hover {
+            background: var(--brand-gradient-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 210, 196, 0.5);
+            color: #FFFFFF;
+        }
+
+        .btn-dark {
+            background: #0F172A;
+            color: #FFFFFF;
+        }
+
+        .btn-dark:hover {
+            background: #1E293B;
+            color: #FFFFFF;
+        }
+
+        /* Welcome Modal Pop */
+        .welcome-modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            z-index: 9999;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .welcome-modal-card {
+            background: #FFFFFF;
+            border-radius: 28px;
+            max-width: 500px;
+            width: 100%;
+            padding: 44px 36px;
+            text-align: center;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.25);
+            border: 1px solid var(--border);
+            animation: popUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes popUp { from { transform: scale(0.92); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+    </style>
+</head>
+<body>
+
+    <div class="status-container">
+        
+        <a href="{% url 'landing' %}" class="brand-logo-wrap">
+            <svg width="28" height="28" viewBox="0 0 100 100" fill="none">
+                <path d="M50 8C50 8 32 30 32 52C32 64 40 74 50 78C44 70 44 58 48 50C52 42 60 36 60 36C60 36 62 46 58 56C66 48 68 36 68 36C68 36 78 50 78 64C78 78 66 90 50 92C30 92 16 76 16 54C16 30 34 14 50 8Z" fill="url(#cG1)"/>
+                <path d="M52 28C52 28 62 40 62 54C62 62 58 68 52 72C56 66 56 58 54 52C52 46 46 42 46 42C46 42 44 50 48 56C42 50 40 42 40 42C40 42 34 52 34 62C34 72 42 80 52 82C64 82 72 72 72 58C72 42 62 32 52 28Z" fill="url(#pG1)"/>
+                <defs>
+                    <linearGradient id="cG1" x1="16" y1="8" x2="78" y2="92" gradientUnits="userSpaceOnUse">
+                        <stop stop-color="#00D2C4"/>
+                        <stop offset="1" stop-color="#0284C7"/>
+                    </linearGradient>
+                    <linearGradient id="pG1" x1="34" y1="28" x2="72" y2="82" gradientUnits="userSpaceOnUse">
+                        <stop stop-color="#A78BFA"/>
+                        <stop offset="1" stop-color="#7C3AED"/>
+                    </linearGradient>
+                </defs>
+            </svg>
+            <span class="brand-logo-text">CYAN<span class="brand-o">O</span><span class="brand-py">PY</span></span>
+        </a>
+
+        {% if enrollment.status == 'PENDING_VERIFICATION' %}
+            <!-- Pending Verification State -->
+            <div class="status-icon-circle pending">
+                <i class="fa-regular fa-clock"></i>
+            </div>
+            <h1 class="status-heading">Payment Verification Pending</h1>
+            <p class="status-desc">
+                Your manual payment claim has been submitted to the Cyanopy administration team. Once verified, your course access will be unlocked.
+            </p>
+
+            <div class="details-card">
+                <div class="detail-row">
+                    <span class="detail-label">Enrolled Course</span>
+                    <span class="detail-value">{{ enrollment.course.title }}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Program Tier</span>
+                    <span class="detail-value">{{ enrollment.tier }}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Course Fee</span>
+                    <span class="detail-value">₹ {{ payment.course_fee|default:enrollment.amount }}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Claimed Amount Paid</span>
+                    <span class="detail-value" style="color: #0284C7;">₹ {{ payment.claimed_amount }}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Payment Method</span>
+                    <span class="detail-value">{{ payment.get_payment_method_display }}</span>
+                </div>
+                {% if payment.payment_reference %}
+                <div class="detail-row">
+                    <span class="detail-label">Reference ID</span>
+                    <span class="detail-value">{{ payment.payment_reference }}</span>
+                </div>
+                {% endif %}
+                <div class="detail-row">
+                    <span class="detail-label">Verification Status</span>
+                    <span class="status-badge badge-pending">
+                        <i class="fa-solid fa-hourglass-half"></i> Pending Verification
+                    </span>
+                </div>
+            </div>
+
+            <a href="{% url 'logout' %}" class="btn-status-action btn-dark">
+                <span>Proceed to Login</span>
+                <i class="fa-solid fa-arrow-right"></i>
+            </a>
+
+        {% elif enrollment.status == 'PARTIALLY_PAID' or payment.status == 'PARTIALLY_PAID' %}
+            <!-- Partially Paid State -->
+            <div class="status-icon-circle partial">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+            </div>
+            <h1 class="status-heading">Partial Payment Verified</h1>
+            <p class="status-desc">
+                An administrator has verified your partial payment of <strong>₹{{ payment.verified_amount }}</strong>. Full course access requires completing the remaining balance.
+            </p>
+
+            <div class="details-card">
+                <div class="detail-row">
+                    <span class="detail-label">Course</span>
+                    <span class="detail-value">{{ enrollment.course.title }}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Course Fee</span>
+                    <span class="detail-value">₹ {{ payment.course_fee }}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Verified Amount</span>
+                    <span class="detail-value" style="color: #059669;">₹ {{ payment.verified_amount }}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Remaining Balance</span>
+                    <span class="detail-value" style="color: #DC2626;">₹ {{ payment.remaining_amount }}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Status</span>
+                    <span class="status-badge badge-partial">Partially Paid</span>
+                </div>
+            </div>
+
+            <a href="{% url 'checkout' enrollment.course.id %}?balance=1&tier={{ enrollment.tier }}" class="btn-status-action btn-gradient">
+                <span>Pay Balance Online (₹ {{ payment.remaining_amount }})</span>
+                <i class="fa-solid fa-credit-card"></i>
+            </a>
+
+        {% elif enrollment.status == 'REJECTED' or payment.status == 'REJECTED' %}
+            <!-- Rejected State -->
+            <div class="status-icon-circle rejected">
+                <i class="fa-solid fa-xmark"></i>
+            </div>
+            <h1 class="status-heading">Payment Could Not Be Verified</h1>
+            <p class="status-desc">
+                Your payment could not be verified. Please contact the Cyanopy team for assistance or re-submit your payment details.
+            </p>
+
+            <div class="details-card">
+                <div class="detail-row">
+                    <span class="detail-label">Course</span>
+                    <span class="detail-value">{{ enrollment.course.title }}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Admin Reason</span>
+                    <span class="detail-value" style="color: #DC2626;">{{ payment.admin_notes|default:"Payment details did not match records." }}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Status</span>
+                    <span class="status-badge badge-rejected">Rejected</span>
+                </div>
+            </div>
+
+            <a href="{% url 'course_enrollment' %}?course_id={{ enrollment.course.id }}" class="btn-status-action btn-gradient">
+                <span>Re-submit Payment / Choose Plan</span>
+                <i class="fa-solid fa-arrow-rotate-right"></i>
+            </a>
+
+        {% elif enrollment.status == 'ACTIVE' %}
+            <!-- Active State -->
+            <div class="status-icon-circle active">
+                <i class="fa-solid fa-check"></i>
+            </div>
+            <h1 class="status-heading">Enrollment Active</h1>
+            <p class="status-desc">
+                Your enrollment for <strong>{{ enrollment.course.title }}</strong> is active and ready.
+            </p>
+
+            <a href="{% url 'student_dashboard' %}" class="btn-status-action btn-gradient">
+                <span>Go to Student Dashboard</span>
+                <i class="fa-solid fa-arrow-right"></i>
+            </a>
+
+        {% else %}
+            <!-- No Enrollment Found -->
+            <h1 class="status-heading">Get Started with a Course</h1>
+            <p class="status-desc">You are not enrolled in any courses yet. Choose a program to begin learning.</p>
+            <a href="{% url 'course_enrollment' %}" class="btn-status-action btn-gradient">
+                <span>Select a Course</span>
+                <i class="fa-solid fa-arrow-right"></i>
+            </a>
+        {% endif %}
+
+    </div>
+
+    <!-- REQUIREMENT 10: WELCOME DIALOG (Shown for confirmed / fully paid student) -->
+    {% if show_welcome and enrollment.status == 'ACTIVE' %}
+    <div class="welcome-modal-overlay" id="welcomeModal">
+        <div class="welcome-modal-card">
+            <div style="font-size: 50px; margin-bottom: 14px;">🎉</div>
+            <h2 style="font-size: 1.8rem; font-weight: 800; color: #0F172A; margin-bottom: 8px;">
+                Welcome to Cyanopy, {{ request.user.first_name }}!
+            </h2>
+            <p style="color: #64748B; font-size: 0.95rem; margin-bottom: 24px;">
+                Your enrollment has been confirmed. Your account is ready.
+            </p>
+
+            <div style="background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 16px; padding: 20px; text-align: left; margin-bottom: 28px;">
+                <div style="margin-bottom: 12px;">
+                    <div style="font-size: 0.75rem; font-weight: 700; color: #94A3B8; text-transform: uppercase;">Course</div>
+                    <div style="font-size: 1.05rem; font-weight: 800; color: #0F172A;">{{ enrollment.course.title }}</div>
+                </div>
+                <div style="margin-bottom: 12px;">
+                    <div style="font-size: 0.75rem; font-weight: 700; color: #94A3B8; text-transform: uppercase;">Enrolled Plan</div>
+                    <div style="font-size: 0.95rem; font-weight: 700; color: var(--brand-purple);">{{ enrollment.tier }}</div>
+                </div>
+                <div>
+                    <div style="font-size: 0.75rem; font-weight: 700; color: #94A3B8; text-transform: uppercase;">Account Email</div>
+                    <div style="font-size: 0.95rem; font-weight: 700; color: #0F172A;">{{ request.user.email }}</div>
+                </div>
+            </div>
+
+            <!-- REQUIREMENT 10: "The student should NOT be automatically logged in. Send them to the login page and ask them to log in using their Email + Password." -->
+            <a href="{% url 'logout' %}" class="btn-status-action btn-gradient">
+                <span>Proceed to Login</span>
+                <i class="fa-solid fa-arrow-right"></i>
+            </a>
+        </div>
+    </div>
+    {% endif %}
+
+</body>
+</html>

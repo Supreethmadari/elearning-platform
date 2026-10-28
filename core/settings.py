@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -55,6 +56,16 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'core.urls'
 
+# Allow same-origin iframe embedding for PDF and online notes viewer
+X_FRAME_OPTIONS = 'SAMEORIGIN'
+
+CSRF_TRUSTED_ORIGINS = [
+    'http://localhost:8000',
+    'http://127.0.0.1:8000',
+    'http://localhost',
+    'http://127.0.0.1',
+]
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -78,10 +89,17 @@ WSGI_APPLICATION = 'core.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'elearning',        
+        'USER': 'postgres',
+        'PASSWORD': 'Sup2002',
+        'HOST': '127.0.0.1',
+        'PORT': '5432',
     }
 }
+
+
+
 
 
 # Password validation
@@ -138,4 +156,21 @@ LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'student_dashboard'
 LOGOUT_REDIRECT_URL = 'login'
 
+# ---------------- REAL EMAIL SMTP CONFIGURATION ----------------
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'info@cyanopy.com'
+EMAIL_HOST_PASSWORD = 'vevegvlvbqkedabe'
 INSTALLED_APPS += ['ai_chat']
+
+# ---------------- AI CHATBOT CONFIGURATION ----------------
+# Option 1 (Recommended & 100% Free): Get a free key at https://console.groq.com/
+# Option 2: Get an OpenAI key at https://platform.openai.com/
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
+GROQ_API_KEY = os.getenv("GROQ_API_KEY", "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")
+
+# ---------------- RAZORPAY PAYMENT GATEWAY ----------------
+RAZORPAY_KEY_ID = os.getenv("RAZORPAY_KEY_ID", "rzp_test_TtH0KZsmJo3OKp")
+RAZORPAY_KEY_SECRET = os.getenv("RAZORPAY_KEY_SECRET", "Pgs8jpEjMBAF6F606ULRDNK5")

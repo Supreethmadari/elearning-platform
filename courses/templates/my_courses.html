@@ -8,69 +8,66 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
-        /* ... (Keep your existing :root and basic styles) ... */
         :root {
-            --primary: #fbc02d;
-            --dark: #0f172a;
-            --slate: #475569;
-            --bg: #f8fafc;
-            --white: #ffffff;
-            --border: #e2e8f0;
-            --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+            /* Cyanopy Brand Identity */
+            --brand-cyan: #00D2C4;
+            --brand-cyan-dark: #0284C7;
+            --brand-purple: #7C3AED;
+            --brand-purple-dark: #3B0764;
+            --brand-gradient: linear-gradient(135deg, #00D2C4 0%, #7C3AED 100%);
+            --brand-gradient-hover: linear-gradient(135deg, #26E5D7 0%, #8B5CF6 100%);
+
+            --primary: #0284C7;
+            --dark: #0F172A;
+            --slate: #64748B;
+            --bg: #F8FAFC;
+            --white: #FFFFFF;
+            --border: #E2E8F0;
+            --shadow: 0 10px 25px -4px rgba(15, 23, 42, 0.06);
         }
 
-        body { margin: 0; font-family: 'Plus Jakarta Sans', sans-serif; background-color: var(--bg); color: var(--dark); }
-
-        /* Navbar & Header Styles from your previous code */
-        .navbar { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(12px); height: 75px; padding: 0 5%; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 1000; }
-        .logo { font-weight: 800; font-size: 22px; color: var(--dark); text-decoration: none; }
-        .logo span { color: var(--primary); }
-        .nav-links { display: flex; gap: 30px; align-items: center; }
-        .nav-links a { text-decoration: none; color: var(--slate); font-weight: 600; font-size: 14px; }
-        .nav-links a.active { color: var(--dark); position: relative; }
-        .nav-links a.active::after { content: ''; position: absolute; bottom: -26px; left: 0; width: 100%; height: 3px; background: var(--primary); }
+        body { margin: 0; font-family: 'Plus Jakarta Sans', sans-serif; background-color: var(--bg); color: var(--dark); min-height: 100vh; }
 
         .dashboard-container { max-width: 1250px; margin: 40px auto; padding: 0 25px; }
         
+        .page-header h1 { font-size: 2rem; font-weight: 800; color: var(--dark); margin: 0 0 8px 0; letter-spacing: -0.5px; }
+        .page-header p { color: var(--slate); margin: 0; font-size: 0.95rem; }
+
         /* Filter Row */
-        .filter-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; gap: 20px; flex-wrap: wrap; }
-        .tabs { display: flex; background: #fff; padding: 6px; border-radius: 14px; border: 1px solid var(--border); }
-        .tab { text-decoration: none; color: var(--slate); font-weight: 700; font-size: 13px; padding: 10px 20px; border-radius: 10px; transition: 0.3s; cursor: pointer; border: none; background: none; }
-        .tab.active { background: var(--dark); color: #fff; }
+        .filter-row { display: flex; justify-content: space-between; align-items: center; margin: 30px 0; gap: 20px; flex-wrap: wrap; }
+        .tabs { display: flex; background: #fff; padding: 6px; border-radius: 14px; border: 1px solid var(--border); box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04); }
+        .tab { text-decoration: none; color: var(--slate); font-weight: 700; font-size: 13.5px; padding: 10px 22px; border-radius: 10px; transition: 0.25s; cursor: pointer; border: none; background: none; }
+        .tab.active { background: linear-gradient(135deg, #00D2C4 0%, #7C3AED 100%); color: #fff; box-shadow: 0 4px 12px rgba(0, 210, 196, 0.3); }
+
+        .search-input {
+            padding: 12px 18px; border: 1px solid var(--border); border-radius: 12px; background: #fff;
+            font-size: 14px; font-family: inherit; color: var(--dark); outline: none; transition: 0.2s; width: 280px;
+        }
+        .search-input:focus { border-color: var(--brand-cyan); box-shadow: 0 0 0 3px rgba(0, 210, 196, 0.15); }
 
         /* Course Grid */
         .course-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 30px; }
-        .lms-card { background: var(--white); border-radius: 24px; overflow: hidden; box-shadow: var(--shadow); border: 1px solid var(--border); transition: 0.3s; }
+        .lms-card { background: var(--white); border-radius: 22px; overflow: hidden; box-shadow: var(--shadow); border: 1px solid var(--border); transition: 0.3s ease; display: flex; flex-direction: column; }
+        .lms-card:hover { transform: translateY(-5px); box-shadow: 0 16px 32px rgba(15, 23, 42, 0.1); border-color: rgba(0, 210, 196, 0.4); }
         
         /* Hidden class for filtering */
         .card-hidden { display: none; }
 
-        .card-banner { height: 180px; display: flex; align-items: center; justify-content: center; color: var(--primary); font-size: 64px; font-weight: 800; background: linear-gradient(45deg, #0f172a, #1e293b); }
-        .card-body { padding: 25px; }
-        .course-title { font-size: 20px; font-weight: 800; color: var(--dark); text-decoration: none; display: block; margin-bottom: 20px; }
+        .card-banner { height: 160px; display: flex; align-items: center; justify-content: center; color: #00D2C4; font-size: 64px; font-weight: 800; background: linear-gradient(135deg, #0F172A 0%, #1E1B4B 100%); text-shadow: 0 0 20px rgba(0, 210, 196, 0.4); position: relative; }
+        .card-body { padding: 24px; flex-grow: 1; display: flex; flex-direction: column; }
+        .course-title { font-size: 1.15rem; font-weight: 800; color: var(--dark); text-decoration: none; display: block; margin-bottom: 16px; line-height: 1.4; transition: 0.2s; }
+        .course-title:hover { color: #0284C7; }
         
-        .progress-track { height: 8px; background: #f1f5f9; border-radius: 20px; overflow: hidden; margin-top: 10px; }
-        .progress-bar { height: 100%; background: var(--primary); border-radius: 20px; }
+        .progress-track { height: 8px; background: #F1F5F9; border-radius: 20px; overflow: hidden; margin-top: 10px; }
+        .progress-bar { height: 100%; background: linear-gradient(135deg, #00D2C4 0%, #7C3AED 100%); border-radius: 20px; }
         
-        .btn-continue { width: 100%; background: var(--dark); color: #fff; border: none; padding: 14px; border-radius: 14px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 10px; text-decoration: none; margin-top: 20px; }
-
-        /* Modal Styles */
-        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.7); z-index: 3000; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
-        .modal-content { background: white; width: 90%; max-width: 450px; padding: 30px; border-radius: 24px; }
+        .btn-continue { width: 100%; background: linear-gradient(135deg, #00D2C4 0%, #7C3AED 100%); color: #fff; border: none; padding: 13px; border-radius: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 10px; text-decoration: none; margin-top: 22px; box-sizing: border-box; transition: 0.25s; box-shadow: 0 4px 14px rgba(0, 210, 196, 0.3); }
+        .btn-continue:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(0, 210, 196, 0.45); }
     </style>
 </head>
 
 <body>
-    <nav class="navbar">
-        <a href="/" class="logo">CYANO<span>PY</span></a>
-        <div class="nav-links">
-            <a href="{% url 'student_dashboard' %}">Home</a>
-            <a href="{% url 'purchase' %}">Explore</a>
-            <a href="{% url 'my_courses' %}" class="active">My Learning</a>
-            <a href="{% url 'student_doubts' %}">Doubts</a>
-            <a href="javascript:void(0)" onclick="openSupportModal()">Support</a>
-            </div>
-    </nav>
+    {% include 'includes/student_header.html' with active_tab='my_learning' %}
 
     <div class="dashboard-container">
         <div class="page-header">
@@ -115,20 +112,6 @@
                 </div>
             </div>
             {% endfor %}
-        </div>
-    </div>
-
-    <div id="supportModal" class="modal-overlay">
-        <div class="modal-content">
-            <h2>Ask Your Mentor</h2>
-            <form action="/send-support-query/" method="POST">
-                {% csrf_token %}
-                <textarea name="message" rows="5" style="width:100%; padding:15px; border-radius:12px; border:1px solid var(--border); margin:15px 0;" placeholder="Describe your doubt..." required></textarea>
-                <div style="display: flex; gap: 10px;">
-                    <button type="submit" style="flex:1; background:var(--primary); border:none; padding:12px; border-radius:10px; font-weight:700;">Send</button>
-                    <button type="button" onclick="closeSupportModal()" style="flex:1; background:#f1f5f9; border:none; padding:12px; border-radius:10px; font-weight:700;">Cancel</button>
-                </div>
-            </form>
         </div>
     </div>
 
@@ -179,10 +162,6 @@
                 }
             });
         }
-
-        // Support Modal functions
-        function openSupportModal() { document.getElementById('supportModal').style.display = 'flex'; }
-        function closeSupportModal() { document.getElementById('supportModal').style.display = 'none'; }
     </script>
 </body>
 </html>

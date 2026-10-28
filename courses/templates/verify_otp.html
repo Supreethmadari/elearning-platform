@@ -1,0 +1,437 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify Email OTP | CYANOPY</title>
+    <!-- Brand Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --bg-dark: #0B1120;
+            --bg-surface: #0F172A;
+            --brand-cyan: #00D2C4;
+            --brand-cyan-dark: #0284C7;
+            --brand-purple: #7C3AED;
+            --brand-purple-dark: #3B0764;
+            --brand-gradient: linear-gradient(135deg, #00D2C4 0%, #7C3AED 100%);
+            --brand-gradient-hover: linear-gradient(135deg, #0284C7 0%, #6D28D9 100%);
+            
+            --text-main: #0F172A;
+            --text-light: #F8FAFC;
+            --text-muted: #94A3B8;
+            --border-light: rgba(226, 232, 240, 0.15);
+            --error: #EF4444;
+            --success: #10B981;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: linear-gradient(135deg, #0B1120 0%, #0F172A 50%, #1E1B4B 100%);
+            color: var(--text-light);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 30px 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Ambient Glow Circles */
+        .ambient-glow-1 {
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(0, 210, 196, 0.18) 0%, transparent 70%);
+            top: -150px;
+            left: -150px;
+            pointer-events: none;
+        }
+
+        .ambient-glow-2 {
+            position: absolute;
+            width: 450px;
+            height: 450px;
+            background: radial-gradient(circle, rgba(124, 58, 237, 0.22) 0%, transparent 70%);
+            bottom: -150px;
+            right: -150px;
+            pointer-events: none;
+        }
+
+        .otp-card {
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            max-width: 520px;
+            width: 100%;
+            padding: 48px 40px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Logo */
+        .brand-logo-wrap {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            margin-bottom: 24px;
+        }
+
+        .brand-logo-text {
+            font-size: 1.4rem;
+            font-weight: 800;
+            letter-spacing: 1.2px;
+            color: #FFFFFF;
+        }
+
+        .brand-o { color: var(--brand-cyan); text-shadow: 0 0 10px rgba(0, 210, 196, 0.5); }
+        .brand-py { color: var(--brand-purple); }
+
+        /* Step Progress indicator */
+        .progress-steps {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 28px;
+        }
+
+        .step-pill {
+            font-size: 0.76rem;
+            font-weight: 700;
+            padding: 6px 12px;
+            border-radius: 50px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .step-pill.done {
+            background: rgba(16, 185, 129, 0.15);
+            color: #34D399;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .step-pill.active {
+            background: rgba(0, 210, 196, 0.15);
+            color: var(--brand-cyan);
+            border: 1px solid rgba(0, 210, 196, 0.4);
+        }
+
+        .step-pill.upcoming {
+            background: rgba(255, 255, 255, 0.05);
+            color: #64748B;
+        }
+
+        .step-divider {
+            width: 18px;
+            height: 2px;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Icon Badge */
+        .icon-badge {
+            width: 68px;
+            height: 68px;
+            margin: 0 auto 20px;
+            border-radius: 20px;
+            background: linear-gradient(135deg, rgba(0, 210, 196, 0.15) 0%, rgba(124, 58, 237, 0.15) 100%);
+            border: 1px solid rgba(0, 210, 196, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            color: var(--brand-cyan);
+            box-shadow: 0 0 25px rgba(0, 210, 196, 0.2);
+        }
+
+        .otp-title {
+            font-size: 1.7rem;
+            font-weight: 800;
+            letter-spacing: -0.4px;
+            margin-bottom: 8px;
+            color: #FFFFFF;
+        }
+
+        .otp-subtitle {
+            font-size: 0.95rem;
+            color: #94A3B8;
+            line-height: 1.5;
+            margin-bottom: 30px;
+        }
+
+        .email-highlight {
+            color: #FFFFFF;
+            font-weight: 700;
+        }
+
+        /* Alerts */
+        .alert-box {
+            padding: 12px 16px;
+            border-radius: 12px;
+            font-size: 0.88rem;
+            font-weight: 600;
+            margin-bottom: 24px;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .alert-error {
+            background: rgba(239, 68, 68, 0.15);
+            color: #F87171;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .alert-success {
+            background: rgba(16, 185, 129, 0.15);
+            color: #34D399;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        /* 6 Digits Boxes */
+        .otp-input-group {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+
+        .otp-digit {
+            width: 52px;
+            height: 60px;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1.5px solid rgba(255, 255, 255, 0.15);
+            border-radius: 14px;
+            font-family: inherit;
+            font-size: 1.5rem;
+            font-weight: 800;
+            text-align: center;
+            color: #FFFFFF;
+            outline: none;
+            transition: all 0.2s ease;
+        }
+
+        .otp-digit:focus {
+            border-color: var(--brand-cyan);
+            box-shadow: 0 0 0 4px rgba(0, 210, 196, 0.25);
+            background: rgba(0, 210, 196, 0.05);
+            transform: translateY(-2px);
+        }
+
+        .btn-verify {
+            width: 100%;
+            padding: 15px;
+            border-radius: 14px;
+            background: var(--brand-gradient);
+            color: #FFFFFF;
+            border: none;
+            font-family: inherit;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: all 0.25s ease;
+            box-shadow: 0 6px 20px rgba(0, 210, 196, 0.35);
+        }
+
+        .btn-verify:hover {
+            background: var(--brand-gradient-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 210, 196, 0.5);
+        }
+
+        .resend-row {
+            margin-top: 24px;
+            font-size: 0.9rem;
+            color: #94A3B8;
+        }
+
+        .resend-link {
+            color: var(--brand-cyan);
+            font-weight: 700;
+            text-decoration: none;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .resend-link:hover {
+            color: #FFFFFF;
+            text-decoration: underline;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 20px;
+            font-size: 0.85rem;
+            color: #64748B;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .back-link:hover {
+            color: #94A3B8;
+        }
+
+        @media (max-width: 500px) {
+            .otp-card { padding: 36px 20px; }
+            .otp-input-group { gap: 6px; }
+            .otp-digit { width: 44px; height: 52px; font-size: 1.25rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="ambient-glow-1"></div>
+    <div class="ambient-glow-2"></div>
+
+    <div class="otp-card">
+        
+        <!-- Logo -->
+        <a href="{% url 'landing' %}" class="brand-logo-wrap">
+            <svg width="28" height="28" viewBox="0 0 100 100" fill="none">
+                <path d="M50 8C50 8 32 30 32 52C32 64 40 74 50 78C44 70 44 58 48 50C52 42 60 36 60 36C60 36 62 46 58 56C66 48 68 36 68 36C68 36 78 50 78 64C78 78 66 90 50 92C30 92 16 76 16 54C16 30 34 14 50 8Z" fill="url(#cyanFlameOtp)"/>
+                <path d="M52 28C52 28 62 40 62 54C62 62 58 68 52 72C56 66 56 58 54 52C52 46 46 42 46 42C46 42 44 50 48 56C42 50 40 42 40 42C40 42 34 52 34 62C34 72 42 80 52 82C64 82 72 72 72 58C72 42 62 32 52 28Z" fill="url(#purpleFlameOtp)"/>
+                <defs>
+                    <linearGradient id="cyanFlameOtp" x1="16" y1="8" x2="78" y2="92" gradientUnits="userSpaceOnUse">
+                        <stop stop-color="#00D2C4"/>
+                        <stop offset="1" stop-color="#0284C7"/>
+                    </linearGradient>
+                    <linearGradient id="purpleFlameOtp" x1="34" y1="28" x2="72" y2="82" gradientUnits="userSpaceOnUse">
+                        <stop stop-color="#A78BFA"/>
+                        <stop offset="1" stop-color="#7C3AED"/>
+                    </linearGradient>
+                </defs>
+            </svg>
+            <span class="brand-logo-text">CYAN<span class="brand-o">O</span><span class="brand-py">PY</span></span>
+        </a>
+
+        <!-- Flow Progress Pills -->
+        <div class="progress-steps">
+            <span class="step-pill done"><i class="fa-solid fa-check"></i> 1. Register</span>
+            <span class="step-divider"></span>
+            <span class="step-pill active"><i class="fa-solid fa-circle-dot"></i> 2. Verify</span>
+            <span class="step-divider"></span>
+            <span class="step-pill upcoming">3. Course</span>
+        </div>
+
+        <div class="icon-badge">
+            <i class="fa-regular fa-envelope-open"></i>
+        </div>
+
+        <h1 class="otp-title">Verify Your Email</h1>
+        <p class="otp-subtitle">We have sent a 6-digit confirmation code to <br><span class="email-highlight">{{ target_email }}</span></p>
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert-box {% if message.tags == 'error' %}alert-error{% else %}alert-success{% endif %}">
+                    <i class="fa-solid {% if message.tags == 'error' %}fa-triangle-exclamation{% else %}fa-circle-check{% endif %}"></i>
+                    <span>{{ message }}</span>
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <form action="{% url 'verify_otp' %}" method="POST" id="otpForm">
+            {% csrf_token %}
+
+            <div class="otp-input-group">
+                <input type="text" maxlength="1" name="digit1" class="otp-digit" inputmode="numeric" autocomplete="one-time-code" autofocus required>
+                <input type="text" maxlength="1" name="digit2" class="otp-digit" inputmode="numeric" required>
+                <input type="text" maxlength="1" name="digit3" class="otp-digit" inputmode="numeric" required>
+                <input type="text" maxlength="1" name="digit4" class="otp-digit" inputmode="numeric" required>
+                <input type="text" maxlength="1" name="digit5" class="otp-digit" inputmode="numeric" required>
+                <input type="text" maxlength="1" name="digit6" class="otp-digit" inputmode="numeric" required>
+            </div>
+
+            <button type="submit" class="btn-verify">
+                <span>Verify & Choose Course</span>
+                <i class="fa-solid fa-arrow-right"></i>
+            </button>
+        </form>
+
+        <div class="resend-row">
+            Didn't receive the email? 
+            <a href="{% url 'resend_otp' %}" class="resend-link">Resend Code</a>
+        </div>
+
+        <a href="{% url 'register' %}" class="back-link">← Use a different email address</a>
+
+    </div>
+
+    <script>
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        // Sync CSRF token with active cookie on submit
+        const form = document.getElementById('otpForm');
+        if (form) {
+            form.addEventListener('submit', function() {
+                const csrfCookie = getCookie('csrftoken');
+                const csrfInput = form.querySelector('input[name="csrfmiddlewaretoken"]');
+                if (csrfCookie && csrfInput) {
+                    csrfInput.value = csrfCookie;
+                }
+            });
+        }
+
+        // Automatic advance & backspace navigation for 6 digit boxes
+        const inputs = document.querySelectorAll('.otp-digit');
+        inputs.forEach((input, index) => {
+            input.addEventListener('input', (e) => {
+                if (e.target.value.length === 1 && index < inputs.length - 1) {
+                    inputs[index + 1].focus();
+                }
+            });
+
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Backspace' && !e.target.value && index > 0) {
+                    inputs[index - 1].focus();
+                }
+            });
+
+            // Handle pasting 6 digits
+            input.addEventListener('paste', (e) => {
+                e.preventDefault();
+                const pasteData = e.clipboardData.getData('text').trim();
+                if (/^\d{6}$/.test(pasteData)) {
+                    pasteData.split('').forEach((char, i) => {
+                        if (inputs[i]) inputs[i].value = char;
+                    });
+                    inputs[5].focus();
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -8,16 +8,23 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --primary: #fbc02d;
-            --bg-body: #f8fafc;
-            --text-dark: #1e293b;
-            --text-muted: #64748b;
-            --white: #ffffff;
-            --border: #e2e8f0;
-            --success-bg: #d1fae5;
-            --success-text: #065f46;
-            --warning-bg: #fef3c7;
-            --warning-text: #92400e;
+            /* Cyanopy Brand Identity */
+            --brand-cyan: #00D2C4;
+            --brand-cyan-dark: #0284C7;
+            --brand-purple: #7C3AED;
+            --brand-purple-dark: #3B0764;
+            --brand-gradient: linear-gradient(135deg, #00D2C4 0%, #7C3AED 100%);
+
+            --primary: #0284C7;
+            --bg-body: #F8FAFC;
+            --text-dark: #0F172A;
+            --text-muted: #64748B;
+            --white: #FFFFFF;
+            --border: #E2E8F0;
+            --success-bg: #D1FAE5;
+            --success-text: #065F46;
+            --warning-bg: rgba(0, 210, 196, 0.15);
+            --warning-text: #0891B2;
         }
 
         body { 
@@ -26,16 +33,7 @@
             margin: 0; 
             padding: 0;
             color: var(--text-dark);
-        }
-
-        /* ----- Navbar / Top Action ----- */
-        .top-nav {
-            padding: 20px 40px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: var(--white);
-            border-bottom: 1px solid var(--border);
+            min-height: 100vh;
         }
 
         .btn-back {
@@ -161,12 +159,7 @@
 </head>
 <body>
 
-    <nav class="top-nav">
-        <a href="{% url 'student_dashboard' %}" class="btn-back">
-            <i class="fa-solid fa-arrow-left"></i> Back to Dashboard
-        </a>
-        <img src="https://ui-avatars.com/api/?name=CY&background=fbc02d&color=000&bold=true" alt="Logo" style="height: 30px; border-radius: 8px;">
-    </nav>
+    {% include 'includes/student_header.html' with active_tab='doubts' %}
 
     <div class="container">
         <div class="header">

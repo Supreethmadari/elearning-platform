@@ -4,290 +4,531 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Join the Community | CYANOPY</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <title>Create Account | CYANOPY</title>
+    <!-- Brand Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
         :root {
-            --primary: #fbc02d;
-            --primary-hover: #f9a825;
-            --dark: #0f172a;
-            --slate: #1e293b;
-            --text-muted: #64748b;
-            --error: #ef4444;
-            --success: #22c55e;
-            --bg-body: #f8fafc;
+            /* Cyanopy Official Visual Identity */
+            --bg-dark: #0B1120;
+            --bg-card: #0F172A;
+            --brand-cyan: #00D2C4;
+            --brand-cyan-dark: #0284C7;
+            --brand-purple: #7C3AED;
+            --brand-purple-dark: #3B0764;
+            --brand-gradient: linear-gradient(135deg, #00D2C4 0%, #7C3AED 100%);
+            --brand-gradient-hover: linear-gradient(135deg, #0284C7 0%, #6D28D9 100%);
+            
+            --text-main: #0F172A;
+            --text-light: #F8FAFC;
+            --text-muted: #64748B;
+            --border-light: #E2E8F0;
+            --error: #EF4444;
+            --success: #10B981;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
         }
 
         body {
-            margin: 0;
-            font-family: 'Poppins', sans-serif;
-            background-color: var(--bg-body);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #F8FAFC;
+            color: var(--text-main);
             display: flex;
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .register-container {
+            display: flex;
+            width: 100%;
             min-height: 100vh;
         }
 
-        /* --- Split Layout --- */
-        .register-wrapper {
-            display: flex;
-            width: 100%;
-        }
-
-        .branding-side {
-            flex: 1.2;
-            background: linear-gradient(135deg, var(--dark) 0%, var(--slate) 100%);
+        /* --- Left Side: Cyanopy Hero Branding --- */
+        .branding-sidebar {
+            flex: 1.1;
+            background: linear-gradient(135deg, #0B1120 0%, #0F172A 50%, #1E1B4B 100%);
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            color: white;
-            padding: 40px;
+            color: var(--text-light);
+            padding: 60px 48px;
             position: relative;
             overflow: hidden;
         }
 
-        .branding-side::before {
+        .branding-sidebar::before {
             content: '';
             position: absolute;
-            width: 300px;
-            height: 300px;
-            background: var(--primary);
-            filter: blur(150px);
-            opacity: 0.15;
-            top: -50px;
-            left: -50px;
+            width: 450px;
+            height: 450px;
+            background: radial-gradient(circle, rgba(0, 210, 196, 0.25) 0%, rgba(124, 58, 237, 0.15) 50%, transparent 70%);
+            border-radius: 50%;
+            top: -100px;
+            left: -100px;
+            pointer-events: none;
         }
 
-        .branding-content {
-            z-index: 1;
-            max-width: 450px;
-            text-align: center;
+        .branding-sidebar::after {
+            content: '';
+            position: absolute;
+            width: 380px;
+            height: 380px;
+            background: radial-gradient(circle, rgba(124, 58, 237, 0.22) 0%, transparent 70%);
+            border-radius: 50%;
+            bottom: -60px;
+            right: -60px;
+            pointer-events: none;
         }
 
-        .form-side {
-            flex: 1;
-            background: white;
+        .branding-inner {
+            position: relative;
+            z-index: 2;
+            max-width: 480px;
+            text-align: left;
+        }
+
+        /* Dual Flame Logo */
+        .brand-logo-wrap {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            margin-bottom: 36px;
+        }
+
+        .brand-logo-text {
+            font-size: 1.6rem;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+            color: #FFFFFF;
+        }
+
+        .brand-o {
+            color: var(--brand-cyan);
+            text-shadow: 0 0 12px rgba(0, 210, 196, 0.6);
+        }
+
+        .brand-py {
+            color: var(--brand-purple);
+        }
+
+        .brand-heading {
+            font-size: 2.2rem;
+            font-weight: 800;
+            line-height: 1.25;
+            letter-spacing: -0.5px;
+            margin-bottom: 16px;
+            background: linear-gradient(135deg, #FFFFFF 0%, #E2E8F0 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .brand-subtext {
+            color: #94A3B8;
+            font-size: 1.05rem;
+            line-height: 1.6;
+            margin-bottom: 40px;
+        }
+
+        .brand-features {
+            list-style: none;
             display: flex;
             flex-direction: column;
-            justify-content: center;
-            padding: 60px;
-            overflow-y: auto;
-        }
-
-        /* --- Brand UI --- */
-        .logo { font-weight: 800; font-size: 32px; letter-spacing: -1.5px; margin-bottom: 20px; }
-        .logo span { color: var(--primary); }
-
-        .feature-list {
-            text-align: left;
-            margin-top: 40px;
-            list-style: none;
-            padding: 0;
-        }
-
-        .feature-list li {
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            font-size: 15px;
-            color: #cbd5e1;
-        }
-
-        .feature-list i { color: var(--primary); font-size: 18px; }
-
-        /* --- Form Styling --- */
-        .form-header { margin-bottom: 35px; }
-        .form-header h2 { font-size: 26px; font-weight: 700; color: var(--dark); margin: 0; }
-        .form-header p { color: var(--text-muted); font-size: 14px; margin-top: 5px; }
-
-        .form-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
             gap: 20px;
         }
 
-        .form-group { margin-bottom: 20px; position: relative; }
+        .brand-features li {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            font-size: 0.95rem;
+            color: #CBD5E1;
+            font-weight: 500;
+        }
 
-        label {
-            display: block;
+        .feature-icon-circle {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: rgba(0, 210, 196, 0.15);
+            color: var(--brand-cyan);
+            display: flex;
+            align-items: center;
+            justify-content: center;
             font-size: 13px;
-            font-weight: 600;
-            color: var(--slate);
-            margin-bottom: 8px;
+            border: 1px solid rgba(0, 210, 196, 0.3);
+            flex-shrink: 0;
         }
 
-        .input-container { position: relative; }
-        .input-container i {
-            position: absolute;
-            left: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--text-muted);
-            font-size: 14px;
+        /* --- Right Side: Registration Form --- */
+        .form-content-side {
+            flex: 1;
+            background: #FFFFFF;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 50px 60px;
+            overflow-y: auto;
         }
 
-        input {
+        .form-box {
+            max-width: 480px;
             width: 100%;
-            padding: 12px 15px 12px 42px;
-            border: 1.5px solid #e2e8f0;
-            border-radius: 10px;
-            font-family: inherit;
+            margin: 0 auto;
+        }
+
+        .form-header-title {
+            font-size: 1.85rem;
+            font-weight: 800;
+            color: #0F172A;
+            letter-spacing: -0.5px;
+            margin-bottom: 6px;
+        }
+
+        .form-header-desc {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-bottom: 28px;
+        }
+
+        /* Alerts */
+        .alert-box {
+            padding: 12px 16px;
+            border-radius: 12px;
+            font-size: 0.88rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .alert-error {
+            background: #FEF2F2;
+            color: #DC2626;
+            border: 1px solid #FEE2E2;
+        }
+
+        .alert-success {
+            background: #ECFDF5;
+            color: #059669;
+            border: 1px solid #D1FAE5;
+        }
+
+        /* Form Controls */
+        .form-grid-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .form-label {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: #334155;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 14px;
+            color: #94A3B8;
             font-size: 14px;
-            transition: 0.3s;
-            box-sizing: border-box;
+            pointer-events: none;
+            transition: color 0.2s ease;
         }
 
-        input:focus {
+        .form-input {
+            width: 100%;
+            padding: 13px 14px 13px 40px;
+            border: 1.5px solid var(--border-light);
+            border-radius: 12px;
+            font-family: inherit;
+            font-size: 0.95rem;
+            color: #0F172A;
+            background: #FFFFFF;
             outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 4px rgba(251, 192, 45, 0.1);
+            transition: all 0.2s ease;
         }
 
-        .btn-submit {
+        .form-input:focus {
+            border-color: var(--brand-cyan);
+            box-shadow: 0 0 0 4px rgba(0, 210, 196, 0.15);
+        }
+
+        .form-input:focus ~ .input-icon {
+            color: var(--brand-purple);
+        }
+
+        .password-toggle-btn {
+            position: absolute;
+            right: 14px;
+            background: none;
+            border: none;
+            color: #94A3B8;
+            cursor: pointer;
+            font-size: 14px;
+            padding: 4px;
+        }
+
+        .password-toggle-btn:hover {
+            color: #0F172A;
+        }
+
+        .btn-register-submit {
             width: 100%;
             padding: 14px;
-            background: var(--dark);
-            color: white;
+            background: var(--brand-gradient);
+            color: #FFFFFF;
             border: none;
-            border-radius: 10px;
+            border-radius: 12px;
+            font-family: inherit;
+            font-size: 1rem;
             font-weight: 700;
-            font-size: 16px;
             cursor: pointer;
-            margin-top: 20px;
-            transition: 0.3s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 10px;
+            transition: all 0.25s ease;
+            box-shadow: 0 4px 14px rgba(0, 210, 196, 0.35);
         }
 
-        .btn-submit:hover {
-            background: var(--primary);
-            color: var(--dark);
+        .btn-register-submit:hover {
+            background: var(--brand-gradient-hover);
             transform: translateY(-2px);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 6px 20px rgba(0, 210, 196, 0.5);
         }
 
-        .login-cta {
+        .form-footer-cta {
             text-align: center;
-            margin-top: 30px;
-            font-size: 14px;
+            margin-top: 26px;
+            font-size: 0.92rem;
             color: var(--text-muted);
         }
 
-        .login-cta a {
-            color: var(--dark);
-            text-decoration: none;
+        .form-footer-cta a {
+            color: var(--brand-purple);
             font-weight: 700;
+            text-decoration: none;
+            transition: color 0.2s;
         }
 
-        .alert {
-            padding: 12px;
-            border-radius: 8px;
-            background: #fef2f2;
-            color: var(--error);
-            font-size: 13px;
-            margin-bottom: 20px;
-            border: 1px solid #fee2e2;
+        .form-footer-cta a:hover {
+            color: var(--brand-cyan-dark);
+            text-decoration: underline;
         }
 
-        /* Responsive */
-        @media (max-width: 900px) {
-            .branding-side { display: none; }
-            .form-side { padding: 40px 20px; }
+        /* Responsive Breakpoints */
+        @media (max-width: 960px) {
+            .branding-sidebar {
+                display: none;
+            }
+            .form-content-side {
+                padding: 40px 24px;
+            }
         }
     </style>
 </head>
-
 <body>
 
-    <div class="register-wrapper">
-        <div class="branding-side">
-            <div class="branding-content">
-                <div class="logo">CYANO<span>PY</span></div>
-                <h2 style="font-size: 28px; line-height: 1.3;">Accelerate your career with industry-led courses.</h2>
-                <p style="color: #94a3b8;">Join over 10,000+ students learning the skills of tomorrow, today.</p>
-                
-                <ul class="feature-list">
-                    <li><i class="fa-solid fa-circle-check"></i> 24/7 AI-Powered Mentor Support</li>
-                    <li><i class="fa-solid fa-circle-check"></i> Verified Professional Certificates</li>
-                    <li><i class="fa-solid fa-circle-check"></i> Hands-on Real-world Projects</li>
+    <div class="register-container">
+        
+        <!-- Left Hero / Brand Showcase -->
+        <aside class="branding-sidebar">
+            <div class="branding-inner">
+                <a href="{% url 'landing' %}" class="brand-logo-wrap">
+                    <svg width="34" height="34" viewBox="0 0 100 100" fill="none">
+                        <path d="M50 8C50 8 32 30 32 52C32 64 40 74 50 78C44 70 44 58 48 50C52 42 60 36 60 36C60 36 62 46 58 56C66 48 68 36 68 36C68 36 78 50 78 64C78 78 66 90 50 92C30 92 16 76 16 54C16 30 34 14 50 8Z" fill="url(#cyanFlameReg)"/>
+                        <path d="M52 28C52 28 62 40 62 54C62 62 58 68 52 72C56 66 56 58 54 52C52 46 46 42 46 42C46 42 44 50 48 56C42 50 40 42 40 42C40 42 34 52 34 62C34 72 42 80 52 82C64 82 72 72 72 58C72 42 62 32 52 28Z" fill="url(#purpleFlameReg)"/>
+                        <defs>
+                            <linearGradient id="cyanFlameReg" x1="16" y1="8" x2="78" y2="92" gradientUnits="userSpaceOnUse">
+                                <stop stop-color="#00D2C4"/>
+                                <stop offset="1" stop-color="#0284C7"/>
+                            </linearGradient>
+                            <linearGradient id="purpleFlameReg" x1="34" y1="28" x2="72" y2="82" gradientUnits="userSpaceOnUse">
+                                <stop stop-color="#A78BFA"/>
+                                <stop offset="1" stop-color="#7C3AED"/>
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                    <span class="brand-logo-text">CYAN<span class="brand-o">O</span><span class="brand-py">PY</span></span>
+                </a>
+
+                <h1 class="brand-heading">Accelerate your tech career with industry-led mentorship.</h1>
+                <p class="brand-subtext">Join ambitious students mastering cutting-edge engineering, data, and design skills with verified certifications.</p>
+
+                <ul class="brand-features">
+                    <li>
+                        <div class="feature-icon-circle"><i class="fa-solid fa-bolt"></i></div>
+                        <span>Interactive live classes & expert mentors</span>
+                    </li>
+                    <li>
+                        <div class="feature-icon-circle"><i class="fa-solid fa-certificate"></i></div>
+                        <span>Industry-recognized verified certificates</span>
+                    </li>
+                    <li>
+                        <div class="feature-icon-circle"><i class="fa-solid fa-code"></i></div>
+                        <span>Portfolio-ready real-world capstone projects</span>
+                    </li>
                 </ul>
             </div>
-        </div>
+        </aside>
 
-        <div class="form-side">
-            <div class="form-header">
-                <h2>Create Account</h2>
-                <p>Fill in your details to get started.</p>
-            </div>
+        <!-- Right Side: Clean Student Registration Form -->
+        <main class="form-content-side">
+            <div class="form-box">
+                <h2 class="form-header-title">Create Account</h2>
+                <p class="form-header-desc">Enter your details to register and verify your email.</p>
 
-            {% if messages %}
-                {% for message in messages %}
-                    <div class="alert">
-                        <i class="fa-solid fa-triangle-exclamation"></i> {{ message }}
-                    </div>
-                {% endfor %}
-            {% endif %}
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert-box {% if message.tags == 'error' %}alert-error{% else %}alert-success{% endif %}">
+                            <i class="fa-solid {% if message.tags == 'error' %}fa-circle-exclamation{% else %}fa-circle-check{% endif %}"></i>
+                            <span>{{ message }}</span>
+                        </div>
+                    {% endfor %}
+                {% endif %}
 
-            <form method="POST" action="{% url 'register' %}">
-                {% csrf_token %}
+                <form action="{% url 'register' %}" method="POST">
+                    {% csrf_token %}
 
-                <div class="form-group">
-                    <label>Username</label>
-                    <div class="input-container">
-                        <i class="fa-solid fa-at"></i>
-                        <input type="text" name="username" placeholder="unique_username" required>
-                    </div>
-                </div>
+                    <!-- First & Last Name -->
+                    <div class="form-grid-row">
+                        <div class="form-group">
+                            <label class="form-label">First Name</label>
+                            <div class="input-wrapper">
+                                <i class="fa-regular fa-user input-icon"></i>
+                                <input type="text" name="first_name" class="form-input" placeholder="e.g. John" value="{{ first_name }}" required>
+                            </div>
+                        </div>
 
-                <div class="form-group">
-                    <label>Email Address</label>
-                    <div class="input-container">
-                        <i class="fa-solid fa-envelope"></i>
-                        <input type="email" name="email" placeholder="you@example.com" required>
-                    </div>
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>First Name</label>
-                        <div class="input-container">
-                            <i class="fa-solid fa-user"></i>
-                            <input type="text" name="first_name" placeholder="John" required>
+                        <div class="form-group">
+                            <label class="form-label">Last Name</label>
+                            <div class="input-wrapper">
+                                <i class="fa-regular fa-user input-icon"></i>
+                                <input type="text" name="last_name" class="form-input" placeholder="e.g. Doe" value="{{ last_name }}" required>
+                            </div>
                         </div>
                     </div>
+
+                    <!-- Email Address (Primary Login ID) -->
                     <div class="form-group">
-                        <label>Last Name</label>
-                        <div class="input-container">
-                            <i class="fa-solid fa-user"></i>
-                            <input type="text" name="last_name" placeholder="Doe" required>
+                        <label class="form-label">Email Address (Login Identifier)</label>
+                        <div class="input-wrapper">
+                            <i class="fa-regular fa-envelope input-icon"></i>
+                            <input type="email" name="email" class="form-input" placeholder="you@example.com" value="{{ email }}" required>
                         </div>
                     </div>
-                </div>
 
-                <div class="form-group">
-                    <label>Mobile Number</label>
-                    <div class="input-container">
-                        <i class="fa-solid fa-phone"></i>
-                        <input type="text" name="mobile" placeholder="+91 XXXXX XXXXX" required>
+                    <!-- Mobile / Phone -->
+                    <div class="form-group">
+                        <label class="form-label">Mobile Number</label>
+                        <div class="input-wrapper">
+                            <i class="fa-solid fa-phone input-icon"></i>
+                            <input type="tel" name="mobile" class="form-input" placeholder="+91 98765 43210" value="{{ mobile }}" required>
+                        </div>
                     </div>
-                </div>
 
-                <div class="form-group">
-                    <label>Password</label>
-                    <div class="input-container">
-                        <i class="fa-solid fa-lock"></i>
-                        <input type="password" name="password" placeholder="Min. 8 characters" required>
+                    <!-- Password -->
+                    <div class="form-group">
+                        <label class="form-label">Password</label>
+                        <div class="input-wrapper">
+                            <i class="fa-solid fa-lock input-icon"></i>
+                            <input type="password" id="regPassword" name="password" class="form-input" placeholder="Min. 6 characters" required>
+                            <button type="button" class="password-toggle-btn" onclick="togglePass('regPassword', this)">
+                                <i class="fa-regular fa-eye"></i>
+                            </button>
+                        </div>
                     </div>
+
+                    <!-- Confirm Password -->
+                    <div class="form-group">
+                        <label class="form-label">Confirm Password</label>
+                        <div class="input-wrapper">
+                            <i class="fa-solid fa-shield-halved input-icon"></i>
+                            <input type="password" id="regConfirmPassword" name="confirm_password" class="form-input" placeholder="Re-enter password" required>
+                            <button type="button" class="password-toggle-btn" onclick="togglePass('regConfirmPassword', this)">
+                                <i class="fa-regular fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-register-submit">
+                        <span>Continue to Verification</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </form>
+
+                <div class="form-footer-cta">
+                    Already registered? <a href="{% url 'login' %}">Sign in with Email</a>
                 </div>
-
-                <button type="submit" class="btn-submit">Sign Up Now</button>
-            </form>
-
-            <div class="login-cta">
-                Already have an account? <a href="{% url 'login' %}">Sign In</a>
             </div>
-        </div>
+        </main>
+
     </div>
 
+    <script>
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        // Sync CSRF token with active browser cookie on submit
+        document.querySelectorAll('form').forEach(form => {
+            form.addEventListener('submit', function() {
+                const csrfCookie = getCookie('csrftoken');
+                const csrfInput = form.querySelector('input[name="csrfmiddlewaretoken"]');
+                if (csrfCookie && csrfInput) {
+                    csrfInput.value = csrfCookie;
+                }
+            });
+        });
+
+        function togglePass(inputId, btn) {
+            const input = document.getElementById(inputId);
+            const icon = btn.querySelector('i');
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.className = 'fa-regular fa-eye-slash';
+            } else {
+                input.type = 'password';
+                icon.className = 'fa-regular fa-eye';
+            }
+        }
+    </script>
 </body>
 </html>
