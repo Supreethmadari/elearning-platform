@@ -1,4 +1,5 @@
 import random
+import threading
 from datetime import timedelta
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
@@ -8,6 +9,21 @@ from django.core.mail import send_mail
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
 from .models import User, Profile, EmailOTP
+
+
+def _async_send_email(subject, message, html_message, recipient_email):
+    """Dispatches email in a background thread to prevent blocking HTTP requests."""
+    try:
+        send_mail(
+            subject=subject,
+            message=message,
+            html_message=html_message,
+            from_email=getattr(settings, 'DEFAULT_FROM_EMAIL', 'info@cyanopy.com'),
+            recipient_list=[recipient_email],
+            fail_silently=True
+        )
+    except Exception as e:
+        print(f"[EMAIL SEND ERROR] {e}")
 
 
 def generate_and_send_otp(user):
@@ -75,19 +91,14 @@ def generate_and_send_otp(user):
     </html>
     """
 
-    try:
-        send_mail(
-            subject=subject,
-            message=message,
-            html_message=html_message,
-            from_email=getattr(settings, 'DEFAULT_FROM_EMAIL', 'info@cyanopy.com'),
-            recipient_list=[user.email],
-            fail_silently=False
-        )
-    except Exception as e:
-        print(f"[EMAIL SEND ERROR] {e}")
+    # Dispatch email in background thread so Gunicorn worker NEVER hangs
+    threading.Thread(
+        target=_async_send_email,
+        args=(subject, message, html_message, user.email),
+        daemon=True
+    ).start()
 
-    # For development convenience, log code
+    # Log code to server console (visible in Render Dashboard Logs)
     print(f"\n==========================================")
     print(f"[CYANOPY EMAIL OTP] To: {user.email} | CODE: {code}")
     print(f"==========================================\n")
