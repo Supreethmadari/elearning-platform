@@ -5,5 +5,6 @@ requests>=2.31.0
 openai>=1.0.0
 psycopg2-binary>=2.9.9; sys_platform == 'linux' or sys_platform == 'win32'
 razorpay>=2.0.0
-# cd e:\Cyanopy\Cyanopy\elearning
-# .\venv\Scripts\python.exe manage.py runserver
+gunicorn>=21.2.0
+whitenoise>=6.6.0
+dj-database-url>=2.1.0
