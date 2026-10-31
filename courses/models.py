@@ -3,6 +3,7 @@ from django.conf import settings
 from django.utils import timezone
 from accounts.models import User
 import uuid
+from cloudinary_storage.storage import VideoMediaCloudinaryStorage, RawMediaCloudinaryStorage
 
 
 class Course(models.Model):
@@ -62,8 +63,8 @@ class Course(models.Model):
 class Lesson(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name="lessons")
     title = models.CharField(max_length=200)
-    video = models.FileField(upload_to="lesson_videos/", blank=True, null=True)
-    notes = models.FileField(upload_to="lesson_notes/", blank=True, null=True)
+    video = models.FileField(upload_to="lesson_videos/", storage=VideoMediaCloudinaryStorage(), blank=True, null=True)
+    notes = models.FileField(upload_to="lesson_notes/", storage=RawMediaCloudinaryStorage(), blank=True, null=True)
     order = models.IntegerField()
 
     def __str__(self):
@@ -194,7 +195,7 @@ class StudentCertificate(models.Model):
     student = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
     certificate_id = models.CharField(max_length=50, unique=True, blank=True)
-    pdf = models.FileField(upload_to="certificates/", null=True, blank=True)
+    pdf = models.FileField(upload_to="certificates/", storage=RawMediaCloudinaryStorage(), null=True, blank=True)
     issued_at = models.DateTimeField(auto_now_add=True)
 
     def save(self, *args, **kwargs):

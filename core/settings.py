@@ -39,6 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'cloudinary_storage',
+    'cloudinary',
     'accounts',
     'courses',
 
@@ -186,3 +188,10 @@ GROQ_API_KEY = os.getenv("GROQ_API_KEY", "gsk_IilJdbiKmscNauxeGSEyWGdyb3FYgrio2v
 # ---------------- RAZORPAY PAYMENT GATEWAY ----------------
 RAZORPAY_KEY_ID = os.getenv("RAZORPAY_KEY_ID", "rzp_test_TtH0KZsmJo3OKp")
 RAZORPAY_KEY_SECRET = os.getenv("RAZORPAY_KEY_SECRET", "Pgs8jpEjMBAF6F606ULRDNK5")
+
+# ---------------- CLOUDINARY CLOUD MEDIA STORAGE ----------------
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': os.getenv('CLOUDINARY_CLOUD_NAME', 'f4lqtmsc'),
+    'API_KEY': os.getenv('CLOUDINARY_API_KEY', '998917352512332'),
+    'API_SECRET': os.getenv('CLOUDINARY_API_SECRET', 'Pp3faJ5VNA-ecyW0Q9LI31IKxdI'),
+}
